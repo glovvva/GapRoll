@@ -5,7 +5,7 @@ PayCompass API v2 - Main FastAPI application.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import health
+from routers import health, upload
 
 app = FastAPI(
     title="PayCompass API",
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # Rejestracja routerów
 app.include_router(health.router, prefix="/health", tags=["health"])
+app.include_router(upload.router, prefix="/upload", tags=["upload"])
 
 
 @app.get("/")

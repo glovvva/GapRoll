@@ -1,29 +1,111 @@
 "use client";
 
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { FileUpload } from "@/components/upload/file-upload";
+import { DataPreview } from "@/components/upload/data-preview";
+
+export interface PreviewResponse {
+  filename: string;
+  rows: number;
+  columns: number;
+  column_names: string[];
+  preview: Record<string, unknown>[];
+  separator: string;
+  encoding: string;
+}
 
 export default function DataPage() {
+  const [file, setFile] = useState<File | null>(null);
+  const [previewData, setPreviewData] = useState<PreviewResponse | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function uploadPreview(file: File) {
+    setUploading(true);
+    setError(null);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await fetch("/api/upload/preview", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message ?? data.error ?? `Błąd ${res.status}`);
+      }
+      const data: PreviewResponse = await res.json();
+      setPreviewData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nie udało się sparsować pliku.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleFileSelect(selectedFile: File) {
+    setFile(selectedFile);
+    uploadPreview(selectedFile);
+  }
+
+  function handleConfirm() {
+    // TODO: Zapis do Supabase (następny krok)
+    alert("Zapis - wkrótce!");
+  }
+
+  function handleCancel() {
+    setFile(null);
+    setPreviewData(null);
+    setError(null);
+  }
+
   return (
     <div className="mx-auto max-w-7xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-foreground">Data Upload</CardTitle>
+          <CardTitle className="text-foreground">Upload Danych CSV</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <p className="text-muted-foreground">
-            CSV Upload będzie tutaj (migracja z Streamlit)
-          </p>
-          <Button disabled size="default">
-            <Upload className="size-4" />
-            Select File
-          </Button>
+          {!file && !previewData && (
+            <FileUpload onFileSelect={handleFileSelect} />
+          )}
+
+          {uploading && (
+            <div className="flex flex-col items-center justify-center gap-3 py-8">
+              <Loader2 className="size-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Parsowanie CSV...</p>
+            </div>
+          )}
+
+          {previewData && !uploading && (
+            <DataPreview
+              filename={previewData.filename}
+              rows={previewData.rows}
+              columns={previewData.columns}
+              columnNames={previewData.column_names}
+              preview={previewData.preview}
+              separator={previewData.separator}
+              encoding={previewData.encoding}
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+            />
+          )}
+
+          {error && !uploading && (
+            <div
+              className="rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+              role="alert"
+            >
+              {error}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
