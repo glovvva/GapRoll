@@ -1,0 +1,16 @@
+venv/
+.env
+__pycache__/
+*.csv
+
+# Streamlit secrets (NIGDY nie commituj!)
+.streamlit/secrets.toml
+secrets.toml
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+audit_log_*.json
