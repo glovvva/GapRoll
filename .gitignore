@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+*.log
+.turbo/
+.pnpm-debug.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Misc
+coverage/
+.pytest_cache/
+.coverage
+htmlcov/
+.sass-cache/
+*.css.map
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
