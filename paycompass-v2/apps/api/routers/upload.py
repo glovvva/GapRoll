@@ -1,16 +1,54 @@
 """
-Router uploadu plików CSV - podgląd i parsowanie.
+Router uploadu plików CSV - podgląd, parsowanie i zapis do Supabase.
 """
 
 import csv
 import io
-from typing import Any
+import re
+from typing import Any, Dict, List, Optional
 
 import chardet
 import pandas as pd
 from fastapi import APIRouter, File, HTTPException, UploadFile
+from pydantic import BaseModel
+
+from config import settings
+from supabase import create_client
 
 router = APIRouter(tags=["upload"])
+
+
+# --- Pydantic models ---
+
+
+class SaveDataRequest(BaseModel):
+    """Request body dla POST /save - dane do zapisania w Supabase."""
+
+    filename: str
+    rows: List[Dict[str, Any]]
+    column_mapping: Optional[Dict[str, str]] = None
+
+
+# --- Helpers ---
+
+
+def parse_salary(value: Any) -> Optional[float]:
+    """
+    Konwertuje wartość wynagrodzenia (str/int/float) na float.
+    Usuwa spacje i zamienia przecinki na kropki. Zwraca None przy błędzie.
+    """
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        return float(value) if not (value != value) else None  # skip NaN
+    s = str(value).strip().replace(" ", "").replace(",", ".")
+    s = re.sub(r"[^\d.\-]", "", s)
+    if not s:
+        return None
+    try:
+        return float(s)
+    except ValueError:
+        return None
 
 SEPARATORS = (",", ";", "\t")
 
@@ -95,6 +133,11 @@ async def preview_csv(file: UploadFile = File(...)) -> dict[str, Any]:
 
     print(f"Detected encoding: {used_encoding}")
 
+    # Usuń BOM jeśli istnieje
+    if decoded_content.startswith("\ufeff"):
+        decoded_content = decoded_content[1:]
+        print("DEBUG: Removed BOM")
+
     # c) Wykryj separator PRZED parsowaniem
     separator = detect_separator(content)
     print(f"Detected separator: '{separator}'")
@@ -158,4 +201,63 @@ async def preview_csv(file: UploadFile = File(...)) -> dict[str, Any]:
         "preview": preview,
         "separator": separator,
         "encoding": used_encoding,
+    }
+
+
+@router.post(
+    "/save",
+    response_model=dict[str, Any],
+    summary="Zapisz dane do Supabase",
+    description="Batch insert wierszy z preview do tabeli payroll_data.",
+)
+async def save_data(body: SaveDataRequest) -> dict[str, Any]:
+    """
+    POST /save - przyjmuje filename i rows (lista wierszy z preview),
+    mapuje kolumny (PL/EN) i wykonuje batch insert do Supabase.
+    """
+    if not settings.is_supabase_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="Supabase nie jest skonfigurowane (SUPABASE_URL / SUPABASE_KEY).",
+        )
+
+    user_id = "00000000-0000-0000-0000-000000000000"
+
+    records: List[Dict[str, Any]] = []
+    for row in body.rows:
+        record = {
+            "user_id": user_id,
+            "filename": body.filename,
+            "first_name": row.get("Imię") or row.get("first_name"),
+            "last_name": row.get("Nazwisko") or row.get("last_name"),
+            "position": row.get("Stanowisko") or row.get("position"),
+            "gender": row.get("Płeć") or row.get("gender"),
+            "salary": parse_salary(
+                row.get("Wynagrodzenie") or row.get("salary")
+            ),
+            "raw_data": row,
+        }
+        records.append(record)
+
+    if not records:
+        return {
+            "success": True,
+            "inserted_rows": 0,
+            "message": "Brak wierszy do zapisania.",
+        }
+
+    try:
+        client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        client.table("payroll_data").insert(records).execute()
+    except Exception as e:
+        print(f"ERROR save_data Supabase: {e!s}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Błąd zapisu do bazy: {e!s}",
+        ) from e
+
+    return {
+        "success": True,
+        "inserted_rows": len(records),
+        "message": "Dane zapisane pomyślnie",
     }

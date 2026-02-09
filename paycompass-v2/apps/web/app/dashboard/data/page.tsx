@@ -25,6 +25,7 @@ export default function DataPage() {
   const [file, setFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<PreviewResponse | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function uploadPreview(file: File) {
@@ -55,9 +56,43 @@ export default function DataPage() {
     uploadPreview(selectedFile);
   }
 
-  function handleConfirm() {
-    // TODO: Zapis do Supabase (następny krok)
-    alert("Zapis - wkrótce!");
+  async function handleConfirm() {
+    if (!previewData) return;
+
+    try {
+      setSaving(true);
+      setError(null);
+
+      const response = await fetch("/api/upload/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: previewData.filename,
+          rows: previewData.preview,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.detail ?? errorData.message ?? "Błąd zapisu"
+        );
+      }
+
+      const result = (await response.json()) as { inserted_rows?: number };
+      const inserted = result.inserted_rows ?? previewData.preview.length;
+
+      alert(`✅ Sukces! Zapisano ${inserted} wierszy`);
+
+      setFile(null);
+      setPreviewData(null);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Błąd zapisu do bazy danych"
+      );
+    } finally {
+      setSaving(false);
+    }
   }
 
   function handleCancel() {
@@ -95,6 +130,7 @@ export default function DataPage() {
               encoding={previewData.encoding}
               onConfirm={handleConfirm}
               onCancel={handleCancel}
+              saving={saving}
             />
           )}
 

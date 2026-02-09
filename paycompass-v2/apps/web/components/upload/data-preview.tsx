@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ export interface DataPreviewProps {
   encoding: string;
   onConfirm: () => void;
   onCancel: () => void;
+  saving?: boolean;
 }
 
 export function DataPreview({
@@ -32,8 +34,8 @@ export function DataPreview({
   encoding,
   onConfirm,
   onCancel,
+  saving = false,
 }: DataPreviewProps) {
-  console.log("Received props:", { columnNames, preview });
 
   const safeColumnNames = columnNames ?? [];
   const safePreview = preview ?? [];
@@ -105,11 +107,17 @@ export function DataPreview({
         </div>
       </CardContent>
       <CardFooter className="flex justify-end gap-2">
-        <Button variant="outline" type="button" onClick={onCancel}>
+        <Button variant="outline" type="button" onClick={onCancel} disabled={saving}>
           Anuluj
         </Button>
-        <Button type="button" onClick={onConfirm}>
-          Potwierdź i zapisz
+        <Button
+          type="button"
+          onClick={onConfirm}
+          disabled={saving}
+          className="flex items-center gap-2"
+        >
+          {saving && <Loader2 className="size-4 animate-spin" />}
+          {saving ? "Zapisywanie..." : "Potwierdź i zapisz"}
         </Button>
       </CardFooter>
     </Card>
