@@ -26,10 +26,18 @@ class SaveDataRequest(BaseModel):
 
     filename: str
     rows: List[Dict[str, Any]]
-    column_mapping: Optional[Dict[str, str]] = None
+    column_mapping: Dict[str, Optional[str]]  # system_field -> csv_column (None = optional, nie mapuj)
 
 
 # --- Helpers ---
+
+
+def get_mapped_value(row: Dict[str, Any], mapping: Dict[str, Optional[str]], system_field: str) -> Any:
+    """Wyciąga wartość z row używając column_mapping."""
+    csv_column = mapping.get(system_field)
+    if csv_column and csv_column in row:
+        return row[csv_column]
+    return None
 
 
 def parse_salary(value: Any) -> Optional[float]:
@@ -108,6 +116,11 @@ async def preview_csv(file: UploadFile = File(...)) -> dict[str, Any]:
             detail="Plik jest pusty.",
         )
 
+    # Usuń UTF-8 BOM z raw bytes (jeśli istnieje) – zanim wykryjemy encoding
+    if content.startswith(b"\xef\xbb\xbf"):
+        content = content[3:]
+        print("DEBUG: Removed UTF-8 BOM from raw bytes")
+
     # a) content już odczytany wyżej
     # b) Wykryj encoding - spróbuj typowe polskie encodingi
     polish_encodings = ["utf-8", "windows-1250", "cp1252", "iso-8859-2"]
@@ -132,11 +145,6 @@ async def preview_csv(file: UploadFile = File(...)) -> dict[str, Any]:
         print(f"DEBUG: Fallback to chardet: {used_encoding}")
 
     print(f"Detected encoding: {used_encoding}")
-
-    # Usuń BOM jeśli istnieje
-    if decoded_content.startswith("\ufeff"):
-        decoded_content = decoded_content[1:]
-        print("DEBUG: Removed BOM")
 
     # c) Wykryj separator PRZED parsowaniem
     separator = detect_separator(content)
@@ -222,22 +230,39 @@ async def save_data(body: SaveDataRequest) -> dict[str, Any]:
         )
 
     user_id = "00000000-0000-0000-0000-000000000000"
+    column_mapping = body.column_mapping
+
+    required_fields = ["first_name", "last_name", "position", "gender", "salary"]
+    missing = [
+        f
+        for f in required_fields
+        if f not in column_mapping or not column_mapping[f]
+    ]
+    if missing:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Brakuje wymaganych pól w mapowaniu: {', '.join(missing)}",
+        )
+
+    print(f"DEBUG: Using column mapping: {column_mapping}")
 
     records: List[Dict[str, Any]] = []
     for row in body.rows:
         record = {
             "user_id": user_id,
             "filename": body.filename,
-            "first_name": row.get("Imię") or row.get("first_name"),
-            "last_name": row.get("Nazwisko") or row.get("last_name"),
-            "position": row.get("Stanowisko") or row.get("position"),
-            "gender": row.get("Płeć") or row.get("gender"),
+            "first_name": get_mapped_value(row, column_mapping, "first_name"),
+            "last_name": get_mapped_value(row, column_mapping, "last_name"),
+            "position": get_mapped_value(row, column_mapping, "position"),
+            "gender": get_mapped_value(row, column_mapping, "gender"),
             "salary": parse_salary(
-                row.get("Wynagrodzenie") or row.get("salary")
+                get_mapped_value(row, column_mapping, "salary")
             ),
             "raw_data": row,
         }
         records.append(record)
+
+    print(f"DEBUG: First record: {records[0] if records else 'empty'}")
 
     if not records:
         return {

@@ -22,6 +22,8 @@ export interface DataPreviewProps {
   onConfirm: () => void;
   onCancel: () => void;
   saving?: boolean;
+  /** Gdy ustawione (np. "Dalej"), przycisk główny pokazuje tę etykietę zamiast "Potwierdź i zapisz" */
+  primaryButtonLabel?: string;
 }
 
 export function DataPreview({
@@ -35,7 +37,9 @@ export function DataPreview({
   onConfirm,
   onCancel,
   saving = false,
+  primaryButtonLabel,
 }: DataPreviewProps) {
+  const confirmLabel = primaryButtonLabel ?? (saving ? "Zapisywanie..." : "Potwierdź i zapisz");
 
   const safeColumnNames = columnNames ?? [];
   const safePreview = preview ?? [];
@@ -116,8 +120,8 @@ export function DataPreview({
           disabled={saving}
           className="flex items-center gap-2"
         >
-          {saving && <Loader2 className="size-4 animate-spin" />}
-          {saving ? "Zapisywanie..." : "Potwierdź i zapisz"}
+          {saving && !primaryButtonLabel && <Loader2 className="size-4 animate-spin" />}
+          {confirmLabel}
         </Button>
       </CardFooter>
     </Card>

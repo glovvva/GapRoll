@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { FileUpload } from "@/components/upload/file-upload";
 import { DataPreview } from "@/components/upload/data-preview";
+import { ColumnMapper, type ColumnMapping } from "@/components/upload/column-mapper";
 
 export interface PreviewResponse {
   filename: string;
@@ -21,9 +22,13 @@ export interface PreviewResponse {
   encoding: string;
 }
 
+type Step = "upload" | "preview" | "mapping" | "saving";
+
 export default function DataPage() {
+  const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<PreviewResponse | null>(null);
+  const [columnMapping, setColumnMapping] = useState<ColumnMapping | null>(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +49,11 @@ export default function DataPage() {
       }
       const data: PreviewResponse = await res.json();
       setPreviewData(data);
+      setStep("preview");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Nie udało się sparsować pliku.");
+      setError(
+        err instanceof Error ? err.message : "Nie udało się sparsować pliku."
+      );
     } finally {
       setUploading(false);
     }
@@ -56,19 +64,30 @@ export default function DataPage() {
     uploadPreview(selectedFile);
   }
 
-  async function handleConfirm() {
+  function handleNextToMapping() {
+    setStep("mapping");
+  }
+
+  function handleMappingComplete(mapping: ColumnMapping) {
+    setColumnMapping(mapping);
+    handleSave(mapping);
+  }
+
+  async function handleSave(mapping: ColumnMapping) {
     if (!previewData) return;
 
-    try {
-      setSaving(true);
-      setError(null);
+    setStep("saving");
+    setSaving(true);
+    setError(null);
 
+    try {
       const response = await fetch("/api/upload/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           filename: previewData.filename,
           rows: previewData.preview,
+          column_mapping: mapping,
         }),
       });
 
@@ -86,6 +105,8 @@ export default function DataPage() {
 
       setFile(null);
       setPreviewData(null);
+      setColumnMapping(null);
+      setStep("upload");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Błąd zapisu do bazy danych"
@@ -95,7 +116,8 @@ export default function DataPage() {
     }
   }
 
-  function handleCancel() {
+  function handleCancelPreview() {
+    setStep("upload");
     setFile(null);
     setPreviewData(null);
     setError(null);
@@ -108,10 +130,6 @@ export default function DataPage() {
           <CardTitle className="text-foreground">Upload Danych CSV</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {!file && !previewData && (
-            <FileUpload onFileSelect={handleFileSelect} />
-          )}
-
           {uploading && (
             <div className="flex flex-col items-center justify-center gap-3 py-8">
               <Loader2 className="size-8 animate-spin text-primary" />
@@ -119,7 +137,11 @@ export default function DataPage() {
             </div>
           )}
 
-          {previewData && !uploading && (
+          {!uploading && step === "upload" && !previewData && (
+            <FileUpload onFileSelect={handleFileSelect} />
+          )}
+
+          {!uploading && step === "preview" && previewData && (
             <DataPreview
               filename={previewData.filename}
               rows={previewData.rows}
@@ -128,10 +150,27 @@ export default function DataPage() {
               preview={previewData.preview}
               separator={previewData.separator}
               encoding={previewData.encoding}
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-              saving={saving}
+              onConfirm={handleNextToMapping}
+              onCancel={handleCancelPreview}
+              primaryButtonLabel="Dalej"
             />
+          )}
+
+          {!uploading && step === "mapping" && previewData && (
+            <ColumnMapper
+              csvColumns={previewData.column_names}
+              onMappingComplete={handleMappingComplete}
+              onCancel={() => setStep("preview")}
+            />
+          )}
+
+          {step === "saving" && (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="size-8 animate-spin text-primary" />
+              <span className="ml-3 text-sm text-muted-foreground">
+                Zapisywanie danych...
+              </span>
+            </div>
           )}
 
           {error && !uploading && (
