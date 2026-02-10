@@ -1,12 +1,15 @@
 """
-Router analizy płac - pay gap i statystyki.
+Router analizy płac - pay gap, EVG scoring i statystyki.
 """
 
+import json
 from collections import defaultdict
 from typing import Any, Dict, List
 
 import statistics
 from fastapi import APIRouter, HTTPException
+from openai import OpenAI
+from pydantic import BaseModel
 
 from config import settings
 from supabase import create_client
@@ -17,43 +20,98 @@ router = APIRouter(prefix="/analysis", tags=["analysis"])
 def calculate_fair_pay_line(data_points: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
     Oblicza linię regresji liniowej (Fair Pay Line).
-    Używa numeric encoding dla stanowisk.
+    Używa EVG score jako X (jeśli dostępne), inaczej position encoding.
     """
     if len(data_points) < 2:
-        return {"slope": 0, "intercept": 0, "line_points": []}
+        return {"slope": 0, "intercept": 0, "line_points": [], "use_evg": False}
 
-    positions = sorted(set(p["position"] for p in data_points))
-    position_to_num = {pos: idx for idx, pos in enumerate(positions)}
+    has_evg = any(p.get("evg_score") is not None for p in data_points)
 
-    x_values = [position_to_num[p["position"]] for p in data_points]
-    y_values = [p["salary"] for p in data_points]
+    if has_evg:
+        points_with_score = [
+            p for p in data_points if p.get("evg_score") is not None
+        ]
 
-    n = len(x_values)
-    x_mean = sum(x_values) / n
-    y_mean = sum(y_values) / n
+        if len(points_with_score) < 2:
+            return {"slope": 0, "intercept": 0, "line_points": [], "use_evg": False}
 
-    numerator = sum(
-        (x_values[i] - x_mean) * (y_values[i] - y_mean) for i in range(n)
-    )
-    denominator = sum((x_values[i] - x_mean) ** 2 for i in range(n))
+        x_values = [p["evg_score"] for p in points_with_score]
+        y_values = [p["salary"] for p in points_with_score]
 
-    if denominator == 0:
-        return {"slope": 0, "intercept": y_mean, "line_points": []}
+        n = len(x_values)
+        x_mean = sum(x_values) / n
+        y_mean = sum(y_values) / n
 
-    slope = numerator / denominator
-    intercept = y_mean - slope * x_mean
+        numerator = sum(
+            (x_values[i] - x_mean) * (y_values[i] - y_mean) for i in range(n)
+        )
+        denominator = sum((x_values[i] - x_mean) ** 2 for i in range(n))
 
-    line_points = []
-    for pos in positions:
-        x = position_to_num[pos]
-        y = slope * x + intercept
-        line_points.append({"position": pos, "salary": round(y, 2)})
+        if denominator == 0:
+            return {
+                "slope": 0,
+                "intercept": y_mean,
+                "line_points": [],
+                "use_evg": True,
+            }
 
-    return {
-        "slope": round(slope, 2),
-        "intercept": round(intercept, 2),
-        "line_points": line_points,
-    }
+        slope = numerator / denominator
+        intercept = y_mean - slope * x_mean
+
+        min_score = min(x_values)
+        max_score = max(x_values)
+
+        line_points = []
+        for score in range(int(min_score), int(max_score) + 1, 5):
+            salary = slope * score + intercept
+            line_points.append({"evg_score": score, "salary": round(salary, 2)})
+
+        return {
+            "slope": round(slope, 2),
+            "intercept": round(intercept, 2),
+            "line_points": line_points,
+            "use_evg": True,
+        }
+
+    else:
+        positions = sorted(set(p["position"] for p in data_points))
+        position_to_num = {pos: idx for idx, pos in enumerate(positions)}
+
+        x_values = [position_to_num[p["position"]] for p in data_points]
+        y_values = [p["salary"] for p in data_points]
+
+        n = len(x_values)
+        x_mean = sum(x_values) / n
+        y_mean = sum(y_values) / n
+
+        numerator = sum(
+            (x_values[i] - x_mean) * (y_values[i] - y_mean) for i in range(n)
+        )
+        denominator = sum((x_values[i] - x_mean) ** 2 for i in range(n))
+
+        if denominator == 0:
+            return {
+                "slope": 0,
+                "intercept": y_mean,
+                "line_points": [],
+                "use_evg": False,
+            }
+
+        slope = numerator / denominator
+        intercept = y_mean - slope * x_mean
+
+        line_points = []
+        for pos in positions:
+            x = position_to_num[pos]
+            y = slope * x + intercept
+            line_points.append({"position": pos, "salary": round(y, 2)})
+
+        return {
+            "slope": round(slope, 2),
+            "intercept": round(intercept, 2),
+            "line_points": line_points,
+            "use_evg": False,
+        }
 
 
 @router.get("/paygap")
@@ -94,6 +152,22 @@ async def get_pay_gap_analysis(
         data = response.data
         print(f"DEBUG: Fetched {len(data)} records for analysis")
 
+        evg_scores = {}
+        try:
+            scores_response = (
+                supabase.table("job_valuations")
+                .select("position, evg_score")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            if scores_response.data:
+                evg_scores = {
+                    s["position"]: s["evg_score"] for s in scores_response.data
+                }
+                print(f"DEBUG: Loaded {len(evg_scores)} EVG scores from cache")
+        except Exception as e:
+            print(f"DEBUG: No EVG scores found (table may not exist): {e}")
+
         male_salaries = []
         female_salaries = []
         data_points = []
@@ -120,6 +194,7 @@ async def get_pay_gap_analysis(
                     "position": row.get("position", "Unknown"),
                     "gender": gender_normalized,
                     "salary": salary,
+                    "evg_score": evg_scores.get(row.get("position", "Unknown")),
                 }
             )
 
@@ -138,6 +213,9 @@ async def get_pay_gap_analysis(
         fair_pay_line = calculate_fair_pay_line(data_points)
         print(
             f"DEBUG: Fair Pay Line - slope: {fair_pay_line['slope']}, intercept: {fair_pay_line['intercept']}"
+        )
+        print(
+            f"DEBUG: Fair Pay Line uses EVG: {fair_pay_line.get('use_evg', False)}"
         )
 
         return {
@@ -216,3 +294,151 @@ def calculate_gap_by_position(data: List[Dict[str, Any]]) -> List[Dict[str, Any]
         )
 
     return result
+
+
+# ==================== EVG SCORING ====================
+
+
+class EVGScoreRequest(BaseModel):
+    """Request body dla POST /evg-score - lista stanowisk do oceny."""
+
+    user_id: str = "00000000-0000-0000-0000-000000000000"
+    positions: List[str]
+
+
+async def score_position_with_ai(position: str) -> Dict[str, Any]:
+    """Wywołaj OpenAI API do scoringu stanowiska."""
+    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
+    prompt = f"""You are an expert in job evaluation for EU Pay Transparency Directive 2023/970 (Art. 4).
+
+Evaluate this job position using 4 objective criteria:
+
+Position: {position}
+
+Rate each criterion on a scale of 1-25 points:
+
+1. SKILLS (1-25 points):
+   - Education requirements
+   - Technical expertise
+   - Certifications needed
+   - Years of experience
+
+2. EFFORT (1-25 points):
+   - Physical demands
+   - Mental concentration
+   - Stress level
+   - Working hours intensity
+
+3. RESPONSIBILITY (1-25 points):
+   - Decision-making authority
+   - Budget responsibility
+   - Team leadership
+   - Impact on business
+
+4. CONDITIONS (1-25 points):
+   - Work environment safety
+   - Physical conditions
+   - Travel requirements
+   - Work-life balance
+
+Return ONLY a JSON object (no markdown, no explanation):
+{{
+  "skills": <number 1-25>,
+  "effort": <number 1-25>,
+  "responsibility": <number 1-25>,
+  "conditions": <number 1-25>,
+  "total_score": <sum of above>,
+  "reasoning": "<brief 1-sentence justification>"
+}}"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are a job evaluation expert."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,
+            response_format={"type": "json_object"},
+        )
+
+        result = json.loads(response.choices[0].message.content or "{}")
+
+        total = (
+            result.get("skills", 0)
+            + result.get("effort", 0)
+            + result.get("responsibility", 0)
+            + result.get("conditions", 0)
+        )
+        result["total_score"] = total
+
+        print(f"DEBUG: Scored {position} → {total}/100")
+
+        return result
+
+    except Exception as e:
+        print(f"ERROR scoring {position}: {e}")
+        raise HTTPException(status_code=500, detail=f"AI scoring failed: {str(e)}") from e
+
+
+@router.post("/evg-score")
+async def score_positions(request: EVGScoreRequest) -> Dict[str, Any]:
+    """
+    Scoring stanowisk pracy używając AI (GPT-4o).
+    Zwraca EVG score (1-100) dla każdego stanowiska.
+    """
+    try:
+        if not settings.OPENAI_API_KEY:
+            raise HTTPException(
+                status_code=503,
+                detail="OpenAI API key not configured",
+            )
+
+        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        results = []
+
+        for position in request.positions:
+            try:
+                cached = (
+                    supabase.table("job_valuations")
+                    .select("*")
+                    .eq("position", position)
+                    .eq("user_id", request.user_id)
+                    .execute()
+                )
+
+                if cached.data:
+                    results.append(cached.data[0])
+                    print(f"DEBUG: Cache hit for {position}")
+                    continue
+            except Exception:
+                print("DEBUG: Cache table doesn't exist, skipping cache")
+
+            score_data = await score_position_with_ai(position)
+
+            record = {
+                "position": position,
+                "user_id": request.user_id,
+                "evg_score": score_data["total_score"],
+                "skills": score_data.get("skills", 0),
+                "effort": score_data.get("effort", 0),
+                "responsibility": score_data.get("responsibility", 0),
+                "conditions": score_data.get("conditions", 0),
+                "reasoning": score_data.get("reasoning", ""),
+            }
+
+            try:
+                supabase.table("job_valuations").insert(record).execute()
+            except Exception as e:
+                print(f"DEBUG: Could not cache result: {e}")
+
+            results.append(record)
+
+        return {"scores": results}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"ERROR score_positions: {e}")
+        raise HTTPException(status_code=500, detail=str(e)) from e

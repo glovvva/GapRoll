@@ -22,6 +22,7 @@ class Settings:
         self._supabase_url: str | None = None
         self._supabase_key: str | None = None
         self._environment: str | None = None
+        self._openai_api_key: str = ""
         self._load()
 
     def _load(self) -> None:
@@ -29,6 +30,7 @@ class Settings:
         self._supabase_url = os.getenv("SUPABASE_URL", "").strip() or None
         self._supabase_key = os.getenv("SUPABASE_KEY", "").strip() or None
         self._environment = os.getenv("ENVIRONMENT", "development").strip() or "development"
+        self._openai_api_key = os.getenv("OPENAI_API_KEY", "").strip() or ""
 
     @property
     def SUPABASE_URL(self) -> str | None:
@@ -44,6 +46,11 @@ class Settings:
     def ENVIRONMENT(self) -> str:
         """Środowisko: development, staging, production."""
         return self._environment
+
+    @property
+    def OPENAI_API_KEY(self) -> str:
+        """Klucz API OpenAI (opcjonalny, do EVG scoringu)."""
+        return self._openai_api_key
 
     def is_supabase_configured(self) -> bool:
         """Czy Supabase jest skonfigurowane (URL i KEY ustawione)."""
