@@ -6,6 +6,7 @@ import json
 from collections import defaultdict
 from typing import Any, Dict, List
 
+import numpy as np
 import statistics
 from fastapi import APIRouter, HTTPException
 from openai import OpenAI
@@ -441,4 +442,178 @@ async def score_positions(request: EVGScoreRequest) -> Dict[str, Any]:
         raise
     except Exception as e:
         print(f"ERROR score_positions: {e}")
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+# ==================== ART. 16 (Quarterly analysis) ====================
+
+
+@router.get("/art16")
+async def get_art16_analysis(
+    user_id: str = "00000000-0000-0000-0000-000000000000",
+) -> Dict[str, Any]:
+    """
+    Art. 16 Dyrektywy UE 2023/970 - quarterly analysis.
+    Zwraca:
+    - quartiles (4 quartile wynagrodzenia)
+    - gender_distribution per quartile
+    - joint_assessment_required (True jeśli w którymkolwiek quartile gap > 5%)
+    """
+    try:
+        if not settings.is_supabase_configured():
+            raise HTTPException(
+                status_code=503,
+                detail="Supabase nie jest skonfigurowane.",
+            )
+
+        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+
+        response = (
+            supabase.table("payroll_data")
+            .select("position, gender, salary")
+            .eq("user_id", user_id)
+            .execute()
+        )
+
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Brak danych do analizy")
+
+        data = response.data
+
+        all_salaries = [
+            float(row.get("salary") or 0)
+            for row in data
+            if float(row.get("salary") or 0) > 0
+        ]
+
+        if len(all_salaries) < 4:
+            raise HTTPException(
+                status_code=400,
+                detail="Za mało danych (wymagane minimum 4 pracowników)",
+            )
+
+        all_salaries_sorted = sorted(all_salaries)
+        q1_boundary = float(np.percentile(all_salaries_sorted, 25))
+        q2_boundary = float(np.percentile(all_salaries_sorted, 50))
+        q3_boundary = float(np.percentile(all_salaries_sorted, 75))
+
+        quartile_data: Dict[str, Dict[str, List[float]]] = {
+            "Q1": {"male": [], "female": []},
+            "Q2": {"male": [], "female": []},
+            "Q3": {"male": [], "female": []},
+            "Q4": {"male": [], "female": []},
+        }
+
+        for row in data:
+            salary = float(row.get("salary") or 0)
+            if salary <= 0:
+                continue
+
+            gender = (row.get("gender") or "").strip().lower()
+            if gender not in [
+                "mężczyzna",
+                "male",
+                "m",
+                "męzczyzna",
+                "kobieta",
+                "female",
+                "f",
+                "k",
+            ]:
+                continue
+
+            gender_key = (
+                "male"
+                if gender in ["mężczyzna", "male", "m", "męzczyzna"]
+                else "female"
+            )
+
+            if salary <= q1_boundary:
+                quartile_data["Q1"][gender_key].append(salary)
+            elif salary <= q2_boundary:
+                quartile_data["Q2"][gender_key].append(salary)
+            elif salary <= q3_boundary:
+                quartile_data["Q3"][gender_key].append(salary)
+            else:
+                quartile_data["Q4"][gender_key].append(salary)
+
+        labels = {
+            "Q1": "Najniższe (0-25%)",
+            "Q2": "Niskie-Średnie (25-50%)",
+            "Q3": "Średnie-Wysokie (50-75%)",
+            "Q4": "Najwyższe (75-100%)",
+        }
+
+        quartiles: List[Dict[str, Any]] = []
+        for q_name in ["Q1", "Q2", "Q3", "Q4"]:
+            male_salaries = quartile_data[q_name]["male"]
+            female_salaries = quartile_data[q_name]["female"]
+            all_q_salaries = male_salaries + female_salaries
+
+            count_male = len(male_salaries)
+            count_female = len(female_salaries)
+            total = count_male + count_female
+
+            if total == 0:
+                quartiles.append(
+                    {
+                        "quartile": q_name,
+                        "label": labels[q_name],
+                        "min_salary": 0,
+                        "max_salary": 0,
+                        "median_salary": 0,
+                        "count_male": 0,
+                        "count_female": 0,
+                        "percent_male": 0.0,
+                        "percent_female": 0.0,
+                    }
+                )
+                continue
+
+            quartiles.append(
+                {
+                    "quartile": q_name,
+                    "label": labels[q_name],
+                    "min_salary": round(min(all_q_salaries), 2),
+                    "max_salary": round(max(all_q_salaries), 2),
+                    "median_salary": round(
+                        statistics.median(all_q_salaries), 2
+                    ),
+                    "count_male": count_male,
+                    "count_female": count_female,
+                    "percent_male": round(count_male / total * 100, 2),
+                    "percent_female": round(count_female / total * 100, 2),
+                }
+            )
+
+        joint_assessment_required = any(
+            abs(q["percent_male"] - q["percent_female"]) > 5 for q in quartiles
+        )
+
+        total_male = sum(q["count_male"] for q in quartiles)
+        total_female = sum(q["count_female"] for q in quartiles)
+        total_employees = total_male + total_female
+        overall_gender_balance = {
+            "percent_male": round(total_male / total_employees * 100, 2)
+            if total_employees else 0,
+            "percent_female": round(total_female / total_employees * 100, 2)
+            if total_employees else 0,
+        }
+
+        print(
+            f"DEBUG: Art.16 - {len(all_salaries)} employees, {len(quartiles)} quartiles"
+        )
+        print(f"DEBUG: Joint Assessment Required: {joint_assessment_required}")
+
+        return {
+            "quartiles": quartiles,
+            "joint_assessment_required": joint_assessment_required,
+            "total_employees": total_employees,
+            "overall_gender_balance": overall_gender_balance,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"ERROR get_art16_analysis: {e}")
         raise HTTPException(status_code=500, detail=str(e)) from e

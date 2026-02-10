@@ -43,14 +43,17 @@ interface PayGapData {
     position: string;
     gender: string;
     salary: number;
+    evg_score: number | null;
   }>;
   fair_pay_line: {
     slope: number;
     intercept: number;
     line_points: Array<{
-      position: string;
+      position?: string;
+      evg_score?: number;
       salary: number;
     }>;
+    use_evg: boolean;
   };
 }
 
@@ -151,6 +154,17 @@ export default function PayGapPage() {
           Porównanie wynagrodzeń między mężczyznami a kobietami
         </p>
       </div>
+
+      {/* EVG hint */}
+      {!data.fair_pay_line.use_evg && (
+        <Alert>
+          <AlertDescription>
+            💡 <strong>Wskazówka:</strong> Uruchom EVG Scoring w zakładce
+            &quot;EVG&quot; aby uzyskać dokładniejszą Fair Pay Line bazującą na
+            obiektywnej ocenie wartości pracy.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -310,13 +324,30 @@ export default function PayGapPage() {
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis
-                  dataKey="position"
-                  type="category"
+                  dataKey={
+                    data.fair_pay_line.use_evg ? "evg_score" : "position"
+                  }
+                  type={data.fair_pay_line.use_evg ? "number" : "category"}
+                  domain={
+                    data.fair_pay_line.use_evg
+                      ? ["dataMin", "dataMax"]
+                      : undefined
+                  }
                   allowDuplicatedCategory={false}
                   stroke="#94a3b8"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
+                  label={
+                    data.fair_pay_line.use_evg
+                      ? {
+                          value: "EVG Score",
+                          position: "insideBottom",
+                          offset: -10,
+                          style: { fill: "#94a3b8" },
+                        }
+                      : undefined
+                  }
+                  angle={data.fair_pay_line.use_evg ? 0 : -45}
+                  textAnchor={data.fair_pay_line.use_evg ? "middle" : "end"}
+                  height={data.fair_pay_line.use_evg ? 60 : 80}
                 />
                 <YAxis
                   dataKey="salary"
@@ -375,24 +406,45 @@ export default function PayGapPage() {
         <CardHeader>
           <CardTitle>Fair Pay Line</CardTitle>
           <CardDescription>
-            Linia regresji pokazuje &quot;sprawiedliwe&quot; wynagrodzenie
-            bazując na stanowisku
+            {data.fair_pay_line.use_evg
+              ? "Linia regresji bazuje na EVG Score (1-100) - obiektywna ocena wartości pracy"
+              : "Linia regresji pokazuje \"sprawiedliwe\" wynagrodzenie bazując na stanowisku"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm">
-            <p>
-              <span className="font-semibold">Równanie:</span>{" "}
-              <span className="font-mono">
-                y = {data.fair_pay_line.slope.toFixed(2)}x +{" "}
-                {data.fair_pay_line.intercept.toFixed(2)}
-              </span>
-            </p>
-            <p className="text-muted-foreground">
-              Punkty <strong>poniżej linii</strong> mogą wskazywać na
-              niedopłacenie. Punkty <strong>powyżej linii</strong> -
-              ponadprzeciętne wynagrodzenie.
-            </p>
+            {data.fair_pay_line.use_evg ? (
+              <>
+                <p>
+                  <span className="font-semibold">Równanie:</span>{" "}
+                  <span className="font-mono">
+                    Salary = {data.fair_pay_line.slope.toFixed(2)} × EVG_Score +{" "}
+                    {data.fair_pay_line.intercept.toFixed(2)}
+                  </span>
+                </p>
+                <p className="text-muted-foreground">
+                  Punkty <strong>poniżej linii</strong> mogą wskazywać na
+                  niedopłacenie względem wartości pracy. Linia rośnie zgodnie z
+                  rosnącym EVG score (↗️).
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  <span className="font-semibold">Równanie:</span>{" "}
+                  <span className="font-mono">
+                    y = {data.fair_pay_line.slope.toFixed(2)}x +{" "}
+                    {data.fair_pay_line.intercept.toFixed(2)}
+                  </span>
+                </p>
+                <p className="text-muted-foreground">
+                  Punkty <strong>poniżej linii</strong> mogą wskazywać na
+                  niedopłacenie. (Uwaga: linia bazuje na pozycjach, nie EVG
+                  score - uruchom scoring w zakładce EVG dla dokładniejszej
+                  analizy)
+                </p>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
