@@ -26,6 +26,18 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 174 72% 41%;
     --radius: 0.5rem;
+    /* 05_FRONTEND_STANDARDS semantic colors (hex for utility use) */
+    --accent-teal: #14b8a6;
+    --accent-blue: #3b82f6;
+    --accent-amber: #f59e0b;
+    --accent-red: #ef4444;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --bg-secondary: #1e293b;
+    /* Tekst na pełnym tle akcentu – WCAG 4.5:1 (ciemny na jasnym) */
+    --accent-blue-fg: #0f172a;
+    --accent-amber-fg: #0f172a;
+    --accent-red-fg: #0f172a;
   }
 }
 

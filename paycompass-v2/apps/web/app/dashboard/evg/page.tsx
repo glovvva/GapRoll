@@ -11,6 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Sparkles, CheckCircle2 } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api-client";
+import { ExplainerCard } from "@/components/ui/explainer-card";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 interface EVGScore {
   position: string;
@@ -35,7 +38,7 @@ export default function EVGPage() {
       setError(null);
       setSuccess(false);
 
-      const positionsResponse = await fetch("/api/analysis/paygap");
+      const positionsResponse = await fetchWithAuth("/api/analysis/paygap");
 
       if (!positionsResponse.ok) {
         throw new Error("Nie udało się pobrać danych stanowisk");
@@ -50,13 +53,9 @@ export default function EVGPage() {
         )
       );
 
-      const scoringResponse = await fetch("/api/analysis/evg-score", {
+      const scoringResponse = await fetchWithAuth("/api/analysis/evg-score", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: "00000000-0000-0000-0000-000000000000",
-          positions: uniquePositions,
-        }),
+        body: JSON.stringify({ positions: uniquePositions }),
       });
 
       if (!scoringResponse.ok) {
@@ -109,16 +108,16 @@ export default function EVGPage() {
                 </p>
                 <ul className="ml-2 list-inside list-disc space-y-1">
                   <li>
-                    <strong>Skills</strong> - wykształcenie, ekspertyza techniczna
+                    <strong>Umiejętności</strong> – wykształcenie, ekspertyza techniczna
                   </li>
                   <li>
-                    <strong>Effort</strong> - wysiłek fizyczny i umysłowy, stres
+                    <strong>Wysiłek</strong> – wysiłek fizyczny i umysłowy, stres
                   </li>
                   <li>
-                    <strong>Responsibility</strong> - odpowiedzialność, zarządzanie
+                    <strong>Odpowiedzialność</strong> – decyzje, zarządzanie, budżet
                   </li>
                   <li>
-                    <strong>Conditions</strong> - warunki pracy, bezpieczeństwo
+                    <strong>Warunki</strong> – warunki pracy, bezpieczeństwo
                   </li>
                 </ul>
               </div>
@@ -183,19 +182,19 @@ export default function EVGPage() {
                       Stanowisko
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Total Score
+                      Wynik Całkowity
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Skills
+                      Umiejętności
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Effort
+                      Wysiłek
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Responsibility
+                      Odpowiedzialność
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Conditions
+                      Warunki
                     </th>
                   </tr>
                 </thead>
@@ -248,6 +247,86 @@ export default function EVGPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {scores.length > 0 && (
+        <ExplainerCard title="Jak działa AI Scoring?" variant="info">
+          <div>
+            <h4 className="font-semibold mb-1">
+              METODOLOGIA (Art. 4 Dyrektywy UE 2023/970):
+            </h4>
+            <p className="text-muted-foreground mb-2">
+              System ocenia każde stanowisko według 4 obiektywnych kryteriów:
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="font-mono font-bold text-primary">
+                  Umiejętności (0-25):
+                </span>
+                <span className="text-muted-foreground">
+                  Wykształcenie, certyfikaty, doświadczenie, ekspertyza techniczna
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-mono font-bold text-primary">
+                  Wysiłek (0-25):
+                </span>
+                <span className="text-muted-foreground">
+                  Wysiłek fizyczny i umysłowy, stres, intensywność pracy
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-mono font-bold text-primary">
+                  Odpowiedzialność (0-25):
+                </span>
+                <span className="text-muted-foreground">
+                  Odpowiedzialność za decyzje, budżet, zarządzanie, wpływ na firmę
+                </span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-mono font-bold text-primary">
+                  Warunki (0-25):
+                </span>
+                <span className="text-muted-foreground">
+                  Bezpieczeństwo, środowisko pracy, podróże, równowaga praca–życie
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-1">CZY MOGĘ UFAĆ AI?</h4>
+            <p className="text-muted-foreground">
+              ✅ System używa GPT-4o (najnowszy model OpenAI) wytrenowany na
+              międzynarodowych standardach wyceny pracy.
+              <br />
+              ✅ Scoring bazuje na Europejskim Kodeksie Wyceny Stanowisk (Job
+              Evaluation Guide).
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-1">
+              CZY INSPEKTOR PIP TO ZAAKCEPTUJE?
+            </h4>
+            <p className="text-muted-foreground">
+              ✅ Tak - o ile zachowasz dokumentację:
+            </p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-2">
+              <li>
+                Wydruk scoringu z uzasadnieniem AI (dostępny w PDF)
+              </li>
+              <li>Protokół z ręcznych korekt (jeśli były)</li>
+              <li>
+                Konsultacje z przedstawicielami pracowników (Art. 4 ust. 4)
+              </li>
+            </ul>
+            <p className="mt-2 text-xs">
+              📋 <strong>Podstawa prawna:</strong> Art. 4 ust. 4 Dyrektywy UE
+              2023/970
+            </p>
+          </div>
+        </ExplainerCard>
       )}
     </div>
   );
