@@ -1,5 +1,5 @@
 """
-PayCompass API v2 - Main FastAPI application.
+GapRoll API v2 - Main FastAPI application.
 """
 
 from fastapi import FastAPI
@@ -8,9 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import analysis, health, upload
 
 app = FastAPI(
-    title="PayCompass API",
+    title="GapRoll API",
     version="2.0.0",
-    description="EU Pay Transparency Platform API",
+    description="GapRoll — API raportowania luk płacowych i zgodności z Dyrektywą UE 2023/970.",
 )
 
 # CORS - tylko dla frontendu na localhost:3000
@@ -31,4 +31,4 @@ app.include_router(analysis.router)
 @app.get("/")
 async def root() -> dict[str, str]:
     """Root endpoint - weryfikacja działania API."""
-    return {"message": "PayCompass API v2"}
+    return {"message": "GapRoll API v2"}

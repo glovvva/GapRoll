@@ -3,12 +3,15 @@ Router analizy płac - pay gap, EVG scoring i statystyki.
 """
 
 import json
+import time
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import statistics
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+
+from routers.auth import get_current_user
 from openai import OpenAI
 from pydantic import BaseModel
 
@@ -16,6 +19,15 @@ from config import settings
 from supabase import create_client
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
+
+# Cache dla dashboard-metrics: user_id -> (expiry_timestamp, data)
+_DASHBOARD_METRICS_CACHE: Dict[str, Tuple[float, Dict[str, Any]]] = {}
+_DASHBOARD_CACHE_TTL = 300  # 5 minut
+
+
+def invalidate_dashboard_cache(user_id: str) -> None:
+    """Wywołaj po uploadzie nowych danych, aby unieważnić cache metryk."""
+    _DASHBOARD_METRICS_CACHE.pop(user_id, None)
 
 
 def calculate_fair_pay_line(data_points: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -59,13 +71,21 @@ def calculate_fair_pay_line(data_points: List[Dict[str, Any]]) -> Dict[str, Any]
         slope = numerator / denominator
         intercept = y_mean - slope * x_mean
 
-        min_score = min(x_values)
-        max_score = max(x_values)
+        # Generuj punkty linii (od min do max EVG score)
+        min_score = int(min(x_values))
+        max_score = int(max(x_values))
 
         line_points = []
-        for score in range(int(min_score), int(max_score) + 1, 5):
+        # Generate points co 1 punkt (dla smooth line)
+        for score in range(min_score, max_score + 1):
             salary = slope * score + intercept
             line_points.append({"evg_score": score, "salary": round(salary, 2)})
+
+        # CRITICAL: Zawsze dodaj pierwszy i ostatni punkt (endpoints)
+        if min_score not in [p["evg_score"] for p in line_points]:
+            line_points.insert(0, {"evg_score": min_score, "salary": round(slope * min_score + intercept, 2)})
+        if max_score not in [p["evg_score"] for p in line_points]:
+            line_points.append({"evg_score": max_score, "salary": round(slope * max_score + intercept, 2)})
 
         return {
             "slope": round(slope, 2),
@@ -117,7 +137,7 @@ def calculate_fair_pay_line(data_points: List[Dict[str, Any]]) -> Dict[str, Any]
 
 @router.get("/paygap")
 async def get_pay_gap_analysis(
-    user_id: str = "00000000-0000-0000-0000-000000000000",  # temporary
+    user_id: str = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """
     Oblicza lukę płacową (pay gap) między mężczyznami a kobietami.
@@ -237,10 +257,22 @@ async def get_pay_gap_analysis(
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
+def _should_mask_gender(count_male: int, count_female: int, gender: str) -> bool:
+    """
+    Art. 9 Dyrektywy UE 2023/970: maskuj TYLKO tę płeć, która ma N < 3.
+    """
+    if gender == "male":
+        return count_male < 3
+    if gender == "female":
+        return count_female < 3
+    return True  # inna / nieznana
+
+
 def calculate_gap_by_position(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     Grupuje po stanowisku i oblicza gap.
-    RODO: maskuj jeśli N < 3 w danej płci.
+    RODO (Art. 9): maskuj tylko tę płeć, która ma N < 3 w grupie.
+    Np. 4 M / 0 K → Mediana M pokazana, Mediana K = ***, Gap % = RODO.
     """
     positions = defaultdict(lambda: {"male": [], "female": []})
 
@@ -262,35 +294,34 @@ def calculate_gap_by_position(data: List[Dict[str, Any]]) -> List[Dict[str, Any]
     for position, salaries in positions.items():
         male_list = salaries["male"]
         female_list = salaries["female"]
+        count_male = len(male_list)
+        count_female = len(female_list)
 
-        if len(male_list) < 3 or len(female_list) < 3:
-            result.append(
-                {
-                    "position": position,
-                    "gap_percent": None,
-                    "median_male": None,
-                    "median_female": None,
-                    "count_male": len(male_list),
-                    "count_female": len(female_list),
-                    "masked": True,
-                    "reason": "RODO: Mniej niż 3 osoby w grupie",
-                }
+        median_m = statistics.median(male_list) if male_list else None
+        median_f = statistics.median(female_list) if female_list else None
+
+        mask_male = _should_mask_gender(count_male, count_female, "male")
+        mask_female = _should_mask_gender(count_male, count_female, "female")
+
+        median_male_val = None if mask_male else (round(median_m, 2) if median_m is not None else None)
+        median_female_val = None if mask_female else (round(median_f, 2) if median_f is not None else None)
+
+        gap_percent = None
+        if median_male_val is not None and median_female_val is not None and median_male_val > 0:
+            gap_percent = round(
+                ((median_male_val - median_female_val) / median_male_val) * 100, 2
             )
-            continue
-
-        median_m = statistics.median(male_list)
-        median_f = statistics.median(female_list)
-        gap = ((median_m - median_f) / median_m) * 100
 
         result.append(
             {
                 "position": position,
-                "gap_percent": round(gap, 2),
-                "median_male": round(median_m, 2),
-                "median_female": round(median_f, 2),
-                "count_male": len(male_list),
-                "count_female": len(female_list),
-                "masked": False,
+                "gap_percent": gap_percent,
+                "median_male": median_male_val,
+                "median_female": median_female_val,
+                "count_male": count_male,
+                "count_female": count_female,
+                "masked": gap_percent is None,
+                "reason": "RODO: Dane ukryte (mniej niż 3 osoby w grupie)" if gap_percent is None else None,
             }
         )
 
@@ -303,61 +334,51 @@ def calculate_gap_by_position(data: List[Dict[str, Any]]) -> List[Dict[str, Any]
 class EVGScoreRequest(BaseModel):
     """Request body dla POST /evg-score - lista stanowisk do oceny."""
 
-    user_id: str = "00000000-0000-0000-0000-000000000000"
     positions: List[str]
 
 
 async def score_position_with_ai(position: str) -> Dict[str, Any]:
-    """Wywołaj OpenAI API do scoringu stanowiska."""
+    """Wywołaj OpenAI API do scoringu stanowiska. Uzasadnienie (reasoning) zwracane wyłącznie po polsku."""
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
-    prompt = f"""You are an expert in job evaluation for EU Pay Transparency Directive 2023/970 (Art. 4).
+    system_content = """You are a job evaluation expert for EU Pay Transparency Directive 2023/970 (Art. 4).
+CRITICAL: Respond ONLY in Polish. Use formal business language (formalna polszczyzna).
+The "reasoning" field MUST be exactly one sentence in Polish, starting with "Stanowisko [nazwa] wymaga..." (e.g. "Stanowisko Manager wymaga znaczących umiejętności i odpowiedzialności, umiarkowanego wysiłku oraz przeciętnych warunków pracy.").
+Do not use English in the reasoning. Keep the same 1-25 point scale for each criterion; only the reasoning text must be in Polish."""
 
-Evaluate this job position using 4 objective criteria:
+    prompt = f"""Oceń to stanowisko pracy według 4 obiektywnych kryteriów (Dyrektywa UE 2023/970, Art. 4).
 
-Position: {position}
+Stanowisko: {position}
 
-Rate each criterion on a scale of 1-25 points:
+Przyznaj każdemu kryterium od 1 do 25 punktów:
 
-1. SKILLS (1-25 points):
-   - Education requirements
-   - Technical expertise
-   - Certifications needed
-   - Years of experience
+1. SKILLS (1-25 pkt): wykształcenie, wiedza techniczna, certyfikaty, doświadczenie
+2. EFFORT (1-25 pkt): wysiłek fizyczny/umysłowy, stres, intensywność godzin
+3. RESPONSIBILITY (1-25 pkt): władza decyzyjna, budżet, zarządzanie, wpływ na biznes
+4. CONDITIONS (1-25 pkt): bezpieczeństwo, warunki fizyczne, podróże, work-life balance
 
-2. EFFORT (1-25 points):
-   - Physical demands
-   - Mental concentration
-   - Stress level
-   - Working hours intensity
+Zwróć TYLKO obiekt JSON (bez markdown, bez komentarza). Pole "reasoning" musi być JEDNYM zdaniem po polsku. Zdanie musi zaczynać się od "Stanowisko {position} wymaga..." i kontynuować formalnym uzasadnieniem (np. "znaczących umiejętności i odpowiedzialności, umiarkowanego wysiłku oraz przeciętnych warunków pracy").
 
-3. RESPONSIBILITY (1-25 points):
-   - Decision-making authority
-   - Budget responsibility
-   - Team leadership
-   - Impact on business
+Przykłady poprawnego "reasoning" (zastosuj tę samą strukturę dla stanowiska "{position}"):
+- "Stanowisko Manager wymaga znaczących umiejętności i odpowiedzialności, umiarkowanego wysiłku oraz przeciętnych warunków pracy."
+- "Stanowisko Analyst wymaga znaczącej wiedzy technicznej i wykształcenia, umiarkowanej odpowiedzialności, znacznego wysiłku umysłowego oraz ogólnie korzystnych warunków pracy."
+- "Stanowisko Developer wymaga wysokiego poziomu wiedzy technicznej i koncentracji umysłowej, umiarkowanej odpowiedzialności oraz ogólnie korzystnych warunków pracy."
 
-4. CONDITIONS (1-25 points):
-   - Work environment safety
-   - Physical conditions
-   - Travel requirements
-   - Work-life balance
-
-Return ONLY a JSON object (no markdown, no explanation):
+Format odpowiedzi:
 {{
-  "skills": <number 1-25>,
-  "effort": <number 1-25>,
-  "responsibility": <number 1-25>,
-  "conditions": <number 1-25>,
-  "total_score": <sum of above>,
-  "reasoning": "<brief 1-sentence justification>"
+  "skills": <liczba 1-25>,
+  "effort": <liczba 1-25>,
+  "responsibility": <liczba 1-25>,
+  "conditions": <liczba 1-25>,
+  "total_score": <suma powyższych>,
+  "reasoning": "Stanowisko {position} wymaga [jedno zdanie - formalna polszczyzna]."
 }}"""
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are a job evaluation expert."},
+                {"role": "system", "content": system_content},
                 {"role": "user", "content": prompt},
             ],
             temperature=0.3,
@@ -384,7 +405,10 @@ Return ONLY a JSON object (no markdown, no explanation):
 
 
 @router.post("/evg-score")
-async def score_positions(request: EVGScoreRequest) -> Dict[str, Any]:
+async def score_positions(
+    request: EVGScoreRequest,
+    user_id: str = Depends(get_current_user),
+) -> Dict[str, Any]:
     """
     Scoring stanowisk pracy używając AI (GPT-4o).
     Zwraca EVG score (1-100) dla każdego stanowiska.
@@ -405,7 +429,7 @@ async def score_positions(request: EVGScoreRequest) -> Dict[str, Any]:
                     supabase.table("job_valuations")
                     .select("*")
                     .eq("position", position)
-                    .eq("user_id", request.user_id)
+                    .eq("user_id", user_id)
                     .execute()
                 )
 
@@ -420,7 +444,7 @@ async def score_positions(request: EVGScoreRequest) -> Dict[str, Any]:
 
             record = {
                 "position": position,
-                "user_id": request.user_id,
+                "user_id": user_id,
                 "evg_score": score_data["total_score"],
                 "skills": score_data.get("skills", 0),
                 "effort": score_data.get("effort", 0),
@@ -445,12 +469,175 @@ async def score_positions(request: EVGScoreRequest) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
+@router.delete("/evg-cache")
+async def clear_evg_cache(
+    user_id: str = Depends(get_current_user),
+) -> Dict[str, Any]:
+    """
+    Czyści cache EVG (job_valuations) dla zalogowanego użytkownika.
+    Po wywołaniu scoring zostanie przeliczony od zera przy następnym uruchomieniu.
+    """
+    try:
+        if not settings.is_supabase_configured():
+            raise HTTPException(
+                status_code=503,
+                detail="Supabase nie jest skonfigurowane.",
+            )
+        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        supabase.table("job_valuations").delete().eq("user_id", user_id).execute()
+        print(f"DEBUG: Cleared EVG cache for user_id={user_id}")
+        return {"ok": True, "message": "Cache wyczyszczony."}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"ERROR clear_evg_cache: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Nie udało się wyczyścić cache. Spróbuj ponownie.",
+        ) from e
+
+
+@router.get("/dashboard-metrics")
+async def get_dashboard_metrics(
+    user_id: str = Depends(get_current_user),
+) -> Dict[str, Any]:
+    """
+    Metryki dla dashboardu: luka płacowa (mediana), luka w Q4, reprezentacja kobiet (zarząd).
+    Cache 5 min; unieważniane przy uploadzie nowych danych.
+    """
+    now = time.time()
+    cached = _DASHBOARD_METRICS_CACHE.get(user_id)
+    if cached and now < cached[0]:
+        return cached[1]
+
+    try:
+        if not settings.is_supabase_configured():
+            raise HTTPException(
+                status_code=503,
+                detail="Supabase nie jest skonfigurowane.",
+            )
+        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        response = (
+            supabase.table("payroll_data")
+            .select("position, gender, salary")
+            .eq("user_id", user_id)
+            .execute()
+        )
+        data = response.data or []
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"ERROR get_dashboard_metrics fetch: {e}")
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+    out: Dict[str, Any] = {
+        "median_gap_percent": None,
+        "median_gap_citation": "Art. 9 ust. 2 Dyrektywy UE 2023/970",
+        "median_gap_explanation": "Mediana to środkowa wartość w uporządkowanym zbiorze wynagrodzeń. Luka płacowa obliczana jest jako różnica median męskich i żeńskich, podzielona przez medianę męską.",
+        "median_gap_confidence": None,
+        "quartile4_gap_percent": None,
+        "quartile4_gap_citation": "Art. 16 ust. 1 lit. b Dyrektywy UE 2023/970",
+        "quartile4_gap_explanation": "Kwartyl 4 to 25% najlepiej zarabiających pracowników. Wysoka luka w tym kwartylu wskazuje na niedoreprezentację kobiet na stanowiskach kierowniczych.",
+        "quartile4_gap_confidence": None,
+        "female_representation_percent": None,
+        "female_representation_citation": "Art. 7 ust. 1 Dyrektywy UE 2023/970",
+        "female_representation_explanation": "Odsetek kobiet w składzie zarządu. Dyrektywa wymaga raportowania reprezentacji w kategoriach zarządczych.",
+        "female_representation_confidence": None,
+    }
+
+    def _is_male(g: str) -> bool:
+        g = (g or "").strip().lower()
+        return g in ["mężczyzna", "male", "m", "męzczyzna"]
+
+    def _is_female(g: str) -> bool:
+        g = (g or "").strip().lower()
+        return g in ["kobieta", "female", "f", "k"]
+
+    # 1. Median gap (cała organizacja)
+    male_salaries = []
+    female_salaries = []
+    for row in data:
+        s = float(row.get("salary") or 0)
+        if s <= 0:
+            continue
+        g = row.get("gender") or ""
+        if _is_male(g):
+            male_salaries.append(s)
+        elif _is_female(g):
+            female_salaries.append(s)
+
+    if male_salaries and female_salaries:
+        n_m, n_f = len(male_salaries), len(female_salaries)
+        rodo_note = " (RODO: mniej niż 3 osoby)" if n_m < 3 or n_f < 3 else ""
+        out["median_gap_explanation"] = out["median_gap_explanation"].rstrip(".") + rodo_note + "."
+        if n_m >= 3 and n_f >= 3:
+            med_m = statistics.median(male_salaries)
+            med_f = statistics.median(female_salaries)
+            out["median_gap_percent"] = round(((med_m - med_f) / med_m) * 100, 2)
+            out["median_gap_confidence"] = 0.95 if n_m >= 30 and n_f >= 30 else 0.85
+        else:
+            out["median_gap_confidence"] = 0.0
+
+    # 2. Quartile 4 gap
+    all_salaries = [float(r.get("salary") or 0) for r in data if float(r.get("salary") or 0) > 0]
+    if len(all_salaries) >= 4:
+        sorted_sal = sorted(all_salaries)
+        q3_boundary = float(np.percentile(sorted_sal, 75))
+        q4_male = []
+        q4_female = []
+        for row in data:
+            s = float(row.get("salary") or 0)
+            if s <= 0 or s < q3_boundary:
+                continue
+            g = row.get("gender") or ""
+            if _is_male(g):
+                q4_male.append(s)
+            elif _is_female(g):
+                q4_female.append(s)
+        n_q4_m, n_q4_f = len(q4_male), len(q4_female)
+        rodo_q4 = " (RODO: mniej niż 3 osoby)" if n_q4_m < 3 or n_q4_f < 3 else ""
+        out["quartile4_gap_explanation"] = out["quartile4_gap_explanation"].rstrip(".") + rodo_q4 + "."
+        if n_q4_m >= 3 and n_q4_f >= 3:
+            med_q4_m = statistics.median(q4_male)
+            med_q4_f = statistics.median(q4_female)
+            out["quartile4_gap_percent"] = round(((med_q4_m - med_q4_f) / med_q4_m) * 100, 2)
+            out["quartile4_gap_confidence"] = 0.92 if (n_q4_m + n_q4_f) >= 10 else 0.80
+        else:
+            out["quartile4_gap_confidence"] = 0.0
+
+    # 3. Female representation (zarząd: Manager / Director / CEO)
+    board_keywords = ["manager", "director", "ceo", "zarząd", "dyrektor", "kierownik"]
+    board_male = 0
+    board_female = 0
+    for row in data:
+        pos = (row.get("position") or "").lower()
+        if not any(kw in pos for kw in board_keywords):
+            continue
+        g = row.get("gender") or ""
+        if _is_male(g):
+            board_male += 1
+        elif _is_female(g):
+            board_female += 1
+    board_total = board_male + board_female
+    if board_total > 0:
+        out["female_representation_percent"] = round((board_female / board_total) * 100, 2)
+        out["female_representation_confidence"] = 1.0
+        if board_total < 3:
+            out["female_representation_explanation"] = (
+                out["female_representation_explanation"].rstrip(".") + " (RODO: mniej niż 3 osoby)."
+            )
+            out["female_representation_confidence"] = 0.0
+
+    _DASHBOARD_METRICS_CACHE[user_id] = (now + _DASHBOARD_CACHE_TTL, out)
+    return out
+
+
 # ==================== ART. 16 (Quarterly analysis) ====================
 
 
 @router.get("/art16")
 async def get_art16_analysis(
-    user_id: str = "00000000-0000-0000-0000-000000000000",
+    user_id: str = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """
     Art. 16 Dyrektywy UE 2023/970 - quarterly analysis.
@@ -562,6 +749,8 @@ async def get_art16_analysis(
                         "min_salary": 0,
                         "max_salary": 0,
                         "median_salary": 0,
+                        "median_male": None,
+                        "median_female": None,
                         "count_male": 0,
                         "count_female": 0,
                         "percent_male": 0.0,
@@ -570,6 +759,16 @@ async def get_art16_analysis(
                 )
                 continue
 
+            median_male = (
+                round(statistics.median(male_salaries), 2)
+                if count_male >= 3 and male_salaries
+                else None
+            )
+            median_female = (
+                round(statistics.median(female_salaries), 2)
+                if count_female >= 3 and female_salaries
+                else None
+            )
             quartiles.append(
                 {
                     "quartile": q_name,
@@ -579,6 +778,8 @@ async def get_art16_analysis(
                     "median_salary": round(
                         statistics.median(all_q_salaries), 2
                     ),
+                    "median_male": median_male,
+                    "median_female": median_female,
                     "count_male": count_male,
                     "count_female": count_female,
                     "percent_male": round(count_male / total * 100, 2),

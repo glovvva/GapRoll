@@ -10,7 +10,21 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Sparkles, CheckCircle2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Loader2, Sparkles, CheckCircle2, RefreshCw } from "lucide-react";
 import { fetchWithAuth } from "@/lib/api-client";
 import { ExplainerCard } from "@/components/ui/explainer-card";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
@@ -26,11 +40,16 @@ interface EVGScore {
   reasoning: string;
 }
 
+type ToastMessage = { type: "success"; text: string } | { type: "error"; text: string } | null;
+
 export default function EVGPage() {
   const [scores, setScores] = useState<EVGScore[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [confirmRefreshOpen, setConfirmRefreshOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [toast, setToast] = useState<ToastMessage>(null);
 
   async function handleRunScoring() {
     try {
@@ -72,6 +91,34 @@ export default function EVGPage() {
       );
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleClearCache() {
+    setRefreshing(true);
+    setToast(null);
+    try {
+      const res = await fetchWithAuth("/api/analysis/evg-cache", {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Nie udało się wyczyścić cache");
+      }
+      setScores([]);
+      setSuccess(false);
+      setConfirmRefreshOpen(false);
+      setToast({
+        type: "success",
+        text: "✅ Cache wyczyszczony. Scoring zostanie przeliczony przy następnym użyciu.",
+      });
+    } catch (err) {
+      setToast({
+        type: "error",
+        text: "❌ Nie udało się wyczyścić cache. Spróbuj ponownie.",
+      });
+    } finally {
+      setRefreshing(false);
     }
   }
 
@@ -164,15 +211,98 @@ export default function EVGPage() {
         </Alert>
       )}
 
+      {/* Toast (cache clear success/error) */}
+      {toast && (
+        <Alert
+          variant={toast.type === "error" ? "destructive" : "default"}
+          className={
+            toast.type === "success"
+              ? "border-green-500/50 bg-green-500/10"
+              : undefined
+          }
+        >
+          <AlertDescription
+            className={toast.type === "success" ? "text-green-600 dark:text-green-400" : undefined}
+          >
+            {toast.text}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Scores Table */}
       {scores.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle>Wyniki Scoringu</CardTitle>
-            <CardDescription>
-              Automatyczna ocena stanowisk (skala 1-100)
-            </CardDescription>
+          <CardHeader className="flex flex-row items-start justify-between space-y-0 gap-4">
+            <div>
+              <CardTitle>Wyniki Scoringu</CardTitle>
+              <CardDescription>
+                Automatyczna ocena stanowisk (skala 1-100)
+              </CardDescription>
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={refreshing}
+                    onClick={() => setConfirmRefreshOpen(true)}
+                    className="shrink-0"
+                  >
+                    {refreshing ? (
+                      <>
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                        Odświeżanie...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 size-4" />
+                        🔄 Odśwież Scoring
+                      </>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-xs">
+                  Wyczyść cache i przelicz scoring od nowa z najnowszą metodologią AI
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </CardHeader>
+
+          {/* Confirmation dialog */}
+          <Dialog open={confirmRefreshOpen} onOpenChange={setConfirmRefreshOpen}>
+            <DialogContent showCloseButton={true}>
+              <DialogHeader>
+                <DialogTitle>Odświeżyć scoring?</DialogTitle>
+                <DialogDescription>
+                  Czy na pewno chcesz odświeżyć scoring? Obecne wyniki zostaną
+                  usunięte i przeliczone od nowa.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button
+                  variant="outline"
+                  onClick={() => setConfirmRefreshOpen(false)}
+                >
+                  Anuluj
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={refreshing}
+                  onClick={handleClearCache}
+                >
+                  {refreshing ? (
+                    <>
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      Odświeżanie...
+                    </>
+                  ) : (
+                    "Tak, odśwież"
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full">

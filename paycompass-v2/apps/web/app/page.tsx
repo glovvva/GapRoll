@@ -64,7 +64,7 @@ export default function Home() {
       <Card className="max-w-2xl p-6">
         <CardHeader>
           <CardTitle className="text-foreground">
-            PayCompass V2 - Full Stack Test
+            GapRoll - Full Stack Test
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">

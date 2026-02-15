@@ -1,0 +1,5071 @@
+Sprawdź contrast ratio dla wszystkich komponentów explainability:
+
+NARZĘDZIE: Użyj algorytmu WCAG 2.1 do obliczenia kontrastu
+
+PARY DO SPRAWDZENIA:
+
+1. CitationBadge (info variant):
+   - Tekst: #ffffff
+   - Tło: #3b82f6
+   - Required ratio: ≥ 4.5:1
+
+2. CitationBadge (warning variant):
+   - Tekst: #0f172a (ciemny na jasnym!)
+   - Tło: #f59e0b
+   - Required ratio: ≥ 4.5:1
+
+3. ExplainableMetric - wartość:
+   - Tekst: #ffffff
+   - Tło: #1e293b
+   - Required ratio: ≥ 4.5:1
+
+4. InfoTooltip:
+   - Tekst: #e2e8f0
+   - Tło: #1e293b
+   - Required ratio: ≥ 4.5:1
+
+JEŚLI RATIO < 4.5:1 → popraw kolory automatycznie
+
+Wygeneruj raport: /mnt/user-data/outputs/contrast-audit.md
+
+# GapRoll — Strategic Bible
+## Vision, Roadmap & Product Requirements (Single Source of Truth)
+
+**Last Updated:** 2026-02-14  
+**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-1599 PLN, Invoice Automation, Realistic Targets  
+**Previous Name:** PayCompass (sunset Feb 14, 2026)  
+**Rule:** EVERY feature proposal must be checked against this file first.
+
+---
+
+## 1. One-Line Vision
+
+> GapRoll transforms EU pay transparency compliance from a 3-week Excel nightmare into a 15-minute wizard, powered by a System of Agents (Hunter, Guardian, Analyst) orchestrated by LangGraph.
+
+---
+
+## 2. Strategic Pillars
+
+| Pillar | Description | Non-Negotiable |
+|--------|-------------|----------------|
+| **EU-First** | Native support for Directive 2023/970 (Art. 4, 7, 9, 16) | Every feature must map to an Article |
+| **RODO-by-Default** | Automatic PII masking, N<3 suppression, audit trail | Never display unmasked PII |
+| **Polish-Market Moat** | B2B Equalizer (UoP↔B2B), ZUS 2026 rates, KRS/CEIDG integration | No "US-centric" assumptions |
+| **Lean Stack** | Next.js 15 + Python (FastAPI) + Supabase + Hetzner | See 04_TECH_CONSTRAINTS |
+| **Compliance-First AI** | LangGraph (deterministic), HITL for high-risk, no black boxes | EU AI Act Art. 14 compliance |
+| **Data Moat Strategy** | 99 PLN entry = viral adoption → largest Polish wage dataset → defensibility | Benchmark Engine critical |
+
+---
+
+## 3. Target Persona
+
+**Primary:** Grażyna — Senior HR/Payroll Manager (see 03_PERSONA_GRAZYNA.md)
+
+**Key Characteristics:**
+- Buys for compliance, not innovation
+- Needs wizard mode, not discovery mode
+- Trusts citations (podstawa prawna), not AI confidence scores
+- **CRITICAL:** Won't buy without EVG Manual Override (zero trust in AI, high sense of agency)
+- Fears PIP audit, needs legal safety (every metric cited to Art. X)
+
+---
+
+## 4. Core Modules
+
+### 4.1 Data Vault (RODO Shield) — **COMPLIANCE TIER**
+- PII auto-detection → masking when N < 3
+- Multi-tenancy via RLS (Supabase)
+- Audit log for all data operations
+- EU data residency (Hetzner Germany/Finland)
+
+### 4.2 Art. 16 Reporting Pack — **COMPLIANCE TIER**
+- Quartile analysis (4 pay quartiles × gender)
+- Component gap analysis (base / variable / allowances)
+- Joint Pay Assessment Alert (triggers when gap > 5%)
+- PDF export with legal citations (Art. 16 ust. 2)
+- Worker reports (Art. 7): Employee can request comparison
+
+### 4.3 EVG Engine (Equal Value of Work) — **COMPLIANCE TIER** ⚠️ MOVED FROM STRATEGIA (Feb 14)
+
+**CRITICAL CHANGE:** EVG is MANDATORY per Art. 4 + Art. 7 → MUST be in Compliance tier (99 PLN)
+
+**Why Mandatory:**
+- **Art. 4 ust. 1:** Employers MUST have pay structures based on EVG criteria
+- **Art. 7 ust. 1:** Employees can request reports comparing to "work of equal value" → firm MUST be able to calculate EVG
+- **EU AI Act Art. 14:** High-risk AI systems require Human-in-the-Loop → Manual Override mandatory
+
+**Features:**
+- 4-axis scoring: Skills + Effort + Responsibility + Conditions (0–25 each, total 0-100)
+- AI scoring (GPT-4o via Azure OpenAI, zero data retention)
+- **MANDATORY Manual Override UI** (HITL requirement)
+- Tolerance bands (±5 points = same EVG group)
+- Pay gap per EVG group (quartile analysis by EVG)
+- Audit trail: who changed what, when, why (EU AI Act compliance)
+
+**UI Workflow:**
+1. Grażyna uploads CSV → AI scores all positions
+2. System shows: "Sprawdź wyniki EVG — możesz edytować każdy score ręcznie"
+3. Grażyna clicks position → 4-axis breakdown modal
+4. If AI wrong → Manual Override → justification field
+5. System saves audit trail
+6. Report generated with EVG grouping
+
+**Legal Basis:**
+- Art. 4 Dyrektywy UE 2023/970 (equal value of work definition)
+- EU AI Act Art. 14 (high-risk AI systems)
+
+### 4.4 B2B Equalizer (Polish-specific) — **COMPLIANCE TIER**
+- ZUS cap (30× = 282,600 PLN/year in 2026)
+- Leave correction (11/12 for B2B vs UoP)
+- NET→GROSS conversion
+- Factor: 1.2048 (UoP gross equivalent)
+- **Critical:** 40%+ Polish firms use mixed contracts (UoP + B2B)
+
+### 4.5 Invoice Automation — **COMPLIANCE TIER** 🆕 (Priority P0, Week 5-8)
+
+**Purpose:** Zero manual invoicing (saves 12.5h/month at 50 customers)
+
+**Stack:**
+- **Fakturownia.pl:** Auto-generate invoices (API integration)
+  - JPK_FA export (dla księgowości)
+  - KSeF ready (e-faktury obowiązek od lipca 2026)
+  - Cost: ~50 PLN/mies (plan START: 100 faktur/mies)
+- **Przelewy24:** Polish payment gateway (#1 w Polsce)
+  - BLIK, przelew, karty
+  - Webhook → Fakturownia "zapłacone"
+  - Cost: 1.49% transaction fee
+
+**Flow:**
+```
+Customer signs up (Supabase)
+  ↓
+Webhook triggers (Supabase Edge Function)
+  ↓
+Fakturownia API: create invoice
+  ↓
+Email sent (invoice PDF + Przelewy24 payment link)
+  ↓
+Customer pays
+  ↓
+Przelewy24 webhook → Fakturownia "zapłacone"
+  ↓
+Email: "Dziękujemy, faktura opłacona"
+```
+
+**Timeline:**
+- Week 5 (Mar 2-8): Setup Fakturownia + Przelewy24, configure templates
+- Week 6 (Mar 9-15): Supabase integration, webhook development
+- Week 7 (Mar 16-22): Testing (mock customers)
+- Week 8 (Mar 23-29): Production ready
+- **May 1:** First real invoice (zero manual work)
+
+**ROI:** Saves 12.5h/month at 50 customers, cost 50 PLN/mies + 1.49% = break-even after 1 month
+
+### 4.6 Root Cause Analysis — **STRATEGIA TIER** (NEW - Priority 30)
+
+**Purpose:** Answer "WHY is the gap 12%?" with data-driven breakdown
+
+**Output Example:**
+```
+Pay Gap: 12%
+
+Root Causes (Art. 9 wyjaśnienie):
+1. Seniority Gap (40%): Mężczyźni średnio 7.2 lat, kobiety 4.8 lat
+2. Position Distribution (35%): Stanowiska senior 90% mężczyźni
+3. Department Effect (15%): IT (wysokie płace) 75% mężczyźni
+4. Contract Type (10%): B2B (wyższe płace) 20% mężczyźni vs 5% kobiet
+```
+
+**Value Proposition:**
+- Grażyna can explain gap to CEO with data (not guesses)
+- Budget approval: "Need 180k PLN to fix seniority gap" (backed by numbers)
+- Art. 9 compliance: Gap >5% requires explanation
+
+**Time Saved:** 1 week/year (vs manual pivot tables)
+
+**Data Requirements (Strategia tier):**
+- hire_date (for seniority calculation)
+- position_title (for position distribution)
+- department (for department effect)
+- contract_type (for UoP vs B2B analysis)
+
+**Timeline:** Apr 13-19 (Week 11)
+
+### 4.7 Collaborative Review — **STRATEGIA TIER** (NEW - Priority 28)
+
+**Purpose:** Multi-manager salary review workflow (eliminates Excel email ping-pong)
+
+**Problem Solved:**
+- Current process: Grażyna sends Excel → 5 managers email back proposals → version control nightmare
+- Review cycles: 4 per year × 2.5 days each = 10 days wasted
+
+**Features:**
+- Each manager sees only their team
+- Proposes raises (amount, justification)
+- Real-time budget tracking (WebSocket)
+- Conflict resolution (2 managers want to raise same person)
+- Grażyna dashboard: approve/override all in one view
+- Full audit trail (who proposed, who approved, timestamps)
+
+**UI Workflow:**
+1. Grażyna sets budget (e.g., 200k PLN) + deadline
+2. System invites managers (email notifications)
+3. Manager logs in → sees their team → proposes raises
+4. Real-time budget bar: "150k PLN allocated / 200k PLN total"
+5. Grażyna reviews all proposals → approves/overrides
+6. Export: CSV (who gets raise, how much) + PDF board report
+
+**Value Proposition:**
+- Firms with 5+ managers won't buy without this (enterprise blocker)
+- Time saved: 10 days/year
+
+**Data Requirements (Strategia tier):**
+- manager_id (who manages whom)
+- performance_rating (context for managers)
+- job_level (for internal equity)
+
+**Timeline:** Apr 27 - May 3 (Week 13)
+
+### 4.8 Retention ROI Calculator — **STRATEGIA TIER**
+
+**Formula:**
+```
+Annual_Savings = (Current_Turnover_F - Target_Turnover) × Female_Headcount × Avg_Recruitment_Cost
+Budget_Needed = Solio Solver output (remediation cost)
+ROI % = (Annual_Savings / Budget_Needed) × 100
+```
+
+**Example Sales Pitch:**
+"Closing gap from 12% to 5% reduces female turnover 8% → 5%. 
+With 50 women on staff, avg recruitment cost 30k PLN:
+Savings: (8%-5%) × 50 × 30k = 45k PLN/year
+Budget needed: 180k PLN (one-time)
+ROI: 45k annually / 180k = 25% yearly return"
+
+**Versions:**
+- **v1 (Apr 12):** Simplified — user inputs recruitment cost manually
+- **v2 (May 24):** Market comps — Benchmark Engine provides avg recruitment cost by industry
+
+**Timeline:** Apr 12 (v1), May 24 (v2)
+
+### 4.9 Solio Solver (Wage Adjustment) — **STRATEGIA TIER**
+
+**Purpose:** Interactive budget modeling for remediation
+
+**v1 (Mar 29):** Greedy optimization
+- 6 constraints:
+  1. Target gap (e.g., "reduce to 5%")
+  2. Budget limit (e.g., "max 200k PLN")
+  3. Locked employees (e.g., "don't touch CEO salary")
+  4. Department filter (e.g., "only IT department")
+  5. Min raise (e.g., "minimum 500 PLN to avoid insulting 50 PLN raises")
+  6. Hard-coded values (e.g., "give Anna exactly 2000 PLN")
+- Greedy algorithm: prioritizes lowest-paid women first
+- Outputs: 3 optimal paths (different trade-offs)
+- "Suggest alternative" button → 3 more paths with slightly higher budget
+- Export: CSV (employee, current, new salary, diff) + PDF board report
+
+**v2 (Jun 7):** AI-powered
+- Natural language input: "Prioritize senior women in IT department"
+- Guardian integration: Auto-generates Art. 7 justification for each scenario
+- Predictive ROI: "Path A → estimated 18% retention improvement (saves 240k PLN/year)"
+
+**Inspiration:** SolioAnalytics, PayAnalytics remediation engines
+
+**Timeline:** Mar 29 (v1), Jun 7 (v2)
+
+### 4.10 Benchmark Engine (Hybrid) — **STRATEGIA TIER**
+
+**Strategic Importance:** DATA MOAT (largest Polish wage dataset by Q4 2026)
+
+**v1 (Mar 22):** PDF parsing
+- YOU (Bartek) provide free GUS/PARP/industry reports → 0 PLN cost
+- Parser extracts tables (industry, position, salary ranges)
+- ~10-20 reports initially
+- Tech: Azure Cognitive Services OCR (free via MS Founders Hub credits)
+
+**v2 (May 24):** Web scraping
+- Pracuj.pl, NoFluffJobs salary ranges
+- Rotating proxies (to avoid IP bans)
+- Cost: ~500 PLN/month
+- Ethical scraping: respect robots.txt, rate limits
+
+**v3 (Q4 2026):** Crowdsourced
+- Network effect: firms contribute anonymized data → get better benchmarks
+- Strict RODO: N<3 masking, aggregate only, per-industry minimums
+- Incentive: "Contribute data → unlock advanced benchmarks"
+
+**Use Cases:**
+- "Is our DevOps salary (8500 PLN) competitive?" → benchmark shows market avg 9200 PLN
+- Retention ROI Calculator: market avg recruitment costs
+- Smart Job Scorer: improves EVG auto-classification
+
+**Timeline:** v1 Mar 22 (concurrent with Week 7), v2 May 24, v3 Q4
+
+### 4.11 Partner Portal — **CRITICAL for Mar 15** (NEW)
+
+**Purpose:** Enable biura rachunkowe to onboard their clients
+
+**Why Critical:**
+- 5 partners × 50 clients each = 250 end customers (vs 50 direct sales = 5x multiplier)
+- Partners have existing trust relationships
+- Must be ready BEFORE sales materials (can't pitch partnerships without portal)
+
+**Features:**
+- White-label option: rebrand as "Księgowość XYZ Compliance Pack"
+- Revenue share: partner keeps 100-150 PLN/client, we get 49-199 PLN
+- Automated client onboarding (API integration)
+- Partner dashboard: client management, revenue tracking, MRR view
+- Co-branded Art. 16 reports (partner logo + GapRoll logo)
+- Tiered access: partner sees all clients, client sees only their data (RLS)
+
+**Revenue Model:** See Section 8.2 (Partner Channel)
+
+**Timeline:** Mar 2-15 (Week 5-6)
+
+**Target:** 5 partner offices signed by May 1
+
+### 4.12 Explainability System
+
+**Purpose:** Make every metric understandable for Grażyna (see 08_EXPLAINABILITY_ROADMAP.md)
+
+**Components:**
+- InfoTooltip: hover → definition + legal basis
+- CitationBadge: "⚖️ Art. 16 ust. 2 Dyrektywy UE 2023/970"
+- ExplainableMetric: metric + tooltip + citation + "Co to oznacza?" expandable
+
+**Phases:**
+- Phase 1 (Feb 16-22): Dashboard tooltips + Art. 16 PDF export
+- Phase 2 (Feb 23 - Mar 1): EVG modal (4-axis breakdown + manual override UI)
+- Phase 3 (Mar 2-8): Compliance checklist + RODO summary + audit log export
+- Phase 4 (Mar 9-15): Help Center (FAQ + Art. 7 template + glossary + video tutorials)
+
+**Formal Polish Rules:**
+- ✅ "Analiza wykazała..." (not "AI wykrył...")
+- ✅ "Zgodnie z Art. X..." (every metric cited)
+- ✅ "Raport wskazuje..." (formal tone)
+- ❌ "Dashboard insights" (no anglicisms)
+
+---
+
+## 5. Agent System (Target Architecture)
+
+| Agent | Role | Framework | Risk Level | Timeline |
+|-------|------|-----------|------------|----------|
+| **Hunter** | Lead discovery + outreach (Polish B2B) | LangGraph (Generator-Critic loop) | Medium | Mar 29 (v1) |
+| **Guardian** | Legal/HR compliance assistant | LangGraph + GraphRAG | HIGH (EU AI Act) | Apr 12 |
+| **Analyst** | Internal optimizer (DSPy, Reflexion) | LangGraph + DSPy MIPROv2 | Low | May 10 |
+
+### Hunter Rules:
+- **Discovery-Only Feb-Mar:** Build lead database, NO outreach until domain warmed
+- **Warm-Up Apr-May:** Max 20 emails/day, monitor deliverability (target >95% inbox rate)
+- **Scale Jun+:** 100 emails/day only if domain reputation >95%
+- **Generator-Critic pattern:** 3 iterations max (prevent infinite loops)
+- **Polish tone:** Formal ("Szanowna Pani"), no anglicisms, no "I hope this finds you well"
+- **KRS/CEIDG integration:** Target by PKD codes (69.20.Z = accounting, 70.22.Z = consulting)
+- **Lazy Loading:** KRS API (paid, ~1 PLN/query) only when lead score >70%
+- **Humanizer:** Every message references specific detail (LinkedIn post, job listing, press mention)
+
+### Guardian Rules:
+- **Every response has `podstawa prawna`:** Legal citation (Art. X Dyrektywy / Kodeks Pracy Art. Y)
+- **High-risk queries → HITL:** "Zwolnienie dyscyplinarne" = ALWAYS human approval
+- **GraphRAG cross-reference:** Don't just keyword-match, follow graph edges (Art. X "wynika z" Art. Y)
+- **Confidence <0.7 → needs_review:** Routes to HITL approval queue
+- **Zero hallucination policy:** If unsure, say "Nie znalazłem jednoznacznej podstawy prawnej. Zalecam konsultację z radcą prawnym."
+- **Tone:** Polite junior lawyer / experienced auditor (never casual)
+
+### Analyst Rules:
+- **Weekly DSPy MIPROv2 optimization:** Monitors Hunter & Guardian performance
+- **Golden Datasets:** Minimum 50 examples per agent before any prompt optimization
+- **Never auto-deploy:** Validate on holdout set, human approval required
+- **Teacher model:** GPT-4o (expensive, high quality)
+- **Student model:** GPT-4o-mini (production, 60% cheaper)
+- **Cost tracking:** Tokens/day dashboard in LangSmith
+- **Anomaly detection:** Alert if Guardian HITL rejection rate >20%
+
+---
+
+## 6. Execution Timeline (UPDATED Feb 14)
+
+### Phase 0: Company Formation (Feb 14-22)
+
+| Date | Milestone | Owner | Status |
+|------|-----------|-------|--------|
+| Feb 15 | S24 registration (Sp. z o.o.) | Bartek | ⏳ SCHEDULED |
+| Feb 16 | PKO BP bank account (24-48h) | Bartek | ⏳ PENDING |
+| Feb 16 | Benchmark v1 START (concurrent development) | Bartek | ⏳ TODO |
+| Feb 18 | Domain purchase (gaproll.eu/.pl/.com) + Google Workspace | Bartek | ⏳ PENDING |
+| Feb 19 | LinkedIn company page | Bartek | ⏳ TODO |
+| Feb 20 | MS Founders Hub + Scaleway applications | Bartek | ⏳ TODO |
+| Feb 22 | Domain warming START (SPF/DKIM/DMARC) | Bartek | ⏳ TODO |
+
+### Phase 1: Platform Baseline + Rebrand (Feb 23 - Mar 15)
+
+| Week | Dates | Focus | Deliverables |
+|------|-------|-------|--------------|
+| 4 | Feb 23 - Mar 1 | **Rebrand Sprint** | Landing page copy update, Next.js codebase rebrand, email templates, social media assets |
+| 5 | Mar 2-8 | **Critical Features** | EVG Override UI (HITL workflow), **Invoice Automation Setup** (Fakturownia + Przelewy24), Sales Materials (deck, one-pager, demo video), Onboarding Automation (n8n workflows) |
+| 6 | Mar 9-15 | **MILESTONE 1** | Product-Ready: Streamlit sunset, Next.js production, Partner Portal live, Explainability complete, **Invoice automation integrated** |
+
+### Phase 2: Strategia Features + Agents (Mar 16 - Apr 26)
+
+| Week | Dates | Focus | Deliverables |
+|------|-------|-------|--------------|
+| 7 | Mar 16-22 | **Benchmark v1 + Marketing** | PDF parser (YOU provide GUS/PARP reports), LinkedIn content (3 posts/week), SEO strategy |
+| 8 | Mar 23-29 | **Solio v1 + Blog** | Interactive budget modeling (6 constraints), paygapmonitor.pl blog (1 article/week), **Invoice automation PRODUCTION READY** |
+| 9 | Mar 30 - Apr 5 | **Hunter Discovery + Webinar** | LangGraph discovery flow, Webinar #1: "EU Pay Transparency - Co musisz wiedzieć do 7 czerwca?" |
+| 10 | Apr 6-12 | **Retention ROI + Guardian** | Calculator (simplified v1), Legal RAG ingestion (Kodeks Pracy → Weaviate), Accounting firm partnerships outreach |
+| 11 | Apr 13-19 | **Root Cause Analysis** | Why-gap-exists breakdown, saves 1 week/year, Art. 9 compliance |
+| 12 | Apr 20-26 | **MILESTONE 2: Alpha** | Agents integrated in UI, Root Cause live, Hunter drafts (human reviews & sends) |
+
+### Phase 3: Collaborative + Beta (Apr 27 - May 31)
+
+| Week | Dates | Focus | Deliverables |
+|------|-------|-------|--------------|
+| 13 | Apr 27 - May 3 | **Collaborative Review** | Multi-manager workflow, WebSocket real-time budget tracking, saves 10 days/year |
+| 14 | May 4-10 | **Analyst + Domain Warming** | DSPy optimization, Domain reputation >95% validated |
+| 15 | May 11-17 | **MILESTONE 3: Beta** | Pilot customers, Strategia tier compelling (40%+ conversion target) |
+| 16 | May 18-24 | **Benchmark v2** | Web scraping (Pracuj.pl, NoFluffJobs), ~500 PLN/month operational cost |
+| 17 | May 25-31 | **Stabilization** | Bug fixes, performance optimization, HITL workflow refinement |
+
+### Phase 4: V1.0 Launch (Jun 1-14)
+
+| Week | Dates | Focus | Deliverables |
+|------|-------|-------|--------------|
+| 18 | Jun 1-7 | **Solio v2 + Final Prep** | AI-powered remediation, Guardian justification integration, EU AI Act compliance audit |
+| 19 | **Jun 8-14** | **🚀 V1.0 LAUNCH** | Hunter automation (cold email 100/day), **EU Directive deadline: Jun 7** (market urgency trigger) |
+
+### Key Dates Summary:
+
+- **Feb 15:** Company formed
+- **Mar 15:** Milestone 1 (Product-Ready, Invoice automation live)
+- **May 1:** Manual sales START (warm network, partnerships)
+- **Jun 7:** EU Directive 2023/970 compliance deadline (market panic trigger)
+- **Jun 8:** V1.0 Launch (Hunter automation, scale cold email)
+- **Sep 2026:** SUCCESS MILESTONE (see Section 9)
+
+---
+
+## 7. Competitive Position
+
+| Feature | GapRoll Compliance (99 PLN) | GapRoll Strategia (199 PLN) | PayAnalytics | Syndio | Pequity |
+|---------|-----------------------------|-----------------------------|--------------|--------|---------|
+| **EU 2023/970** | ✅ Native | ✅ Native | ⚠️ Partial | ⚠️ Partial | ❌ |
+| **RODO** | ✅ Built-in | ✅ Built-in | ❌ | ❌ | ❌ |
+| **B2B Equalizer** | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Polish Language** | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **EVG Engine (AI + Override)** | ✅ **MANDATORY** | ✅ | ✅ | ✅ | ⚠️ Manual only |
+| **Invoice Automation** | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Root Cause Analysis** | ❌ | ✅ | ✅ | ✅ | ✅ |
+| **Collaborative Review** | ❌ | ✅ | ✅ | ⚠️ Partial | ❌ |
+| **Benchmark Engine** | ❌ | ✅ (v1: Mar 22) | ✅ | ✅ | ✅ |
+| **Partner Channel** | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Price (Small firm)** | **99 PLN/mies** (~€22) | **199 PLN/mies** (~€44) | ~€1,100/mies | ~€800/mies | ~€1,250/mies |
+| **Annual Cost** | 1,188 PLN (~€265) | 2,388 PLN (~€530) | ~€13,000 | ~€10,000 | ~€15,000 |
+| **Savings vs Competitors** | **98% cheaper** | **96% cheaper** | - | - | - |
+
+**Key Differentiators:**
+1. **EVG in Compliance tier (99 PLN):** Competitors charge €1,000+/month for AI job evaluation
+2. **Polish Market Moat:** B2B Equalizer, ZUS rates, KRS/CEIDG (competitors don't understand Polish labor law)
+3. **Partner Channel:** Biura rachunkowe distribution (5 partners × 50 clients = 250 customers, competitors = direct sales only)
+4. **Invoice Automation:** Built-in from day 1 (Fakturownia.pl integration)
+5. **Data Moat:** Benchmark Engine (will have largest Polish wage dataset by Q4 2026)
+
+---
+
+## 8. Revenue Model
+
+### 8.1 Direct B2B (Companies buy directly)
+
+**Tier Structure:** Compliance / Strategia × Small / Medium / Large
+
+**Segmentation:**
+- **Small:** <100 employees (Art. 9 threshold = 100, not 150)
+- **Medium:** 100-249 employees
+- **Large:** 250+ employees
+
+**Naming:** Compliance / Strategia (NOT Basic/Advanced)
+- **Rationale:** "Compliance" = must-have (Art. 9-16), "Strategia" = nice-to-have (analytics)
+
+| Tier | Small (<100) | Medium (100-249) | Large (250+) |
+|------|--------------|------------------|--------------|
+| **Compliance** | **99 PLN/mies** | **299 PLN/mies** | **799 PLN/mies** |
+| **Strategia** | **199 PLN/mies** | **599 PLN/mies** | **1,599 PLN/mies** |
+
+**Pricing Philosophy:**
+- **Entry (99 PLN):** Penetration pricing (viral adoption, data moat building)
+- **2x jump (Compliance→Strategia):** Justified by time savings (3 weeks/year = 6000 PLN value, costs 2388 PLN/year = **ROI 251%**)
+- **Progressive scaling:** Small→Large (3x, 6x, 16x multipliers based on complexity, headcount, audit risk)
+
+### 8.2 Feature Matrix
+
+| Feature | Compliance | Strategia |
+|---------|-----------|-----------|
+| **Compliance (Art. 16, 7, 4, 9)** | | |
+| Unlimited employees | ✅ | ✅ |
+| Art. 16 Reporting (PDF) | ✅ | ✅ |
+| **EVG Engine (AI + Manual Override)** | ✅ **MANDATORY** | ✅ |
+| Worker Reports (Art. 7) | ✅ | ✅ |
+| Fair Pay Line | ✅ | ✅ |
+| B2B Equalizer | ✅ | ✅ |
+| RODO Shield (N<3 masking) | ✅ | ✅ |
+| **Invoice Automation** | ✅ | ✅ |
+| **Analytics & Optimization** | | |
+| Root Cause Analysis | ❌ | ✅ (saves 1 week/year) |
+| Collaborative Review | ❌ | ✅ (saves 10 days/year) |
+| Retention ROI Calculator | ❌ | ✅ |
+| Solio Solver (remediation) | ❌ | ✅ |
+| Benchmark Engine | ❌ | ✅ (Polish wage data) |
+| Smart Job Scorer | ❌ | ✅ (EVG auto-classification) |
+| Guardian Agent (legal Q&A) | ❌ | ✅ |
+| **Support & Access** | | |
+| Email support (48h) | ✅ | ✅ |
+| Priority support (4h) | ❌ | ✅ |
+| API Access | ❌ | ✅ |
+| WebSocket real-time | ❌ | ✅ |
+
+**Data Requirements:**
+
+**Compliance (4 fields MINIMUM):**
+```csv
+employee_id,salary_monthly_gross,gender,reporting_period
+```
+
+**Strategia (12 fields FULL):**
+```csv
+employee_id,salary_monthly_gross,gender,reporting_period,
+position_title,department,hire_date,manager_id,
+contract_type,employment_type,performance_rating,job_level
+```
+
+**Upsell Flow:**
+1. Customer uploads 4 columns → Compliance report works ✅
+2. See blurred preview: "🔓 Odblokuj Root Cause Analysis — dowiedz się DLACZEGO luka 12%"
+3. Upgrade to Strategia → upload 8 more columns → full features unlocked
+4. **Target conversion:** 50% (vs 35% industry baseline)
+
+### 8.3 Partner Channel (Biura Rachunkowe)
+
+**Model:** Hybrid (partner chooses what fits best)
+
+#### Tier 1: Pay-per-Client (for small accounting offices)
+
+| Volume | Price/Client/Month | Target Segment |
+|--------|-------------------|----------------|
+| 1-50 clients | **49 PLN** | Small offices (5-30 clients) |
+| 51-150 clients | **39 PLN** | Medium offices (30-100 clients) |
+| 151+ clients | **29 PLN** | Large offices (100+ clients) |
+
+**Example:**
+- Office with 30 clients pays: 30 × 49 PLN = **1,470 PLN/mies**
+- Resells to clients at 149-199 PLN → **Margin: 100-150 PLN/client = 3,000-4,500 PLN/mies profit**
+
+#### Tier 2: Fixed Unlimited (for medium-large offices)
+
+- **1,999 PLN/mies** — unlimited clients
+- **Break-even:** ~40 clients (1999 ÷ 49 ≈ 41)
+- **Above 40 clients:** Fixed fee cheaper than per-client
+
+#### Tier 3: White-Label Enterprise (for office networks)
+
+- **4,999 PLN/mies** — full white-label + API access + dedicated support
+- **Target:** Sieci biur (KPBR members, franchises with 100+ combined clients)
+- **Features:** Custom branding, API integration with their systems, SLA guarantees
+
+**Why Hybrid Works:**
+- **Small offices (5-30):** Choose per-client (low risk, pay 245-1470 PLN/mies)
+- **Medium offices (30-100):** Choose fixed (1999 PLN < 1470-4900 PLN per-client cost)
+- **Large networks (100+):** Choose white-label (brand as own service, enterprise support)
+
+**Target:** 5 partner offices signed by May 1 → ~250+ end customers in pipeline
+
+### 8.4 Revenue Projections (Conservative)
+
+**2026 (slow growth, awareness building):**
+
+| Quarter | MRR Target | Customers | Assumptions |
+|---------|------------|-----------|-------------|
+| **Q1** | 0 PLN | 0 | Pre-launch |
+| **Q2** | **10,000 PLN** | 60 total (10 direct + 2 partners w/ 100 end customers) | Manual sales start May 1, avg 100 PLN/customer |
+| **Q3** | **25,000 PLN** | 150 total | Hunter automation Jun 8, 3x growth, word-of-mouth |
+| **Q4** | **50,000 PLN** | 350 total | Scaling, market awareness, deadline passed (Jun 7) |
+
+**2027 (explosive growth, post-deadline panic + word-of-mouth):**
+
+| Quarter | MRR Target | Customers | Driver |
+|---------|------------|-----------|--------|
+| **Q1** | **100,000 PLN** | 700 | Late adopters (Jun 7, 2026 deadline panic spillover) |
+| **Q2** | **200,000 PLN** | 1,400 | Network effect, Benchmark data moat advantage |
+| **Q3** | **350,000 PLN** | 2,500 | Market saturation begins |
+| **Q4** | **500,000 PLN** | 3,500 | **6M PLN ARR milestone** |
+
+**Key Assumption:** Conservative 2026 (slow adoption pre-deadline), explosive 2027 (regulatory urgency peak post-deadline).
+
+**Conversion Funnel:**
+- **Trial:** 14 days, full Compliance tier access
+- **Trial → Paid:** 15% (Q2 2026), 20% (Q4 2026), 25% (2027)
+- **Compliance → Strategia:** 40% (Q2 2026 target), 50% (Q4 2026 target) — enabled by compelling Root Cause + Collaborative Review
+- **CAC target:** < 200 PLN (organic + Hunter agent, no paid ads until PMF validated)
+- **Monthly churn:** < 5% (Q2), < 3% (Q4), < 2% (2027)
+
+---
+
+## 9. Success Criteria
+
+### V1.0 Launch (Jun 8, 2026) — REALISTIC TARGETS:
+
+- [ ] **10-20 paying companies** (direct B2B)
+- [ ] **2-3 partner offices** signed (~100-150 end customers in pipeline)
+- [ ] **3,000-5,000 PLN MRR**
+- [ ] Domain reputation >95% (email deliverability validated)
+- [ ] < 5% monthly churn
+- [ ] Art. 16 feature adoption >80% within 7 days (users generate report immediately)
+- [ ] Zero RODO violations or data breaches
+- [ ] EU AI Act compliance audit passed (HITL workflow documented)
+- [ ] **Invoice automation live** (zero manual invoicing)
+
+**Rationale:** 1-2 months manual sales (May-Jun) = realistically 10-20 direct conversions + 2-3 partner pilots
+
+---
+
+### SUCCESS MILESTONE (Sep 2026) — AMBITIOUS BUT ACHIEVABLE:
+
+- [ ] **50 paying companies** (direct B2B)
+- [ ] **5 partner offices** (~250+ end customers)
+- [ ] **15,000-20,000 PLN MRR**
+- [ ] Compliance → Strategia conversion: **40%+** (50% target by Dec)
+- [ ] < 3% monthly churn
+- [ ] Hunter automation proven: 100+ cold emails/day, >15% response rate
+- [ ] HITL approval queue <20% rejection rate (Guardian agent quality)
+- [ ] Benchmark Engine v2 live (web scraping operational, 500 PLN/month cost)
+- [ ] Partner Portal: 5 active partners generating recurring revenue
+
+**Rationale:** 3 months full sales + automation (Jun-Aug) + word-of-mouth + EU deadline urgency (Jun 7 was market trigger)
+
+---
+
+### PMF Validation (Dec 2026):
+
+- [ ] 100+ paying companies
+- [ ] 50,000 PLN MRR
+- [ ] NPS >40 (strong word-of-mouth)
+- [ ] Organic growth >30% (referrals, not just Hunter)
+- [ ] Strategia conversion >50%
+- [ ] < 2% monthly churn
+
+---
+
+### Milestone 1 (Mar 15, 2026):
+
+- [ ] Product-ready: Streamlit sunset, Next.js production
+- [ ] Partner Portal live (API functional, RLS configured)
+- [ ] EVG Override UI complete (HITL workflow validated)
+- [ ] Explainability complete (tooltips, citations, Help Center)
+- [ ] Sales materials ready (deck, one-pager, templates, demo video)
+- [ ] Onboarding automation live (n8n workflows functional)
+- [ ] **Invoice automation integrated** (Fakturownia + Przelewy24 tested)
+
+---
+
+## 10. Strategic Lessons (Feb 13-14, 2026)
+
+### From 4-Session Planning Marathon:
+
+1. **Conservative > Optimistic:** Revenue projections slow 2026, explosive 2027 (deadline urgency effect)
+2. **Data Moat = Defensibility:** Largest Polish wage dataset becomes strategic asset (Benchmark Engine critical)
+3. **Domain Warming is CRITICAL:** 6 weeks mandatory before cold email (Hunter blocked until May)
+4. **Partner Distribution > Direct Sales:** Biura rachunkowe = trusted relationships (5 partners × 50 clients = instant 250 customers)
+5. **Pricing for Viral Adoption:** 99 PLN entry removes friction, maximizes data collection
+6. **EVG is Compliance, not Premium:** Art. 4 + Art. 7 make EVG mandatory → MUST be in 99 PLN tier (Feb 14 reclassification)
+7. **Explainability = Trust:** Every metric needs: definition + legal citation + interpretation (Grażyna won't buy black box)
+8. **HITL = Non-Negotiable:** EU AI Act + Grażyna's zero trust = Manual Override mandatory for EVG
+9. **Invoice Automation = Priority Zero:** 12.5h/month saved at 50 customers, cost ~50 PLN/mies = ROI after 1 month
+10. **Realistic Targets:** Jun 8 = 10-20 customers (not 50!), Sep = 50 customers (aggressive but achievable)
+
+---
+
+**END OF 01_STRATEGY.md**
+
+**Next Review:** March 1, 2026 (after Milestone 1)
+
+**Critical Changes This Version (Feb 14, 2026):**
+- ✅ Rebrand PayCompass → GapRoll
+- ✅ Pricing €49-199 → 99-1599 PLN (Compliance/Strategia)
+- ✅ **EVG moved to Compliance tier** (was Strategia) — BIGGEST CHANGE
+- ✅ Partner Channel added (hybrid: per-client/fixed/white-label)
+- ✅ Invoice Automation added (Fakturownia.pl, Week 5-8, Priority P0)
+- ✅ Timeline accelerated (Milestone 1 = Mar 15, Partner Portal = Mar 15)
+- ✅ Root Cause + Collaborative Review added to Strategia
+- ✅ Realistic targets: Jun 8 = 10-20 customers, Sep = 50 customers
+- ✅ Core Modules expanded (12 modules total)
+- ✅ Revenue projections updated (conservative 2026, explosive 2027)
+
+# GapRoll — Persona: Grażyna
+## The Polish HR Manager Who Won't Buy Black Boxes
+
+**Last Updated:** 2026-02-14  
+**Previous Name:** PayCompass (sunset Feb 14, 2026)  
+**Rule:** EVERY UX decision must pass the "Grażyna Test" — "Czy Grażyna by to zrozumiała w 5 sekund?"
+
+---
+
+## 1. Meet Grażyna
+
+**Name:** Grażyna Kowalska (archetypal Polish HR/Payroll Manager)  
+**Age:** 45-55  
+**Role:** Senior HR Manager / Payroll Specialist / Compliance Officer  
+**Company Size:** 50-500 employees (Polish SME, family-owned or mid-cap)  
+**Industry:** Manufacturing, IT services, Professional services (consulting, accounting, legal)  
+**Location:** Warsaw, Kraków, Wrocław, Poznań (major Polish cities)  
+**Education:** Economics, HR Management, Law (Polish university, not MBA)  
+**Years in Role:** 15-25 years (seen multiple labor code changes, ZUS reforms)
+
+---
+
+## 2. Her Day-to-Day Reality
+
+**Morning (8:00-12:00):**
+- 📧 Email triage: ZUS requests, PIP inspections, employee complaints
+- 📊 Excel hell: Updating salary spreadsheets (150 rows, 30 columns)
+- 📞 Calls: Accountant (tax questions), CEO (budget approval), Managers (raise requests)
+
+**Afternoon (12:00-16:00):**
+- 🏛️ Government portals: ZUS Platnik, PUE, KSeF (e-faktury from July 2026)
+- 📋 Compliance tasks: Art. 16 report due June 7, Art. 7 worker requests
+- 🤝 Meetings: Board (quarterly review), Managers (performance reviews)
+
+**Late Afternoon (16:00-18:00):**
+- 🔥 Fire-fighting: Last-minute payroll corrections, urgent HR issues
+- 📝 Documentation: Labor code compliance, RODO requests, PIP audit prep
+
+**Evening (Home):**
+- 😰 Anxiety: "Did I miss Art. 16 deadline?" "Will PIP fine us?" "Is my EVG scoring defensible?"
+
+---
+
+## 3. Her Fears (Compliance Anxiety)
+
+### 3.1 Legal Fears (Highest Priority)
+
+| Fear | Source | Impact |
+|------|--------|--------|
+| **PIP Inspection** | Państwowa Inspekcja Pracy (Labor Inspectorate) | Fines 1,000-30,000 PLN per violation |
+| **ZUS Audit** | Social Insurance Institution | Fines + back payments |
+| **RODO Violation** | Data Protection Officer / UODO | Fines up to 4% annual revenue |
+| **Art. 16 Non-Compliance** | EU Directive 2023/970 deadline: June 7, 2026 | Legal liability, reputational damage |
+| **Wrongful Termination Lawsuit** | Employee sues for discrimination | Court case, legal fees, payout |
+
+**Key Insight:** Grażyna's #1 priority = AVOIDING LEGAL TROUBLE (not innovation, not efficiency)
+
+---
+
+### 3.2 Professional Fears (Medium Priority)
+
+| Fear | Impact |
+|------|--------|
+| **CEO loses trust** | "Why didn't you warn me about this deadline?" → reputation damaged |
+| **Board blames HR** | "12% pay gap? What have you been doing all these years?" → scapegoating |
+| **Managers revolt** | "Your salary review process takes 2 weeks!" → internal friction |
+| **Accountant frustrated** | "Why is your data messy again?" → cross-department tension |
+
+---
+
+### 3.3 Personal Fears (Low Priority, but Present)
+
+| Fear | Impact |
+|------|--------|
+| **Technology overwhelm** | "AI scares me, what if it's wrong?" → resistance to adoption |
+| **Job security** | "Will AI replace me?" → fear of automation |
+| **Reputation** | "What if I make a mistake and everyone knows?" → risk-averse behavior |
+
+---
+
+## 4. Her Decision-Making Process
+
+### 4.1 Evaluation Criteria (Ranked)
+
+1. **Legal Safety (10/10 importance):** "Czy to spełnia wymogi Dyrektywy?"
+2. **Audit Trail (9/10):** "Czy mogę obronić się przed PIP?"
+3. **Ease of Use (8/10):** "Czy zrobię to w 15 minut, nie 3 dni?"
+4. **Cost (7/10):** "Czy CEO zatwierdzi ten wydatek?" (99 PLN = instant yes, 499 PLN = needs justification)
+5. **Control (9/10):** "Czy mogę edytować, jeśli AI się myli?" (CRITICAL: Manual Override non-negotiable)
+6. **Trust (8/10):** "Czy to firma polska/europejska? Czy będą w razie problemu?"
+
+**Anti-Criteria (Things She Doesn't Care About):**
+- ❌ Innovation ("AI-powered", "cutting-edge") — suspicious, not reassuring
+- ❌ Flexibility ("customizable workflows") — sounds complicated
+- ❌ Integrations (unless it's ZUS Platnik, Comarch) — Polish accounting software only
+
+---
+
+### 4.2 Buying Journey
+
+**Stage 1: Problem Awareness (Triggered by deadline panic)**
+```
+Grażyna hears about EU Directive 2023/970 → June 7, 2026 deadline
+Search: "raport art. 16 dyrektywa ue" (Polish keywords)
+Finds: GapRoll blog post "Jak spełnić wymogi Art. 16 w 15 minut"
+```
+
+**Stage 2: Solution Research (Google, LinkedIn, peer recommendations)**
+```
+Grażyna compares:
+- Excel (free, but 3 weeks of work)
+- PayAnalytics (€1,100/month = 5,000 PLN = CEO says NO)
+- GapRoll (99 PLN = "to tyle co obiad dla 4 osób")
+```
+
+**Stage 3: Risk Assessment (Checks trust signals)**
+```
+Questions she asks herself:
+- "Czy to polska firma?" → Checks website (Polish language, PLN pricing = YES)
+- "Czy mają podstawę prawną?" → Checks if every metric cites Art. X
+- "Czy mogę zaufać AI?" → Checks if Manual Override exists (CRITICAL)
+- "Czy dane są bezpieczne?" → Checks RODO compliance, EU servers
+- "Czy mają wsparcie?" → Checks if help center in Polish, phone number visible
+```
+
+**Stage 4: Trial (14 days, full Compliance tier access)**
+```
+Grażyna uploads CSV → sees Art. 16 report in 5 minutes → impressed
+Checks EVG scores → tries Manual Override → sees it works → trusts system
+Exports PDF → shows to CEO → CEO approves 99 PLN/month
+```
+
+**Stage 5: Purchase Decision**
+```
+Factors that seal the deal:
+✅ 99 PLN (affordable, no CEO approval needed)
+✅ 15-minute setup (no IT department, no training)
+✅ Legal citations everywhere (audit-ready)
+✅ Manual Override (she has control)
+✅ Polish language (no translation errors)
+```
+
+---
+
+## 5. Her Vocabulary (Polish, Formal, Legal)
+
+### 5.1 Words She Uses ✅
+
+| Polish Term | English Equivalent | Usage Context |
+|-------------|-------------------|---------------|
+| **Luka płacowa** | Pay gap | "Nasza luka wynosi 12%" |
+| **Wartościowanie stanowisk** | Job evaluation | "Zrobiłam wartościowanie zgodnie z Art. 4" |
+| **Podstawa prawna** | Legal basis | "Jaka jest podstawa prawna dla tej metryki?" |
+| **Raport zgodności** | Compliance report | "Muszę przygotować raport zgodności dla PIP" |
+| **Kwartyle wynagrodzeń** | Salary quartiles | "Analiza kwartyli wykazała dysproporcję" |
+| **Wyrównanie wynagrodzeń** | Pay remediation | "Zarząd zatwierdził budżet na wyrównanie" |
+| **Działania naprawcze** | Corrective actions | "Art. 9 wymaga działań naprawczych jeśli luka >5%" |
+| **Audyt PIP** | Labor inspectorate audit | "Przygotowuję się na audyt PIP" |
+| **Ochrona danych (RODO)** | GDPR compliance | "Czy platforma spełnia wymogi RODO?" |
+
+---
+
+### 5.2 Words She NEVER Uses ❌
+
+| English Term | Why She Avoids It | Use Instead |
+|--------------|-------------------|-------------|
+| **Dashboard insights** | Anglicism, sounds gimmicky | "Raport wykazał..." |
+| **Pay equity analytics** | Too abstract | "Analiza luki płacowej" |
+| **AI-powered** | Scary, untrusted | "Automatyczne wartościowanie (z możliwością edycji)" |
+| **Churn rate** | Not HR vocabulary | "Rotacja pracowników" |
+| **Engagement metrics** | Not compliance-focused | "Wskaźniki retencji" |
+| **Data-driven decisions** | Buzzword | "Decyzje oparte na danych" (if must use, Polish translation) |
+
+---
+
+## 6. Her Communication Style
+
+**Tone:** Formal, polite, risk-averse  
+**Formality:** Always "Szanowna Pani" / "Szanowny Panie" (never casual "Cześć")  
+**Questions:** Direct, specific, compliance-focused
+
+**Example Grażyna Email:**
+```
+Temat: Zapytanie o funkcjonalność raportowania Art. 16
+
+Dzień dobry,
+
+Interesuje mnie Państwa platforma GapRoll w kontekście przygotowania raportu zgodności 
+z Dyrektywą UE 2023/970 (Art. 16).
+
+Mam następujące pytania:
+1. Czy raport zawiera analizę kwartyli wymaganą przez Art. 16 ust. 2 lit. a)?
+2. Czy mogę ręcznie edytować wyniki wartościowania stanowisk (EVG)?
+3. Jakie dane są wymagane do wygenerowania raportu?
+4. Czy platforma spełnia wymogi RODO (przetwarzanie danych wrażliwych)?
+
+Proszę o odpowiedź na firmowy adres email.
+
+Pozdrawiam,
+Grażyna Kowalska
+HR Manager, XYZ Sp. z o.o.
+```
+
+**What She Expects in Reply:**
+- ✅ Formal greeting ("Szanowna Pani Grażyno")
+- ✅ Direct answers with legal citations
+- ✅ No marketing fluff
+- ✅ Polish language (no English mixed in)
+- ✅ Contact info (phone, email) visible
+
+---
+
+## 7. Her Tech Comfort Level
+
+**Excel:** 9/10 (expert, uses pivot tables, VLOOKUP, conditional formatting)  
+**Email:** 9/10 (Outlook power user)  
+**Government Portals:** 7/10 (ZUS Platnik, PUE, KSeF — learned by necessity)  
+**Accounting Software:** 6/10 (Comarch, Sage — uses for payroll, not expert)  
+**Cloud Tools:** 4/10 (skeptical of "cloud security", prefers desktop apps)  
+**AI Tools:** 2/10 (scared, doesn't trust, needs Manual Override to feel safe)  
+**APIs:** 0/10 (has no idea what API means, doesn't need to)
+
+**Key Insight:** Grażyna is NOT tech-phobic, but she's RISK-AVERSE and needs CONTROL.
+
+---
+
+## 8. The "Grażyna Test" (UX Validation)
+
+Before shipping ANY feature, ask:
+
+### 8.1 Comprehension Test
+**Question:** "Czy Grażyna by to zrozumiała w 5 sekund?"
+
+**Good Example:**
+```
+Luka płacowa: 12%
+[Info icon]: "Średnia różnica wynagrodzenia kobiet vs mężczyzn. 
+Art. 16 ust. 2 lit. a) Dyrektywy UE 2023/970"
+```
+
+**Bad Example:**
+```
+Gender Pay Disparity Coefficient: 1.12 (M/F ratio)
+AI Confidence: 87%
+```
+
+---
+
+### 8.2 Audit Test
+**Question:** "Czy PIP/ZUS mógłby to zakwestionować?"
+
+**Good Example:**
+```
+EVG Score: 78/100
+[Breakdown]:
+- Skills: 22/25 (Wymaga JS, Python, AWS — poziom senior)
+- Effort: 18/25 (Praca przy komputerze 8h/dziennie)
+- Responsibility: 20/25 (Odpowiedzialność za zespół 5 osób)
+- Conditions: 18/25 (Biuro, standardowe warunki)
+[Podstawa prawna]: Art. 4 Dyrektywy UE 2023/970
+```
+
+**Bad Example:**
+```
+Job Score: 78 (AI-generated, click for details)
+```
+
+---
+
+### 8.3 Control Test
+**Question:** "Czy Grażyna może przejąć kontrolę, jeśli AI się myli?"
+
+**Good Example:**
+```
+[EVG Score: 78/100]
+❌ Nie zgadzam się. Zmieniam na 72.
+[Modal opens]:
+- Nowy wynik: 72
+- Uzasadnienie: "Stanowisko nie wymaga AWS (zmiana w 2024)"
+- [Zapisz] → Audit trail recorded
+```
+
+**Bad Example:**
+```
+AI-powered job evaluation (no manual override)
+```
+
+---
+
+## 9. Her Objections (Sales Enablement)
+
+| Objection | Response Script |
+|-----------|----------------|
+| **"AI może się mylić"** | "Zgadzam się! Dlatego KAŻDY wynik EVG możesz edytować ręcznie. AI to propozycja, Ty masz kontrolę. System zapisuje, kto zmienił, kiedy, dlaczego (audit trail)." |
+| **"Czy dane są bezpieczne?"** | "Tak. Serwery w Niemczech/Finlandii (Hetzner EU). RODO compliance: N<3 maskowanie, audit log, prawo do usunięcia. DPA dostępne na żądanie." |
+| **"Mamy tylko 60 pracowników"** | "Art. 7 daje KAŻDEMU pracownikowi prawo zapytać: 'Porównaj moją pensję z osobami o równej wartości pracy.' Bez EVG nie możesz odpowiedzieć → naruszenie Dyrektywy." |
+| **"Za drogo"** | "99 PLN/mies to mniej niż PayAnalytics (€1,100/mies). To koszt obiadu dla 4 osób. ROI: oszczędzasz 3 tygodnie pracy rocznie (wartość 8600 PLN)." |
+| **"Nie mamy czasu na wdrożenie"** | "Upload CSV → raport gotowy w 15 minut. Bez IT, bez szkoleń. Trial 14 dni (pełny dostęp)." |
+| **"Wolę Excel"** | "Excel to 3 tygodnie pracy. GapRoll to 15 minut. Plus: automatyczne cytowania Art. X (Excel tego nie ma). Plus: audit trail (Excel tego nie ma)." |
+
+---
+
+## 10. Success Metrics (Product Adoption)
+
+| Metric | Target | Why It Matters |
+|--------|--------|----------------|
+| **Time to First Report** | <15 min | Grażyna needs instant value (short attention span) |
+| **Manual Override Usage** | >80% users override at least 1 score | Proves Grażyna has control (critical for trust) |
+| **Art. 16 PDF Export** | >90% users export within 7 days | Shows compliance urgency |
+| **Help Center Searches** | "Podstawa prawna", "RODO", "Audit trail" | Validates Grażyna's priorities |
+| **Support Tickets** | <10% of users | Product is intuitive enough |
+| **NPS** | >40 | Word-of-mouth in Polish HR community |
+
+---
+
+**END OF 03_PERSONA_GRAZYNA.md**
+
+**Next Review:** After first 50 customers (Sep 2026) — validate persona assumptions
+
+**Key Reminder:**
+- ✅ Every feature must pass the "Grażyna Test"
+- ✅ Legal citations mandatory (she won't buy black boxes)
+- ✅ Manual Override non-negotiable (she needs control)
+- ✅ Formal Polish tone (no anglicisms, no casual language)
+- ✅ Compliance anxiety drives all decisions (not innovation, not efficiency)
+
+# GapRoll — Tech Constraints
+## Lean Stack Enforcement & Architecture Rules
+
+**Last Updated:** 2026-02-14  
+**Previous Name:** PayCompass (sunset Feb 14, 2026)  
+**Rule:** Reject ANY suggestion that violates this stack. No exceptions.
+
+---
+
+## 1. Core Principle: Lean Stack
+
+**Philosophy:**
+> Use boring, proven tech. Optimize for solo founder velocity, not enterprise scale.
+
+**Anti-Patterns We Avoid:**
+- ❌ Microservices (overengineered for <1M users)
+- ❌ Kubernetes (DevOps nightmare for solo founder)
+- ❌ NoSQL "because scale" (PostgreSQL handles billions of rows)
+- ❌ Latest shiny framework (Next.js 15 is stable, don't chase Next.js 16 beta)
+
+---
+
+## 2. Approved Stack
+
+### 2.1 Frontend
+
+| Component | Technology | Version | Rationale |
+|-----------|-----------|---------|-----------|
+| **Framework** | Next.js | 15 (App Router) | RSC, Suspense, Streaming, React 19 ready |
+| **Language** | TypeScript | 5.x | Type safety, better DX |
+| **Styling** | Tailwind CSS | 3.x | Utility-first, no CSS-in-JS overhead |
+| **Components** | Shadcn/UI | Latest | Copy-paste components, full control |
+| **Icons** | Lucide React | Latest | Tree-shakeable, consistent design |
+| **Forms** | React Hook Form | 7.x | Performant, minimal re-renders |
+| **Validation** | Zod | 3.x | TypeScript-first schema validation |
+| **State** | Zustand | 4.x | Minimal boilerplate, no Redux complexity |
+| **Data Fetching** | TanStack Query | 5.x | Caching, optimistic updates, SSR support |
+| **Charts** | Recharts | 2.x | Declarative, composable charts |
+| **Animation** | Framer Motion | 11.x | Production-ready, gesture support |
+| **Date** | date-fns | 3.x | Tree-shakeable (vs Moment.js bloat) |
+| **Tables** | TanStack Table | 8.x | Headless, full control over UI |
+
+**BANNED:**
+- ❌ Material UI, Chakra UI (opinionated styles, hard to customize)
+- ❌ Ant Design (Chinese design system, not EU-friendly)
+- ❌ Styled Components, Emotion (CSS-in-JS overhead, Next.js warns against it)
+- ❌ Redux, MobX (overengineered state management)
+
+---
+
+### 2.2 Backend
+
+| Component | Technology | Version | Rationale |
+|-----------|-----------|---------|-----------|
+| **Framework** | FastAPI | 0.110+ | Async, auto docs, Pydantic validation |
+| **Language** | Python | 3.12 | Type hints, performance improvements |
+| **Database** | PostgreSQL | 16 | ACID, RLS, JSONB, full-text search |
+| **ORM** | SQLAlchemy | 2.x | Mature, async support, type-safe |
+| **Migrations** | Alembic | 1.x | Industry standard for SQLAlchemy |
+| **Auth** | Supabase Auth | N/A | JWT, RLS integration, email/OAuth |
+| **Validation** | Pydantic | 2.x | Type-safe, FastAPI native |
+| **Task Queue** | Celery (Phase 3+) | 5.x | Async tasks, not needed until scale |
+| **HTTP Client** | httpx | 0.27+ | Async, modern (vs requests) |
+
+**BANNED:**
+- ❌ Django (too heavy, admin panel not needed)
+- ❌ Flask (async support weak, FastAPI superior)
+- ❌ MongoDB, Firebase (schema flexibility = chaos for compliance)
+- ❌ Prisma (Node.js ORM, we're Python backend)
+
+---
+
+### 2.3 Database & Storage
+
+| Component | Technology | Rationale |
+|-----------|-----------|-----------|
+| **Primary DB** | Supabase PostgreSQL | Managed, RLS, EU hosting, auth integration |
+| **Vector Store** | Weaviate | Open-source, GraphRAG support, self-hosted |
+| **Cache** | Redis | Fast, simple, key-value store for sessions |
+| **File Storage** | Supabase Storage | S3-compatible, EU data residency |
+| **Backup** | Hetzner Storage Box | €3.81/month for 1TB, EU-based |
+
+**BANNED:**
+- ❌ AWS RDS, DynamoDB (vendor lock-in, US-centric)
+- ❌ MongoDB Atlas (NoSQL not needed, RODO concerns)
+- ❌ Pinecone (expensive, closed-source)
+
+---
+
+### 2.4 AI & Agents
+
+| Component | Technology | Rationale |
+|-----------|-----------|-----------|
+| **Orchestration** | LangGraph | Deterministic, HITL breakpoints, checkpointing |
+| **LLM (Production)** | GPT-4o-mini | Cost-effective, fast, OpenAI API or Azure |
+| **LLM (Eval/Training)** | GPT-4o | High quality for teacher model (DSPy MIPROv2) |
+| **Prompt Optimization** | DSPy | Automatic prompt engineering, LangGraph compatible |
+| **Observability** | LangSmith | Tracing, debugging, token cost tracking |
+| **Embeddings** | text-embedding-3-small | OpenAI, 1536 dims, cheap |
+
+**BANNED:**
+- ❌ CrewAI, AutoGen (too opinionated, poor HITL support)
+- ❌ LlamaIndex (document-centric, not agent-centric)
+- ❌ LangChain (deprecated for agents, LangGraph is successor)
+- ❌ Claude API (Anthropic ToS forbids pay equity use cases)
+
+---
+
+### 2.5 Hosting & Infrastructure
+
+| Component | Technology | Cost | Rationale |
+|-----------|-----------|------|-----------|
+| **VPS** | Hetzner Cloud CPX31 | €12.90/month | EU data residency, 70% cheaper than Vercel |
+| **Deployment** | Coolify | Free (self-hosted) | Vercel-like UX, Git-based deploy |
+| **Domain** | OVH or nazwa.pl | ~€10/year | Polish registrar, RODO-compliant |
+| **Email (Marketing)** | Mailchimp | €20/month | GDPR-compliant, EU servers |
+| **Email (Transactional)** | Postmark | Pay-per-use | 99%+ deliverability |
+| **Email (Behavior)** | Customer.io | €100/month | Event-triggered journeys |
+| **Monitoring** | Sentry | Free tier | Error tracking, performance monitoring |
+| **CI/CD** | GitHub Actions | Free | Integrated with GitHub |
+
+**BANNED:**
+- ❌ Vercel, Netlify (€40-60/month, vendor lock-in)
+- ❌ AWS, Azure, GCP (complex pricing, US-centric defaults)
+- ❌ Railway, Render (US-based, RODO concerns)
+- ❌ Heroku (sunset, expensive legacy platform)
+
+---
+
+### 2.6 Payments & Invoicing 🆕
+
+| Component | Technology | Cost | Rationale |
+|-----------|-----------|------|-----------|
+| **Invoice Generation** | Fakturownia.pl | ~50 PLN/month | Polish accounting standard, JPK_FA, KSeF ready |
+| **Payment Gateway** | Przelewy24 | 1.49% per transaction | #1 in Poland, BLIK, przelew, karty |
+| **Backup Transactional** | Stripe (Phase 3+) | 1.4% + 1 PLN | International expansion, not Polish B2B |
+
+**Why Fakturownia.pl (NOT Stripe for Polish B2B):**
+- ✅ JPK_FA export (Polish accounting requirement)
+- ✅ KSeF ready (e-faktury mandatory from July 2026)
+- ✅ Polish VAT rules (23%, reverse charge for EU B2B)
+- ✅ Integration with Polish accounting software (Comarch, Sage, etc.)
+- ❌ Stripe: No JPK_FA, no KSeF, high fees for Polish transfers
+
+**When to use Stripe:**
+- Phase 3+: International expansion (EU outside Poland)
+- Enterprise tier: Customers prefer Stripe for procurement systems
+
+**Timeline:**
+- Week 5 (Mar 2-8): Setup Fakturownia.pl + Przelewy24
+- Week 6 (Mar 9-15): Supabase webhook integration
+- Week 8 (Mar 23-29): Production ready (100% automated invoicing)
+
+---
+
+### 2.7 Automation & Workflows
+
+| Component | Technology | Cost | Rationale |
+|-----------|-----------|------|-----------|
+| **Workflow Automation** | n8n.io (Cloud SaaS) | €20/month | No-code automation, 200+ integrations |
+| **Alternative (Phase 4+)** | n8n self-hosted | Free (VPS cost) | Full control, but requires maintenance |
+
+**Why n8n (NOT Zapier/Make):**
+- ✅ 75% cheaper than Zapier (€20 vs €70/month)
+- ✅ GDPR-compliant (EU servers option)
+- ✅ Unlimited workflows (Zapier charges per Zap)
+- ❌ Zapier: Expensive, US-based, limits workflows
+
+**Use Cases:**
+- Partner onboarding (Typeform → Supabase → DocuSign → Email)
+- Customer onboarding (Supabase webhook → Mailchimp → Calendly)
+- Hunter lead enrichment (KRS API → CEIDG API → Supabase)
+- CEO weekly dashboard (Supabase → LangSmith → PDF → Email)
+
+---
+
+### 2.8 Email Infrastructure 🆕
+
+**Domain Authentication (MANDATORY before sending ANY email):**
+
+| Record Type | Purpose | Example |
+|-------------|---------|---------|
+| **SPF** | Sender Policy Framework | `v=spf1 include:servers.mcsv.net include:_spf.customer.io ~all` |
+| **DKIM** | DomainKeys Identified Mail | Auto-generated by Mailchimp/Customer.io/Postmark (add TXT records) |
+| **DMARC** | Domain-based Message Auth | `v=DMARC1; p=none; rua=mailto:bartek@gaproll.eu` (start with p=none, escalate to p=reject) |
+
+**Domain Warming Protocol (6 WEEKS MINIMUM):**
+
+| Week | Daily Volume | Action | Target |
+|------|--------------|--------|--------|
+| 1 | 5-10 | Warm contacts (friends, test accounts) | >98% inbox |
+| 2 | 10-20 | Gradual increase, monitor bounce rate | >97% inbox |
+| 3 | 20-50 | Test small manual outreach | >96% inbox |
+| 4 | 50-100 | Increase volume slowly | >95% inbox |
+| 5 | 100-150 | Approaching target | >95% inbox |
+| 6 | 150-200 | Stabilize | >95% inbox |
+| 7+ | 200 max | **Domain warmed** — Hunter automation can start | >95% inbox |
+
+**Red Flags (PAUSE immediately):**
+- Bounce rate >3%
+- Spam complaint rate >0.5%
+- Deliverability <90%
+- Domain blacklisted (check: mxtoolbox.com/blacklists)
+
+**Hunter Agent Email Limits:**
+
+| Period | Daily Limit | Rationale |
+|--------|-------------|-----------|
+| Warm-up (Feb-Apr) | 20/day | Domain warming |
+| Discovery (May-Jun) | 50/day | Manual sales |
+| Outreach (Jul+) | 100/day | Hunter automation |
+| Hard limit | 200/day | NEVER exceed (spam trigger) |
+
+---
+
+## 3. Development Tools
+
+| Tool | Purpose | Cost |
+|------|---------|------|
+| **IDE** | Cursor | Free (VS Code fork with AI) |
+| **Version Control** | Git + GitHub | Free |
+| **Package Manager (Frontend)** | pnpm | Free (faster than npm/yarn) |
+| **Package Manager (Backend)** | pip + venv | Free |
+| **Linting (TS)** | ESLint + Prettier | Free |
+| **Linting (Python)** | Ruff | Free (replaces Pylint, Black, isort) |
+| **Type Checking (Python)** | mypy | Free |
+| **Testing (Frontend)** | Vitest | Free (faster than Jest) |
+| **Testing (Backend)** | pytest | Free |
+| **API Testing** | Hoppscotch | Free (Postman alternative) |
+
+**BANNED:**
+- ❌ WebStorm, PyCharm Pro (expensive, Cursor is free with AI)
+- ❌ Pylint + Black + isort (Ruff replaces all 3, 10-100x faster)
+- ❌ Jest (slow, Vitest is drop-in replacement, faster)
+
+---
+
+## 4. Architecture Patterns
+
+### 4.1 Next.js Structure
+
+```
+apps/web/
+├── app/                    # App Router (Next.js 15)
+│   ├── (auth)/            # Route group (layout without path segment)
+│   │   ├── login/
+│   │   └── signup/
+│   ├── (dashboard)/       # Protected routes
+│   │   ├── layout.tsx     # Shared dashboard layout
+│   │   ├── page.tsx       # Dashboard home
+│   │   ├── reports/
+│   │   └── settings/
+│   ├── api/               # API routes
+│   │   ├── auth/
+│   │   └── webhooks/
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Landing page
+├── components/
+│   ├── ui/                # Shadcn/UI components
+│   ├── dashboard/         # Dashboard-specific components
+│   └── marketing/         # Landing page components
+├── lib/
+│   ├── supabase.ts        # Supabase client
+│   ├── api.ts             # API client (to FastAPI backend)
+│   └── utils.ts           # Shared utilities
+└── types/
+    └── database.ts        # TypeScript types (generated from Supabase)
+```
+
+---
+
+### 4.2 FastAPI Structure
+
+```
+apps/api/
+├── main.py                # FastAPI app entry point
+├── routers/
+│   ├── auth.py            # Authentication endpoints
+│   ├── reports.py         # Art. 16 reports
+│   ├── evg.py             # EVG scoring
+│   └── agents.py          # Hunter, Guardian, Analyst
+├── models/
+│   ├── database.py        # SQLAlchemy models
+│   └── schemas.py         # Pydantic schemas (request/response)
+├── services/
+│   ├── evg_service.py     # EVG scoring logic
+│   ├── agent_service.py   # LangGraph orchestration
+│   └── email_service.py   # Mailchimp/Postmark integration
+├── agents/
+│   ├── hunter.py          # Hunter agent (LangGraph)
+│   ├── guardian.py        # Guardian agent (LangGraph + GraphRAG)
+│   └── analyst.py         # Analyst agent (DSPy MIPROv2)
+├── db/
+│   ├── session.py         # Database session factory
+│   └── migrations/        # Alembic migrations
+└── utils/
+    ├── rodo.py            # N<3 masking utilities
+    └── audit.py           # Audit trail helpers
+```
+
+---
+
+### 4.3 Supabase RLS (Row-Level Security)
+
+**Multi-tenancy Architecture:**
+
+```sql
+-- Organizations table
+CREATE TABLE organizations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Projects table (one org can have multiple projects)
+CREATE TABLE projects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID REFERENCES organizations(id),
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Users table
+CREATE TABLE users (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  organization_id UUID REFERENCES organizations(id),
+  role TEXT DEFAULT 'user' -- 'admin', 'user', 'partner'
+);
+
+-- RLS Policy: Users can only see data from their organization
+CREATE POLICY "Users can view own org data"
+  ON projects
+  FOR SELECT
+  USING (
+    organization_id IN (
+      SELECT organization_id FROM users WHERE id = auth.uid()
+    )
+  );
+
+-- RLS Policy: Partners can see their clients' data
+CREATE POLICY "Partners can view client data"
+  ON projects
+  FOR SELECT
+  USING (
+    organization_id IN (
+      SELECT client_org_id FROM partner_clients
+      WHERE partner_id = (SELECT organization_id FROM users WHERE id = auth.uid())
+    )
+  );
+```
+
+**Key Rules:**
+- ALWAYS enable RLS on every table
+- NEVER rely on client-side filtering (RLS at DB level)
+- Test RLS policies in staging before production
+
+---
+
+### 4.4 Agent Architecture (LangGraph)
+
+**Pattern: Generator-Critic Loop**
+
+```python
+from langgraph.graph import StateGraph, END
+
+class AgentState(TypedDict):
+    messages: List[BaseMessage]
+    iterations: int
+    approved: bool
+
+def generator(state: AgentState) -> AgentState:
+    """Generate email draft"""
+    draft = llm.invoke(state["messages"])
+    return {"messages": state["messages"] + [draft], "iterations": state["iterations"] + 1}
+
+def critic(state: AgentState) -> AgentState:
+    """Critique email draft"""
+    critique = llm.invoke([SystemMessage(content="Review this email for spam triggers"), state["messages"][-1]])
+    if "APPROVED" in critique.content:
+        return {"approved": True}
+    else:
+        return {"messages": state["messages"] + [critique], "approved": False}
+
+def should_continue(state: AgentState) -> str:
+    if state["approved"] or state["iterations"] >= 3:
+        return END
+    return "generator"
+
+# Build graph
+workflow = StateGraph(AgentState)
+workflow.add_node("generator", generator)
+workflow.add_node("critic", critic)
+workflow.add_edge("generator", "critic")
+workflow.add_conditional_edges("critic", should_continue)
+workflow.set_entry_point("generator")
+
+app = workflow.compile()
+```
+
+**HITL Breakpoint (EU AI Act compliance):**
+
+```python
+from langgraph.checkpoint.sqlite import SqliteSaver
+
+memory = SqliteSaver.from_conn_string(":memory:")
+
+# Compile with checkpoints
+app = workflow.compile(checkpointer=memory, interrupt_before=["send_email"])
+
+# Run until interrupt
+result = app.invoke(initial_state, config={"configurable": {"thread_id": "1"}})
+
+# Human reviews email draft in UI
+# If approved:
+app.invoke(None, config={"configurable": {"thread_id": "1"}})  # Resumes from checkpoint
+```
+
+---
+
+## 5. RODO / GDPR Patterns
+
+### 5.1 N<3 Masking
+
+**Rule:** NEVER display aggregate statistics when N < 3 (privacy risk)
+
+```python
+def apply_n3_mask(df: pd.DataFrame, group_cols: List[str], metric_col: str) -> pd.DataFrame:
+    """
+    Mask groups with N<3 to comply with RODO.
+    
+    Example:
+    >>> df = pd.DataFrame({
+    ...     "department": ["IT", "IT", "HR", "HR", "HR"],
+    ...     "gender": ["M", "F", "M", "F", "F"],
+    ...     "salary": [8000, 7500, 6000, 5500, 6200]
+    ... })
+    >>> apply_n3_mask(df, ["department", "gender"], "salary")
+       department gender  salary  count
+    0          IT      M     NaN      1  # Masked (N=1)
+    1          IT      F     NaN      1  # Masked (N=1)
+    2          HR      M     NaN      1  # Masked (N=1)
+    3          HR      F  5850.0      2  # NOT masked (N=2, borderline)
+    """
+    grouped = df.groupby(group_cols)[metric_col].agg(["mean", "count"]).reset_index()
+    grouped.loc[grouped["count"] < 3, "mean"] = None  # Mask if N<3
+    return grouped
+```
+
+**Display in UI:**
+
+```tsx
+{count < 3 ? (
+  <span className="text-slate-400 italic">
+    Dane wygaszone (N&lt;3, ochrona RODO)
+  </span>
+) : (
+  <span>{mean.toFixed(0)} PLN</span>
+)}
+```
+
+---
+
+### 5.2 Audit Trail
+
+**Rule:** Log ALL data operations (RODO Art. 30 — record of processing activities)
+
+```python
+from datetime import datetime
+from uuid import UUID
+
+def log_audit_trail(
+    user_id: UUID,
+    action: str,  # "READ", "CREATE", "UPDATE", "DELETE"
+    table: str,
+    record_id: UUID,
+    old_value: Optional[str] = None,
+    new_value: Optional[str] = None,
+    justification: Optional[str] = None,
+):
+    """
+    Log audit trail for RODO compliance.
+    
+    Example:
+    >>> log_audit_trail(
+    ...     user_id=UUID("123"),
+    ...     action="UPDATE",
+    ...     table="evg_scores",
+    ...     record_id=UUID("456"),
+    ...     old_value="78",
+    ...     new_value="72",
+    ...     justification="AWS skill not required anymore"
+    ... )
+    """
+    db.execute(
+        """
+        INSERT INTO audit_log (user_id, action, table_name, record_id, old_value, new_value, justification, timestamp)
+        VALUES (:user_id, :action, :table, :record_id, :old_value, :new_value, :justification, :timestamp)
+        """,
+        {
+            "user_id": user_id,
+            "action": action,
+            "table": table,
+            "record_id": record_id,
+            "old_value": old_value,
+            "new_value": new_value,
+            "justification": justification,
+            "timestamp": datetime.utcnow(),
+        },
+    )
+```
+
+**Retention:** 3 years (PIP audit requirement)
+
+---
+
+## 6. Performance Budgets
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **Lighthouse Score** | >90 | Chrome DevTools |
+| **First Contentful Paint** | <1.5s | Web Vitals |
+| **Largest Contentful Paint** | <2.5s | Web Vitals |
+| **Cumulative Layout Shift** | <0.1 | Web Vitals |
+| **Time to Interactive** | <3s | Lighthouse |
+| **API Response Time (p95)** | <500ms | LangSmith |
+| **Database Query Time (p95)** | <100ms | Supabase Dashboard |
+
+**Monitoring:** Monthly performance audit, track regressions
+
+---
+
+## 7. Security Checklist
+
+- [ ] All Supabase tables have RLS enabled
+- [ ] No API keys in frontend code (use environment variables)
+- [ ] HTTPS only (Let's Encrypt via Coolify)
+- [ ] CORS configured (whitelist gaproll.eu, localhost)
+- [ ] Input validation (Zod on frontend, Pydantic on backend)
+- [ ] SQL injection prevention (SQLAlchemy parameterized queries)
+- [ ] XSS prevention (React escapes by default, no `dangerouslySetInnerHTML`)
+- [ ] CSRF protection (SameSite cookies, CSRF tokens for mutations)
+- [ ] Rate limiting (FastAPI Slowapi middleware: 100 req/min per IP)
+- [ ] Secrets in env vars (`.env.local` never committed to Git)
+
+---
+
+## 8. Banned Technologies (Auto-Reject)
+
+| Technology | Reason | Approved Alternative |
+|-----------|--------|---------------------|
+| **AWS, Azure, GCP** | Complex pricing, US-centric, RODO concerns | Hetzner (EU data residency, simple pricing) |
+| **Vercel, Netlify** | Expensive (€40-60/month), vendor lock-in | Coolify on Hetzner VPS (€12.90/month) |
+| **CrewAI, AutoGen** | Poor HITL support, opinionated | LangGraph (deterministic, checkpointing) |
+| **MongoDB, Firebase** | Schema flexibility = compliance chaos | PostgreSQL (ACID, RLS, schema enforcement) |
+| **Stripe (for Polish B2B)** | No JPK_FA, no KSeF, high fees | Fakturownia.pl + Przelewy24 |
+| **Material UI, Chakra** | Opinionated styles, hard to customize | Shadcn/UI (copy-paste, full control) |
+| **Redux, MobX** | Overengineered state management | Zustand (minimal boilerplate) |
+| **Zapier** | Expensive (€70/month), US-based | n8n.io (€20/month, EU servers) |
+
+**Rejection Process:**
+1. User suggests banned tech: "Should we use AWS?"
+2. Assistant responds: "❌ AWS is on our BANNED list (04_TECH_CONSTRAINTS). Reason: Complex pricing, US-centric. Approved alternative: Hetzner (EU data residency, €12.90/month)."
+3. No debate, no exceptions.
+
+---
+
+**END OF 04_TECH_CONSTRAINTS.md**
+
+**Next Review:** After Milestone 1 (Mar 15, 2026)
+
+**Key Updates This Version (Feb 14, 2026):**
+- ✅ Fakturownia.pl + Przelewy24 added (Invoice Automation)
+- ✅ Email infrastructure section (SPF/DKIM/DMARC, domain warming)
+- ✅ Hunter Agent email limits (20→50→100/day progression)
+- ✅ n8n.io Cloud SaaS approved (€20/month)
+- ✅ Rebrand PayCompass → GapRoll
+- ✅ Stripe moved from BANNED to "Phase 3+ international expansion"
+
+# GapRoll — Frontend Standards
+## Design System, UI Components & Typography
+
+**Last Updated:** 2026-02-14  
+**Previous Name:** PayCompass (sunset Feb 14, 2026)  
+**Framework:** Next.js 15 + Tailwind CSS + Shadcn/UI
+
+---
+
+## 1. Color System
+
+### 1.1 Primary Palette (Teal + Dark Mode)
+
+| Token | Hex | Tailwind | Usage |
+|-------|-----|----------|-------|
+| **Primary (Teal)** | #14b8a6 | `teal-500` | CTAs, links, active states |
+| **Primary Dark** | #0d9488 | `teal-600` | Hover states |
+| **Primary Light** | #5eead4 | `teal-300` | Badges, highlights |
+| **Background** | #0f172a | `slate-900` | Main background |
+| **Surface** | #1e293b | `slate-800` | Cards, modals |
+| **Border** | #334155 | `slate-700` | Dividers, input borders |
+| **Text Primary** | #f1f5f9 | `slate-100` | Main text |
+| **Text Secondary** | #cbd5e1 | `slate-300` | Subtitles, descriptions |
+| **Text Muted** | #94a3b8 | `slate-400` | Placeholders, disabled |
+
+---
+
+### 1.2 Semantic Colors
+
+| Token | Hex | Tailwind | Usage |
+|-------|-----|----------|-------|
+| **Success** | #22c55e | `green-500` | Confirmations, checkmarks |
+| **Warning** | #f59e0b | `amber-500` | Alerts, warnings |
+| **Error** | #ef4444 | `red-500` | Errors, validation failures |
+| **Info** | #3b82f6 | `blue-500` | Info tooltips, help text |
+
+---
+
+### 1.3 Compliance Colors (Legal Status)
+
+| Status | Color | Hex | Usage |
+|--------|-------|-----|-------|
+| **Compliant** | Green | #22c55e | "Brak naruszenia" badge |
+| **Warning** | Amber | #f59e0b | "Wymaga monitorowania" badge |
+| **Non-Compliant** | Red | #ef4444 | "Konieczna akcja" badge |
+| **Pending** | Blue | #3b82f6 | "W trakcie analizy" badge |
+
+---
+
+## 2. Typography
+
+### 2.1 Font Stack
+
+```css
+--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+--font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+```
+
+**Why Inter:**
+- ✅ Open-source, free
+- ✅ Excellent Polish diacritics support (ąćęłńóśźż)
+- ✅ High readability at small sizes
+- ✅ Variable font (reduces file size)
+
+---
+
+### 2.2 Font Sizes
+
+| Token | Size | Line Height | Usage |
+|-------|------|-------------|-------|
+| `text-xs` | 12px | 16px | Footnotes, captions |
+| `text-sm` | 14px | 20px | Table cells, labels |
+| `text-base` | 16px | 24px | Body text |
+| `text-lg` | 18px | 28px | Subtitles, emphasized text |
+| `text-xl` | 20px | 28px | Card titles |
+| `text-2xl` | 24px | 32px | Section headings |
+| `text-3xl` | 30px | 36px | Page headings |
+| `text-4xl` | 36px | 40px | Hero text |
+
+---
+
+### 2.3 Font Weights
+
+| Token | Weight | Usage |
+|-------|--------|-------|
+| `font-normal` | 400 | Body text |
+| `font-medium` | 500 | Emphasized text, buttons |
+| `font-semibold` | 600 | Headings, labels |
+| `font-bold` | 700 | Alerts, critical info |
+
+---
+
+## 3. Spacing System
+
+**Base Unit:** 4px (`0.25rem`)
+
+| Token | Pixels | Usage |
+|-------|--------|-------|
+| `gap-1` | 4px | Tight spacing (icon + text) |
+| `gap-2` | 8px | Related elements (label + input) |
+| `gap-3` | 12px | Default spacing (cards, sections) |
+| `gap-4` | 16px | Comfortable spacing (form fields) |
+| `gap-6` | 24px | Section spacing |
+| `gap-8` | 32px | Page section spacing |
+| `gap-12` | 48px | Major section dividers |
+
+---
+
+## 4. Component Library (Shadcn/UI)
+
+### 4.1 Core Components
+
+| Component | Usage | File |
+|-----------|-------|------|
+| **Button** | CTAs, actions | `@/components/ui/button` |
+| **Input** | Text fields | `@/components/ui/input` |
+| **Textarea** | Multi-line input | `@/components/ui/textarea` |
+| **Select** | Dropdowns | `@/components/ui/select` |
+| **Checkbox** | Multi-select | `@/components/ui/checkbox` |
+| **Radio** | Single-select | `@/components/ui/radio-group` |
+| **Switch** | Toggle on/off | `@/components/ui/switch` |
+| **Slider** | Range input | `@/components/ui/slider` |
+| **Card** | Content container | `@/components/ui/card` |
+| **Alert** | Notifications | `@/components/ui/alert` |
+| **Badge** | Status labels | `@/components/ui/badge` |
+| **Tooltip** | Hover help | `@/components/ui/tooltip` |
+| **Dialog** | Modals | `@/components/ui/dialog` |
+| **Popover** | Contextual menus | `@/components/ui/popover` |
+| **Tabs** | Content organization | `@/components/ui/tabs` |
+| **Accordion** | Collapsible sections | `@/components/ui/accordion` |
+| **Table** | Data grids | `@/components/ui/table` |
+| **Progress** | Loading bars | `@/components/ui/progress` |
+
+---
+
+### 4.2 Custom Components (GapRoll-specific)
+
+| Component | Purpose | Location |
+|-----------|---------|----------|
+| **InfoTooltip** | Legal citations, explanations | `@/components/dashboard/InfoTooltip` |
+| **CitationBadge** | Art. X references | `@/components/dashboard/CitationBadge` |
+| **ExplainableMetric** | Metric + tooltip + collapsible | `@/components/dashboard/ExplainableMetric` |
+| **ComplianceAlert** | Art. 9 warnings, actions | `@/components/dashboard/ComplianceAlert` |
+| **EVGScoreCard** | Job evaluation display | `@/components/evg/EVGScoreCard` |
+| **EVGDetailModal** | 4-axis breakdown + override | `@/components/evg/EVGDetailModal` |
+| **ManualOverrideForm** | HITL override UI | `@/components/evg/ManualOverrideForm` |
+| **QuartileTable** | Art. 16 quartile analysis | `@/components/reports/QuartileTable` |
+| **Art16Report** | PDF export preview | `@/components/reports/Art16Report` |
+
+---
+
+## 5. Layout Patterns
+
+### 5.1 Dashboard Layout
+
+```tsx
+<div className="min-h-screen bg-slate-900 text-slate-100">
+  {/* Sidebar */}
+  <aside className="fixed left-0 top-0 h-screen w-64 border-r border-slate-700 bg-slate-800">
+    <nav>{/* Navigation */}</nav>
+  </aside>
+
+  {/* Main Content */}
+  <main className="ml-64 p-8">
+    {/* Page Header */}
+    <header className="mb-8">
+      <h1 className="text-3xl font-semibold">Dashboard</h1>
+      <p className="text-slate-400">Przegląd zgodności z Dyrektywą UE 2023/970</p>
+    </header>
+
+    {/* Content Grid */}
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <Card>{/* Metric cards */}</Card>
+    </div>
+  </main>
+</div>
+```
+
+---
+
+### 5.2 Landing Page Layout
+
+```tsx
+<div className="min-h-screen bg-slate-900 text-slate-100">
+  {/* Hero Section */}
+  <section className="flex min-h-screen items-center justify-center px-8">
+    <div className="max-w-4xl text-center">
+      <h1 className="text-5xl font-bold">
+        Pełna zgodność z Dyrektywą UE 2023/970 za 99 PLN/mies
+      </h1>
+      <p className="mt-6 text-xl text-slate-300">
+        Raport Art. 16 gotowy w 15 minut. Bez Excel, bez stresu.
+      </p>
+      <Button size="lg" className="mt-8">
+        Rozpocznij trial (14 dni za darmo)
+      </Button>
+    </div>
+  </section>
+
+  {/* Features */}
+  <section className="px-8 py-24">
+    <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-3">
+      <FeatureCard icon={CheckCircle} title="..." description="..." />
+    </div>
+  </section>
+</div>
+```
+
+---
+
+## 6. Accessibility (WCAG 2.1 AA)
+
+### 6.1 Contrast Requirements
+
+| Element | Min Ratio | Tested |
+|---------|-----------|--------|
+| Normal text (<18px) | 4.5:1 | WebAIM Checker |
+| Large text (≥18px) | 3:1 | WebAIM Checker |
+| UI components | 3:1 | WebAIM Checker |
+
+**Passing Combinations:**
+- ✅ `slate-100` (#f1f5f9) on `slate-900` (#0f172a): **17.3:1** ⭐
+- ✅ `teal-500` (#14b8a6) on `slate-900` (#0f172a): **5.8:1** ✓
+- ✅ `slate-300` (#cbd5e1) on `slate-900` (#0f172a): **13.2:1** ⭐
+
+**Failing Combinations (avoid):**
+- ❌ `slate-400` (#94a3b8) on `slate-800` (#1e293b): **2.9:1** ❌
+
+---
+
+### 6.2 Keyboard Navigation
+
+**Rules:**
+- All interactive elements must be keyboard-accessible (Tab, Enter, Escape)
+- Tab order follows visual flow (top→bottom, left→right)
+- Focus indicators always visible (never `outline: none` without custom replacement)
+- Modals trap focus (can't Tab outside modal until closed)
+
+**Example Focus Styles:**
+```css
+.button:focus-visible {
+  outline: 2px solid theme('colors.teal.500');
+  outline-offset: 2px;
+}
+```
+
+---
+
+### 6.3 Screen Reader Support
+
+**Best Practices:**
+- Use semantic HTML (`<button>`, `<nav>`, `<main>`, `<article>`)
+- Provide `aria-label` for icon-only buttons
+- Use `<h1>-<h6>` in hierarchical order (no skipping levels)
+- Tables have `<caption>` and `<th scope="col|row">`
+
+**Example:**
+```tsx
+<button aria-label="Informacja o luce płacowej">
+  <Info className="h-4 w-4" />
+</button>
+```
+
+---
+
+## 7. Animation Guidelines
+
+### 7.1 Framer Motion Presets
+
+| Animation | Duration | Easing | Usage |
+|-----------|----------|--------|-------|
+| **Fade In** | 200ms | `easeOut` | Page load, modal open |
+| **Slide Up** | 300ms | `easeOut` | Toasts, notifications |
+| **Scale** | 150ms | `easeInOut` | Button press, card hover |
+| **Collapse** | 250ms | `easeInOut` | Accordion, expandable sections |
+
+**Example:**
+```tsx
+import { motion } from "framer-motion"
+
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.3, ease: "easeOut" }}
+>
+  {content}
+</motion.div>
+```
+
+---
+
+### 7.2 Performance Budget
+
+- Max 60fps (16ms per frame)
+- Avoid animating `width`, `height` (use `transform: scale`)
+- Avoid animating `top`, `left` (use `transform: translate`)
+- Prefer `opacity` and `transform` (GPU-accelerated)
+
+---
+
+## 8. Responsive Breakpoints
+
+| Breakpoint | Min Width | Usage |
+|------------|-----------|-------|
+| `sm` | 640px | Mobile landscape, small tablets |
+| `md` | 768px | Tablets |
+| `lg` | 1024px | Laptops, small desktops |
+| `xl` | 1280px | Desktops |
+| `2xl` | 1536px | Large desktops |
+
+**Mobile-First Approach:**
+```tsx
+<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+  {/* 1 column on mobile, 2 on tablets, 3 on desktops */}
+</div>
+```
+
+---
+
+## 9. Icon System
+
+**Library:** Lucide React (tree-shakeable, consistent design)
+
+**Size Guide:**
+| Size | Class | Usage |
+|------|-------|-------|
+| 16px | `h-4 w-4` | Inline icons (buttons, labels) |
+| 20px | `h-5 w-5` | Standard icons (navigation, cards) |
+| 24px | `h-6 w-6` | Large icons (hero sections, empty states) |
+| 32px | `h-8 w-8` | Extra large (feature illustrations) |
+
+**Example:**
+```tsx
+import { CheckCircle, AlertCircle, Info } from "lucide-react"
+
+<CheckCircle className="h-5 w-5 text-green-500" />
+<AlertCircle className="h-5 w-5 text-amber-500" />
+<Info className="h-4 w-4 text-slate-400" />
+```
+
+---
+
+## 10. Form Validation
+
+### 10.1 Validation States
+
+| State | Border | Icon | Message Color |
+|-------|--------|------|---------------|
+| **Default** | `border-slate-700` | None | N/A |
+| **Focus** | `border-teal-500` | None | N/A |
+| **Valid** | `border-green-500` | ✓ | `text-green-500` |
+| **Error** | `border-red-500` | ✗ | `text-red-500` |
+
+**Example:**
+```tsx
+<div>
+  <Input
+    className={cn(
+      "border-slate-700",
+      error && "border-red-500",
+      success && "border-green-500"
+    )}
+  />
+  {error && (
+    <p className="mt-1 text-sm text-red-500">{error.message}</p>
+  )}
+</div>
+```
+
+---
+
+### 10.2 Validation Rules (Zod)
+
+```typescript
+import { z } from "zod"
+
+const EVGOverrideSchema = z.object({
+  score: z.number().min(0).max(100),
+  justification: z.string().min(20, "Uzasadnienie musi mieć min. 20 znaków"),
+})
+```
+
+---
+
+## 11. Loading States
+
+### 11.1 Skeletons (Preferred)
+
+```tsx
+import { Skeleton } from "@/components/ui/skeleton"
+
+<Card>
+  <Skeleton className="h-6 w-32 mb-2" /> {/* Title */}
+  <Skeleton className="h-4 w-full" />     {/* Line 1 */}
+  <Skeleton className="h-4 w-3/4" />      {/* Line 2 */}
+</Card>
+```
+
+---
+
+### 11.2 Spinners (For Short Delays)
+
+```tsx
+import { Loader2 } from "lucide-react"
+
+<Button disabled>
+  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+  Generowanie raportu...
+</Button>
+```
+
+---
+
+## 12. Empty States
+
+**Pattern:**
+```tsx
+<div className="flex flex-col items-center justify-center py-12">
+  <FileX className="h-12 w-12 text-slate-400 mb-4" />
+  <h3 className="text-lg font-medium">Brak danych</h3>
+  <p className="text-sm text-slate-400 mb-6">
+    Prześlij plik CSV aby wygenerować raport.
+  </p>
+  <Button>Prześlij plik</Button>
+</div>
+```
+
+---
+
+## 13. Dark Mode (Default)
+
+**Philosophy:** Dark mode ONLY (no light mode toggle)
+
+**Rationale:**
+- Grażyna works 8+ hours/day on computer (eye strain reduction)
+- Professional aesthetic (corporate environments)
+- Reduces distractions (focus on data, not UI)
+
+**If Light Mode Requested (Future):**
+- Use Tailwind `dark:` classes
+- Store preference in `localStorage`
+- Respect system preference (`prefers-color-scheme`)
+
+---
+
+**END OF 05_FRONTEND_STANDARDS.md**
+
+**Next Review:** After Milestone 1 (Mar 15, 2026)
+
+**Key Standards:**
+- ✅ Teal (#14b8a6) primary color
+- ✅ Dark mode default (slate-900 background)
+- ✅ Inter font (excellent Polish diacritics)
+- ✅ Shadcn/UI components (copy-paste, full control)
+- ✅ WCAG AA accessibility (4.5:1 contrast minimum)
+- ✅ Mobile-first responsive (640px, 768px, 1024px breakpoints)
+
+# GapRoll — Agent Blueprints
+## LangGraph Architecture for Hunter, Guardian & Analyst
+
+**Last Updated:** 2026-02-14  
+**Previous Name:** PayCompass (sunset Feb 14, 2026)  
+**Framework:** LangGraph (deterministic orchestration with HITL breakpoints)
+
+---
+
+## 1. Agent System Overview
+
+| Agent | Role | Risk Level | Timeline |
+|-------|------|------------|----------|
+| **Hunter** | Lead discovery + cold outreach | Medium | Discovery: Mar 29, Outreach: Jun 8 |
+| **Guardian** | Legal/HR compliance assistant | HIGH (EU AI Act) | Apr 12 (Alpha), May 17 (Beta) |
+| **Analyst** | Self-improvement optimizer | Low | May 10 (Alpha), Jun 8 (Production) |
+
+---
+
+## 2. Hunter Agent — Cold Outreach Automation
+
+### 2.1 Mission
+
+> Discover Polish companies (50-500 employees) + generate personalized cold emails that don't feel like AI spam.
+
+### 2.2 Architecture (LangGraph)
+
+```mermaid
+graph TD
+    START[Start] --> SEARCH[Search ICP]
+    SEARCH --> FILTER[Filter PKD]
+    FILTER --> VAT[Check VAT Status]
+    VAT --> SCORE{Score > 70?}
+    SCORE -->|YES| ENRICH[Enrich KRS/CEIDG]
+    SCORE -->|NO| ARCHIVE[Archive]
+    ENRICH --> DM[Find Decision Maker]
+    DM --> DRAFT[Generate Email]
+    DRAFT --> CRITIC[Critique Email]
+    CRITIC --> APPROVE{Approved?}
+    APPROVE -->|YES| QUEUE[Queue for Send]
+    APPROVE -->|NO| REDRAFT{Iterations < 3?}
+    REDRAFT -->|YES| DRAFT
+    REDRAFT -->|NO| HITL[Human Review]
+    HITL --> QUEUE
+    QUEUE --> END[End]
+    ARCHIVE --> END
+```
+
+---
+
+### 2.3 LangGraph Implementation
+
+```python
+from langgraph.graph import StateGraph, END
+from typing import TypedDict, List
+
+class HunterState(TypedDict):
+    company_name: str
+    pkd_code: str
+    vat_number: str
+    lead_score: int
+    decision_maker: dict
+    email_draft: str
+    critique: str
+    iterations: int
+    approved: bool
+
+def search_icp(state: HunterState) -> HunterState:
+    """Query KRS/CEIDG for companies matching ICP"""
+    # KRS API: target by PKD code (69.20.Z = accounting, 70.22.Z = consulting)
+    companies = krs_api.search(pkd_code=["69.20.Z", "70.22.Z"], employees="50-500")
+    return {"companies": companies}
+
+def filter_pkd(state: HunterState) -> HunterState:
+    """Filter by industry relevance"""
+    # Focus: accounting firms, HR consulting, payroll services
+    relevant_pkd = ["69.20.Z", "70.22.Z", "82.11.Z"]
+    filtered = [c for c in state["companies"] if c["pkd"] in relevant_pkd]
+    return {"companies": filtered}
+
+def check_vat(state: HunterState) -> HunterState:
+    """Verify VAT registration (active company check)"""
+    # Biała Lista Podatników API (Polish VAT registry)
+    vat_active = vat_api.verify(state["vat_number"])
+    return {"vat_active": vat_active}
+
+def score_lead(state: HunterState) -> HunterState:
+    """Calculate lead score (0-100)"""
+    score = (
+        (state["employees"] / 500) * 30 +  # Size (larger = higher score)
+        (state["revenue"] / 10_000_000) * 30 +  # Revenue
+        (state["industry_fit"] * 20) +  # Industry relevance
+        (state["recency"] * 20)  # Freshly registered = higher intent
+    )
+    return {"lead_score": score}
+
+def enrich_krs(state: HunterState) -> HunterState:
+    """Lazy load: Only enrich if score > 70 (saves API costs)"""
+    if state["lead_score"] < 70:
+        return state
+    
+    # KRS API (paid, ~1 PLN/query)
+    data = krs_api.get_details(state["company_name"])
+    return {
+        "size": data["employees"],
+        "revenue": data["revenue"],
+        "nip": data["nip"],
+        "legal_form": data["legal_form"],
+    }
+
+def find_decision_maker(state: HunterState) -> HunterState:
+    """LinkedIn scraper: Find CEO, CFO, or HR Manager"""
+    # Option 1: Cognism API (RODO-compliant)
+    # Option 2: LinkedIn Sales Navigator scraper (risky)
+    decision_maker = cognism_api.find_contact(
+        company=state["company_name"],
+        titles=["CEO", "CFO", "HR Manager", "Dyrektor HR"],
+    )
+    return {"decision_maker": decision_maker}
+
+def generate_email(state: HunterState) -> HunterState:
+    """Generate personalized email (GPT-4o)"""
+    prompt = f"""
+    Napisz polską wiadomość cold outreach dla:
+    - Firma: {state['company_name']}
+    - Kontakt: {state['decision_maker']['name']} ({state['decision_maker']['title']})
+    - Branża: {state['industry']}
+    
+    ZASADY:
+    - Formal tone ("Szanowna Pani" / "Szanowny Panie")
+    - Max 120 słów
+    - Personalizacja: Wspomnij szczegół o firmie (LinkedIn post, news, job listing)
+    - Value prop: "Pełna zgodność z Dyrektywą UE 2023/970 za 99 PLN/mies"
+    - CTA: Umów 15-min demo
+    - NO spam words: "niesamowity", "rewolucyjny", "exclusive offer"
+    """
+    
+    draft = llm.invoke(prompt)
+    return {"email_draft": draft, "iterations": state["iterations"] + 1}
+
+def critique_email(state: HunterState) -> HunterState:
+    """Critic LLM: Check for spam triggers"""
+    prompt = f"""
+    Oceń email pod kątem spam triggers:
+    
+    {state['email_draft']}
+    
+    Sprawdź:
+    - Czy ma słowa spam? (niesamowity, rewolucyjny, guarantee)
+    - Czy jest zbyt długi? (max 120 słów)
+    - Czy personalizacja jest prawdziwa? (nie generic)
+    - Czy CTA jest jasny?
+    
+    Odpowiedź: "APPROVED" lub "NEEDS_REVISION: [reason]"
+    """
+    
+    critique = llm.invoke(prompt)
+    approved = "APPROVED" in critique
+    return {"critique": critique, "approved": approved}
+
+def should_continue(state: HunterState) -> str:
+    """Router: Continue loop or end?"""
+    if state["approved"]:
+        return "queue"
+    elif state["iterations"] >= 3:
+        return "hitl"  # Max iterations reached, human review
+    else:
+        return "generator"  # Try again
+
+# Build graph
+workflow = StateGraph(HunterState)
+workflow.add_node("search", search_icp)
+workflow.add_node("filter", filter_pkd)
+workflow.add_node("vat_check", check_vat)
+workflow.add_node("score", score_lead)
+workflow.add_node("enrich", enrich_krs)
+workflow.add_node("find_dm", find_decision_maker)
+workflow.add_node("generator", generate_email)
+workflow.add_node("critic", critique_email)
+
+workflow.add_edge("search", "filter")
+workflow.add_edge("filter", "vat_check")
+workflow.add_edge("vat_check", "score")
+workflow.add_conditional_edges("score", lambda s: "enrich" if s["lead_score"] > 70 else "archive")
+workflow.add_edge("enrich", "find_dm")
+workflow.add_edge("find_dm", "generator")
+workflow.add_edge("generator", "critic")
+workflow.add_conditional_edges("critic", should_continue)
+
+workflow.set_entry_point("search")
+
+# Compile with checkpointing (HITL support)
+app = workflow.compile(checkpointer=SqliteSaver.from_conn_string("hunter.db"), interrupt_before=["queue"])
+```
+
+---
+
+### 2.4 Timeline & Volume Constraints
+
+| Period | Daily Limit | Action | Domain Rep |
+|--------|-------------|--------|-----------|
+| **Feb 22 - Mar 29** | 0/day | Discovery ONLY (build lead database) | Warming (20/day warm contacts) |
+| **Apr 1 - Apr 30** | 20/day | Manual outreach (Bartek approves each email) | 95%+ inbox |
+| **May 1 - Jun 7** | 50/day | Semi-automated (Bartek reviews queue, batch approves) | 95%+ inbox |
+| **Jun 8+** | 100/day | Fully automated (HITL for edge cases only) | 95%+ inbox |
+
+**Hard Limit:** NEVER exceed 200 emails/day (spam trigger threshold)
+
+---
+
+### 2.5 Email Template (Formal Polish)
+
+```
+Temat: Zgodność z Dyrektywą UE 2023/970 — 15 min rozmowa?
+
+Szanowna Pani [Name],
+
+Zauważyłem, że [Company] niedawno [specific detail from LinkedIn/news].
+
+W związku z terminem 7 czerwca 2026 (Dyrektywa UE 2023/970), 
+przygotowaliśmy rozwiązanie GapRoll, które automatyzuje raporty Art. 16 w 15 minut.
+
+Czy byłaby Pani zainteresowana 15-minutową rozmową, aby zobaczyć jak to działa?
+
+[Umów demo - Calendly link]
+
+Pozdrawiam,
+[Signature]
+```
+
+**Key Elements:**
+- ✅ Formal greeting ("Szanowna Pani")
+- ✅ Personalization (specific detail about company)
+- ✅ Urgency (deadline: Jun 7, 2026)
+- ✅ Value prop (15 minutes to compliance)
+- ✅ Clear CTA (Calendly link)
+
+---
+
+## 3. Guardian Agent — Legal Compliance Assistant
+
+### 3.1 Mission
+
+> Answer Grażyna's legal/HR questions with citations to Art. X of EU Directive 2023/970, Kodeks Pracy, RODO, etc.
+
+### 3.2 Architecture (LangGraph + GraphRAG)
+
+```mermaid
+graph TD
+    START[User Question] --> CLASSIFY[Classify Query]
+    CLASSIFY --> RISK{Risk Level?}
+    RISK -->|LOW| RAG[GraphRAG Search]
+    RISK -->|HIGH| HITL[Human Review]
+    RAG --> CITE[Add Citations]
+    CITE --> CONFIDENCE{Confidence > 0.7?}
+    CONFIDENCE -->|YES| RESPONSE[Generate Response]
+    CONFIDENCE -->|NO| HITL
+    RESPONSE --> END[Return to User]
+    HITL --> MANUAL[Manual Response]
+    MANUAL --> END
+```
+
+---
+
+### 3.3 Risk Classification
+
+| Query Type | Risk Level | Action |
+|-----------|------------|--------|
+| **Factual (Art. X definition)** | LOW | RAG → Auto-respond |
+| **Interpretation (Is gap 12% legal?)** | MEDIUM | RAG + confidence check |
+| **Advisory (Should I fire employee X?)** | HIGH | ALWAYS HITL |
+
+**HIGH-RISK Keywords (auto-trigger HITL):**
+- "Zwolnienie dyscyplinarne" (disciplinary termination)
+- "Wypowiedzenie" (termination)
+- "Pozew" (lawsuit)
+- "Dyskryminacja" (discrimination)
+- "Mobbing" (mobbing)
+
+---
+
+### 3.4 GraphRAG Implementation
+
+**Why GraphRAG (not vector RAG):**
+- ✅ Captures relationships: "Art. 16 requires Art. 4" (cross-references)
+- ✅ Better for legal docs (hierarchical structure: Directive → Article → Paragraph)
+- ❌ Vector RAG: Matches keywords, misses logical connections
+
+**Tech Stack:**
+- **Vector DB:** Weaviate (self-hosted on Hetzner VPS)
+- **Graph Edges:** Article X → Article Y (requires, references, complements)
+- **Embeddings:** text-embedding-3-small (OpenAI, 1536 dims)
+
+**Ingestion Pipeline:**
+
+```python
+import weaviate
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# Split legal docs into chunks (500 chars, 50 overlap)
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+chunks = splitter.split_documents([directive_pdf, kodeks_pracy_pdf])
+
+# Create graph edges (manual annotation)
+edges = [
+    ("Art. 16", "Art. 4", "requires"),  # Art. 16 requires EVG from Art. 4
+    ("Art. 7", "Art. 4", "depends_on"),  # Worker reports depend on EVG
+    ("Art. 9", "Art. 16", "triggered_by"),  # Joint assessment triggered by gap >5%
+]
+
+# Ingest to Weaviate
+client = weaviate.Client("http://localhost:8080")
+for chunk in chunks:
+    client.data_object.create(
+        class_name="LegalChunk",
+        data_object={
+            "text": chunk.page_content,
+            "source": chunk.metadata["source"],
+            "article": chunk.metadata["article"],
+        },
+        vector=embed(chunk.page_content),  # OpenAI embedding
+    )
+
+# Add edges
+for source, target, relation in edges:
+    client.data_object.reference.add(
+        from_uuid=get_uuid(source),
+        to_uuid=get_uuid(target),
+        from_property_name=relation,
+    )
+```
+
+---
+
+### 3.5 Guardian Response Format
+
+**Example Query:**
+```
+"Czy luka 12% to naruszenie prawa?"
+```
+
+**Guardian Response:**
+```
+Nie automatycznie. Art. 16 Dyrektywy UE 2023/970 nie definiuje "niedopuszczalnego" poziomu luki.
+
+Jednak:
+- Jeśli luka >5% → Art. 9 wymaga wyjaśnienia przyczyn (Joint Pay Assessment)
+- Jeśli luka >25% → PIP może wszcząć kontrolę (precedens orzecznictwa)
+
+Twoja luka (12%) → wymaga monitorowania i planu działania.
+
+Rekomendacja: Przygotuj Raport Art. 7 (uzasadnienie).
+
+[Link do szablonu Art. 7]
+
+Podstawa prawna:
+- Art. 9 Dyrektywy UE 2023/970 (Joint Pay Assessment)
+- Art. 16 Dyrektywy UE 2023/970 (Reporting)
+```
+
+**Key Elements:**
+- ✅ Direct answer ("Nie automatycznie")
+- ✅ Legal citations ("Art. 9 wymaga...")
+- ✅ Practical guidance ("Przygotuj Raport Art. 7")
+- ✅ Polish formal tone
+
+---
+
+## 4. Analyst Agent — Self-Improvement Optimizer
+
+### 4.1 Mission
+
+> Monitor Hunter & Guardian performance → optimize prompts via DSPy MIPROv2 → improve agent quality over time.
+
+### 4.2 Architecture (DSPy + LangSmith)
+
+```mermaid
+graph TD
+    START[Weekly Trigger] --> COLLECT[Collect Traces]
+    COLLECT --> METRICS[Calculate Metrics]
+    METRICS --> THRESHOLD{Performance < Target?}
+    THRESHOLD -->|YES| OPTIMIZE[DSPy MIPROv2]
+    THRESHOLD -->|NO| MONITOR[Continue Monitoring]
+    OPTIMIZE --> HOLDOUT[Validate on Holdout]
+    HOLDOUT --> APPROVE{Improvement > 5%?}
+    APPROVE -->|YES| DEPLOY[Deploy New Prompts]
+    APPROVE -->|NO| ROLLBACK[Rollback]
+    DEPLOY --> END[End]
+    ROLLBACK --> END
+    MONITOR --> END
+```
+
+---
+
+### 4.3 Metrics Tracked
+
+**Hunter Agent:**
+| Metric | Target | Current | Source |
+|--------|--------|---------|--------|
+| Email open rate | >20% | 18% | Mailchimp |
+| Response rate | >10% | 8% | Mailchimp |
+| Spam complaint rate | <0.5% | 0.3% | Mailchimp |
+| Bounce rate | <2% | 1.5% | Mailchimp |
+
+**Guardian Agent:**
+| Metric | Target | Current | Source |
+|--------|--------|---------|--------|
+| Answer accuracy | >90% | 87% | Human eval (Golden Dataset) |
+| Citation correctness | 100% | 95% | Automated check |
+| HITL rejection rate | <20% | 25% | LangSmith |
+| Response time | <5s | 4.2s | LangSmith |
+
+---
+
+### 4.4 DSPy MIPROv2 Optimization
+
+**What is MIPROv2:**
+- Multi-Instruction Prompt Optimization (v2)
+- Uses teacher model (GPT-4o) to generate training examples
+- Uses student model (GPT-4o-mini) for production (60% cheaper)
+- Automatically optimizes prompts based on Golden Dataset
+
+**Process:**
+
+```python
+import dspy
+from dspy.teleprompt import MIPROv2
+
+# Define signature
+class GuardianQA(dspy.Signature):
+    """Answer legal question with citations"""
+    question = dspy.InputField(desc="User's legal question")
+    answer = dspy.OutputField(desc="Answer with citations to Art. X")
+
+# Create module
+class Guardian(dspy.Module):
+    def __init__(self):
+        super().__init__()
+        self.qa = dspy.ChainOfThought(GuardianQA)
+    
+    def forward(self, question):
+        return self.qa(question=question)
+
+# Golden Dataset (50 examples minimum)
+trainset = [
+    dspy.Example(
+        question="Czy luka 12% to naruszenie?",
+        answer="Nie automatycznie. Art. 9 wymaga wyjaśnienia jeśli >5%...",
+    ).with_inputs("question"),
+    # ... 49 more examples
+]
+
+# Optimize with MIPROv2
+teleprompter = MIPROv2(
+    metric=answer_quality_metric,  # Custom metric (citation correctness + accuracy)
+    teacher_model=dspy.OpenAI(model="gpt-4o"),
+    student_model=dspy.OpenAI(model="gpt-4o-mini"),
+    num_candidates=10,  # Generate 10 prompt variations
+    max_iterations=5,   # Test up to 5 iterations
+)
+
+optimized_guardian = teleprompter.compile(Guardian(), trainset=trainset)
+```
+
+**Deployment:**
+- Weekly optimization (every Monday 9 AM)
+- Validate on holdout set (20% of Golden Dataset)
+- Deploy only if improvement >5%
+- Rollback if accuracy drops
+
+---
+
+## 5. HITL (Human-in-the-Loop) Workflow
+
+### 5.1 HITL Queue (Next.js Admin Panel)
+
+**URL:** `/admin/hitl-queue`
+
+**Columns:**
+| Column | Content |
+|--------|---------|
+| **Agent** | Hunter, Guardian, Analyst |
+| **Type** | Email draft, Legal Q&A, Prompt change |
+| **Created** | Timestamp |
+| **Priority** | HIGH (compliance), MEDIUM (outreach), LOW (optimization) |
+| **Status** | Pending, Approved, Rejected |
+| **Actions** | [Approve] [Reject] [Edit & Approve] |
+
+**Example:**
+```
+Agent: Guardian
+Type: Legal Q&A
+Question: "Czy mogę zwolnić pracownika za opóźnienia?"
+AI Answer: "Tak, po upomnieniu pisemnym (Art. 52 Kodeks Pracy)."
+Confidence: 0.65 (below 0.7 threshold → HITL)
+Status: Pending
+[Approve] [Reject] [Edit & Approve]
+```
+
+**Bartek's Action:**
+- Approve → AI answer sent to user
+- Reject → Manual response required
+- Edit & Approve → Modify AI answer, send to user, add to Golden Dataset
+
+---
+
+### 5.2 HITL Approval Metrics
+
+| Metric | Target | Current (Week 1) | Notes |
+|--------|--------|------------------|-------|
+| **Approval Rate** | >80% | 75% | Improving as Golden Dataset grows |
+| **Rejection Rate** | <20% | 25% | Decreasing over time |
+| **Edit Rate** | <10% | 15% | Minor tweaks (tone, citations) |
+
+---
+
+## 6. Cost Tracking (LangSmith)
+
+**Monthly Budget:** $200 (at 1000 users, 100k API calls/month)
+
+**Breakdown:**
+| Agent | Tokens/Call | Cost/Call | Calls/Month | Total/Month |
+|-------|------------|-----------|-------------|-------------|
+| **Hunter** | 500 (generation) + 300 (critic) = 800 | $0.0008 | 3,000 (100/day) | $2.40 |
+| **Guardian** | 1,000 (RAG + generation) | $0.001 | 10,000 | $10 |
+| **Analyst** | 5,000 (DSPy optimization) | $0.005 | 4 (weekly) | $0.02 |
+| **Total** | | | | **~$12.42** |
+
+**Note:** At scale (10k users), cost ~$120/month (still <1% of revenue)
+
+---
+
+**END OF 06_AGENT_BLUEPRINTS.md**
+
+**Next Review:** After Hunter Discovery phase (Mar 29, 2026)
+
+**Key Updates This Version (Feb 14, 2026):**
+- ✅ Rebrand PayCompass → GapRoll
+- ✅ Hunter timeline updated (Discovery: Mar 29, Outreach: Jun 8)
+- ✅ Email volume constraints (20→50→100/day progression)
+- ✅ GraphRAG architecture for Guardian (Weaviate)
+- ✅ DSPy MIPROv2 optimization for Analyst
+- ✅ HITL queue design (Next.js admin panel)
+- ✅ Cost tracking (LangSmith, $12.42/month baseline)
+
+# GapRoll — Skill Library
+## Specialized Reasoning Loops for Domain-Specific Tasks
+
+**Last Updated:** 2026-02-14  
+**Previous Name:** PayCompass (sunset Feb 14, 2026)  
+**Usage:** Invoke skills via XML tags in user prompts (e.g., `<skill_legal_audit>`)
+
+---
+
+## 1. Skill System Overview
+
+**Concept:**
+> Skills are specialized reasoning loops that Claude (CPTO assistant) can invoke for domain-specific tasks requiring deep expertise.
+
+**Benefits:**
+- ✅ Consistent quality (predefined protocols vs ad-hoc reasoning)
+- ✅ Reusable across sessions (codified best practices)
+- ✅ Traceable (explicit skill invocation vs implicit)
+
+---
+
+## 2. Available Skills
+
+### 2.1 `<skill_legal_audit>` — Compliance Verification
+
+**Purpose:** Audit any feature, document, or email for legal compliance (EU Directive 2023/970, RODO, EU AI Act, Kodeks Pracy).
+
+**Invocation:**
+```xml
+<skill_legal_audit>
+Feature: EVG Manual Override UI
+Artifacts: 08_EXPLAINABILITY_ROADMAP.md, Figma mockup
+</skill_legal_audit>
+```
+
+**Protocol:**
+
+```
+STEP 1: Identify Applicable Laws
+- EU Directive 2023/970 (pay transparency)
+- EU AI Act (high-risk AI systems)
+- RODO / GDPR (data protection)
+- Kodeks Pracy (Polish labor code)
+
+STEP 2: Map Feature to Legal Requirements
+- Which articles apply? (e.g., Art. 4, Art. 7, Art. 14 EU AI Act)
+- What are the obligations? (e.g., "employer must have EVG system")
+- Does feature fulfill obligation? (YES/NO/PARTIAL)
+
+STEP 3: Identify Gaps
+- Missing: Audit trail for EVG overrides (EU AI Act Art. 14)
+- Missing: Citation of Art. X in UI (Grażyna trust requirement)
+- Risk: If manual override not saved, PIP can challenge
+
+STEP 4: Recommend Fixes
+- Add audit_log table (user_id, timestamp, old_value, new_value, justification)
+- Add CitationBadge component showing "Art. 4 Dyrektywy UE 2023/970"
+- Add retention policy (3 years for PIP audit)
+
+STEP 5: Risk Score (1-10)
+- 1-3: Low risk (cosmetic issues)
+- 4-7: Medium risk (compliance gaps, fixable)
+- 8-10: High risk (legal violation, urgent fix needed)
+
+OUTPUT: Markdown report with gaps + fixes + risk score
+```
+
+**Example Output:**
+```markdown
+# Legal Audit: EVG Manual Override UI
+
+## Applicable Laws
+- EU AI Act Art. 14 (HITL requirement)
+- EU Directive 2023/970 Art. 4 (EVG methodology)
+
+## Compliance Status
+✅ HITL requirement met (Manual Override button present)
+⚠️ PARTIAL: Audit trail missing (EU AI Act Art. 14 requires logging)
+❌ MISSING: Legal citation (Grażyna won't trust without "Art. 4" badge)
+
+## Recommended Fixes
+1. Add audit_log table (high priority)
+2. Add CitationBadge: "⚖️ Art. 4 Dyrektywy UE 2023/970" (high priority)
+3. Add retention policy: 3 years (medium priority)
+
+## Risk Score: 6/10 (MEDIUM)
+Rationale: Functional compliance (HITL exists), but documentation gaps could cause PIP audit issues.
+```
+
+---
+
+### 2.2 `<skill_grazyna_check>` — UX De-teching
+
+**Purpose:** Translate technical jargon into Grażyna-friendly Polish.
+
+**Invocation:**
+```xml
+<skill_grazyna_check>
+Copy: "AI-powered pay equity analytics with ML-based job evaluation engine"
+</skill_grazyna_check>
+```
+
+**Protocol:**
+
+```
+STEP 1: Identify Anglicisms
+- "AI-powered" → scary, untrusted
+- "analytics" → vague
+- "ML-based" → incomprehensible
+
+STEP 2: Identify Jargon
+- "pay equity" → Grażyna says "luka płacowa"
+- "job evaluation engine" → Grażyna says "wartościowanie stanowisk"
+
+STEP 3: Rewrite in Grażyna's Vocabulary
+- Use formal Polish (no casual tone)
+- Use legal terms (podstawa prawna, raport zgodności)
+- Cite articles (Art. 16, Art. 4)
+
+STEP 4: Validate Against Persona
+- Grażyna Test: "Czy Grażyna by to zrozumiała w 5 sekund?" (YES/NO)
+- If NO → simplify further
+
+OUTPUT: Rewritten copy + explanation of changes
+```
+
+**Example Output:**
+```markdown
+# Grazyna Check Results
+
+## Original Copy
+"AI-powered pay equity analytics with ML-based job evaluation engine"
+
+## Issues Detected
+❌ "AI-powered" → scary (Grażyna doesn't trust AI)
+❌ "analytics" → vague (what does it actually do?)
+❌ "ML-based" → incomprehensible jargon
+❌ "pay equity" → anglicism (Grażyna says "luka płacowa")
+❌ "job evaluation engine" → too technical
+
+## Rewritten Copy
+"Automatyczne wartościowanie stanowisk (zgodnie z Art. 4 Dyrektywy UE 2023/970) z możliwością edycji ręcznej. Raport Art. 16 gotowy w 15 minut."
+
+## Changes Explained
+- "AI-powered" → "Automatyczne" (neutral, less scary)
+- "pay equity analytics" → "wartościowanie stanowisk" (Grażyna's term)
+- Added: "z możliwością edycji ręcznej" (addresses control fear)
+- Added: "Art. 4 Dyrektywy" (legal citation = trust signal)
+- Added: "Raport Art. 16 gotowy w 15 minut" (concrete value prop)
+
+## Grażyna Test: ✅ PASS
+She understands: what it does, legal basis, that she has control, time saved.
+```
+
+---
+
+### 2.3 `<skill_hunter_safe_mode>` — Spam-Free Outreach
+
+**Purpose:** Generate cold email content with 0% spam risk (avoid blacklist triggers).
+
+**Invocation:**
+```xml
+<skill_hunter_safe_mode>
+Target: Accounting firm (50 employees, Warsaw)
+Decision Maker: Joanna Kowalska (CFO)
+</skill_hunter_safe_mode>
+```
+
+**Protocol:**
+
+```
+STEP 1: Banned Words Check
+NEVER use:
+- "niesamowity", "rewolucyjny", "exclusive", "limited time"
+- "guarantee", "100% success", "free money"
+- "click here", "act now", "urgent"
+- ALL CAPS (except acronyms like PIP, ZUS)
+- Excessive punctuation (!!!, ???)
+
+STEP 2: Personalization Requirement
+MUST include:
+- Specific detail about company (LinkedIn post, news, job listing)
+- Decision maker's name + title (formal greeting)
+- Industry-specific pain point (not generic)
+
+STEP 3: Formal Polish Tone
+- "Szanowna Pani" / "Szanowny Panie" (always)
+- No casual "Cześć", "Co słychać?"
+- No emojis
+- No contractions ("nie ma" not "niema")
+
+STEP 4: CTA Simplicity
+- ONE CTA only (e.g., "Umów demo")
+- Calendly link (no back-and-forth)
+- No "reply to this email" (passive)
+
+STEP 5: Spam Score Check
+- SpamAssassin score <3 (target: <2)
+- Mail-tester.com score >8/10
+- No trigger words detected
+
+OUTPUT: Email draft + spam score + personalization checklist
+```
+
+**Example Output:**
+```markdown
+# Hunter Safe Mode: Email Draft
+
+## Target Profile
+- Company: Biuro Rachunkowe Kowalski Sp. z o.o.
+- Decision Maker: Joanna Kowalska (CFO)
+- Employees: 50
+- Location: Warsaw
+- LinkedIn: Posted about ZUS compliance challenges (2 days ago)
+
+## Email Draft
+
+```
+Temat: Zgodność Art. 16 — Rozwiązanie dla biur rachunkowych
+
+Szanowna Pani Joanna,
+
+Zauważyłem Pani post na LinkedIn o wyzwaniach z ZUS compliance. 
+
+W związku z terminem 7 czerwca 2026 (Dyrektywa UE 2023/970), przygotowaliśmy 
+GapRoll — rozwiązanie które automatyzuje raporty Art. 16 dla Państwa klientów.
+
+Obecnie pracujemy z 3 biurami rachunkowymi (50-100 klientów każde).
+
+Czy byłaby Pani zainteresowana 15-minutową rozmową?
+
+[Umów demo - Calendly link]
+
+Pozdrawiam,
+Bartłomiej
+GapRoll
+bartek@gaproll.eu
+```
+
+## Spam Check Results
+✅ SpamAssassin score: 1.8 (PASS, <3 target)
+✅ Mail-tester.com: 9.2/10 (EXCELLENT)
+✅ No banned words detected
+✅ Personalization: LinkedIn post reference (recent, specific)
+✅ Formal tone: "Szanowna Pani" used
+✅ One CTA: Calendly link
+✅ No ALL CAPS (except acronyms)
+✅ Polish diacritics correct (Państwa, Pani)
+
+## Personalization Checklist
+✅ Specific detail: LinkedIn post about ZUS compliance (2 days ago)
+✅ Decision maker name: Joanna Kowalska
+✅ Industry pain point: Biura rachunkowe need Art. 16 solution for clients
+✅ Social proof: "3 biura rachunkowe" (credibility)
+
+## Estimated Deliverability: 95%+
+```
+
+---
+
+## 3. Skill Invocation Rules
+
+### 3.1 When to Invoke
+
+**Auto-Invoke (Assistant should invoke without asking):**
+- Legal audit before deploying ANY compliance feature
+- Grażyna check before finalizing ANY user-facing copy
+- Hunter safe mode before sending ANY cold email
+
+**User-Invoked (User explicitly requests):**
+```
+User: "Sprawdź czy ta funkcja jest zgodna z RODO"
+Assistant: [invokes <skill_legal_audit>]
+```
+
+---
+
+### 3.2 Skill Composition (Chaining)
+
+**Example:**
+```xml
+<skill_grazyna_check>
+Copy from landing page hero section
+</skill_grazyna_check>
+
+<skill_legal_audit>
+Claims made in copy (e.g., "Full compliance with Directive")
+</skill_legal_audit>
+```
+
+**Workflow:**
+1. Grażyna Check → rewrite copy in Polish formal tone
+2. Legal Audit → verify claims are legally accurate
+3. Output → Grażyna-friendly + legally sound copy
+
+---
+
+## 4. Skill Development Protocol
+
+### 4.1 Creating New Skills
+
+**When to create new skill:**
+- Task repeats >5 times with similar protocol
+- Domain expertise required (legal, UX, sales)
+- Quality consistency critical (can't tolerate variance)
+
+**Template:**
+```markdown
+## Skill Name: `<skill_xyz>`
+
+**Purpose:** [One sentence]
+
+**Invocation Example:**
+```xml
+<skill_xyz>
+Input: [what user provides]
+</skill_xyz>
+```
+
+**Protocol:**
+```
+STEP 1: [First check]
+STEP 2: [Second check]
+...
+STEP N: [Final output]
+
+OUTPUT: [Format description]
+```
+
+**Example Output:**
+```markdown
+[Show example]
+```
+```
+
+---
+
+### 4.2 Skill Testing
+
+**Validation Checklist:**
+- [ ] Protocol is deterministic (same input → same output)
+- [ ] Output format is consistent
+- [ ] Error handling defined (what if input is missing?)
+- [ ] Performance acceptable (<30s for most skills)
+- [ ] Examples provided (at least 2)
+
+---
+
+## 5. Skill Library Changelog
+
+| Date | Skill | Change |
+|------|-------|--------|
+| 2026-02-14 | All | Rebrand PayCompass → GapRoll |
+| 2026-02-13 | `<skill_legal_audit>` | Created (EU AI Act added) |
+| 2026-02-13 | `<skill_grazyna_check>` | Created (Persona-based validation) |
+| 2026-02-13 | `<skill_hunter_safe_mode>` | Created (Spam prevention) |
+
+---
+
+**END OF 07_SKILL_LIBRARY.md**
+
+**Next Review:** After 50 skill invocations (validate effectiveness)
+
+**Key Reminder:**
+- Skills = Codified best practices (not ad-hoc reasoning)
+- Always invoke relevant skills BEFORE finalizing deliverables
+- Skills improve over time (add learnings from sessions)
+
+# GapRoll — Explainability Roadmap
+## How to Make Complex Pay Equity Understandable for Grażyna
+
+**Last Updated:** 2026-02-14  
+**Version:** 1.0  
+**Owner:** CPTO  
+**Related Files:** 03_PERSONA_GRAZYNA.md, 05_FRONTEND_STANDARDS.md, 01_STRATEGY.md
+
+---
+
+## 1. Core Principle: The Audit Trail
+
+Grażyna does NOT trust black boxes. Every number, every gap, every recommendation must be traceable to:
+
+1. **Prawna podstawa** (legal citation: article, paragraph, law)
+2. **Data source** (where this number came from)
+3. **Calculation logic** (show the formula, not just the result)
+
+**Why This Matters:**
+- Grażyna fears PIP audit (Państwowa Inspekcja Pracy)
+- She needs to defend every metric to CEO/CFO
+- Without citations, she won't buy (compliance anxiety trumps innovation)
+
+---
+
+## 2. Metrics That Need Explaining
+
+### 2.1 Luka Płacowa (Pay Gap) — The Red Number
+
+**What Grażyna sees:**
+```
+⚠️ Średnia luka płacowa: 12.5%
+```
+
+**What Grażyna is TERRIFIED of:**
+- Is this a legal violation?
+- Will PIP/ZUS fine me?
+- Is this Article 7 or Article 16?
+- How do I explain this to the board?
+
+**Explainability Required:**
+
+| Element | Placement | Content | Citation |
+|---------|-----------|---------|----------|
+| **Tooltip (hover)** | Icon next to % | "Średnia różnica wynagrodzenia kobiet vs mężczyzn. Ujemna wartość = kobiety zarabiają mniej." | Art. 16 Dyrektywy 2023/970 |
+| **Contextual Alert** | Below number | "W Waszej branży (IT) średni gap to 8–15%. Jesteście w normie." | Internal benchmark (GapRoll aggregate data) |
+| **Defense Strategy** | Expandable section | "Możliwe przyczyny: [Stanowisko X na Level 3 ma wyższą pensję u mężczyzn]. Rekomendacja: [Podwyżka dla Y osób]." | Art. 7 ust. 3 (justification) |
+| **Legal Status** | Card | "🟢 BRAK OBOWIĄZKU do działania (gap < 5%). Jednak zalecamy monitorowanie." OR "🔴 GAP >5% — Art. 9 wymaga wyjaśnienia przyczyn." | Art. 16 ust. 1, Art. 9 (threshold) |
+
+**UI Component:** `<PayGapExplainer />` (Shadcn collapsible + tooltip)
+
+---
+
+### 2.2 Wartościowanie Stanowisk (EVG Score) — The Black Box Risk
+
+**What Grażyna sees:**
+```
+Stanowisko: Developer Senior
+Ocena EVG: 78/100 [AI-scored]
+```
+
+**Her immediate panic:**
+- Did the AI really understand this job?
+- Can I override it? (CRITICAL: she MUST be able to!)
+- What if the AI is wrong and PIP audits us?
+- Will the board trust an AI over my judgment?
+
+**Explainability Required:**
+
+| Element | Placement | Content | Citation |
+|---------|-----------|---------|----------|
+| **4-Axis Breakdown** | Modal (click "78/100") | Skills: 22/25, Effort: 18/25, Responsibility: 20/25, Conditions: 18/25 | Art. 4 Dyrektywy (equal value of work) |
+| **Evidence** | Collapsible per axis | **Skills:** "Wymaga biegłości w JS, Python, AWS. Poziom: Senior (4/5)." | Job description mapping |
+| **AI Confidence** | Badge | "AI pewność: 89%. **[Przejrzyj szczegóły]**" | Explainability metric |
+| **Manual Override Button** | Prominent | "❌ Nie zgadzam się. Zmieniam na 72." → Opens justification modal | HITL requirement (EU AI Act Art. 14) |
+| **Tolerance Band** | Info box | "Tolerancja ±5 punktów. Przedziały: 73–83 = równa wartość pracy." | Art. 4 ust. 3 |
+| **Audit Trail** | Expandable | "Historia zmian: Grażyna zmieniła z 78 → 72 dnia 2026-03-15. Powód: 'Dodatkowa odpowiedzialność za budżet projektu nie była uwzględniona.'" | EU AI Act compliance |
+
+**UI Component:** `<EVGScoreCard />` + `<EVGDetailModal />` + `<ManualOverrideForm />` (Shadcn dialog + accordion)
+
+**CRITICAL:** Manual Override is MANDATORY, not optional. Without it:
+- ❌ EU AI Act violation (high-risk AI without HITL)
+- ❌ Grażyna won't buy (zero trust in AI)
+- ❌ PIP can challenge every score
+
+---
+
+### 2.3 Analiza Kwartyli (Quartile Analysis) — The Table That Confuses Everyone
+
+**What Grażyna sees:**
+```
+Kwartyl 1 (najniżsi): 8 kobiet, 5 mężczyzn
+Kwartyl 2: 12 kobiet, 10 mężczyzn
+Kwartyl 3: 9 kobiet, 14 mężczyzn
+Kwartyl 4 (najwyżsi): 3 kobiet, 11 mężczyzn
+```
+
+**Her question:**
+- Why is this table here?
+- What do I DO with it?
+- Is this good or bad?
+- How do I present this to the board?
+
+**Explainability Required:**
+
+| Element | Placement | Content | Citation |
+|---------|-----------|---------|----------|
+| **Visual Legend** | Above table | "Podział na 4 grupy wynagrodzenia (od najniższych do najwyższych). Porównanie: kobiety vs mężczyźni w każdej grupie." | Art. 16 ust. 2 lit. a) |
+| **Narrative Alert** | Card | "🔴 **Problem:** W Kwartyl 4 kobiety są niedoreprezentowane (3 vs 11 mężczyzn). To może wskazywać na dysproporcję awansów." OR "🟢 **Dobra wiadomość:** Rozkład jest względnie równomierny." | Art. 9 (structural analysis) |
+| **What To Do** | Action button | "Sprawdź, czy kryteria awansu są neutralne względem płci. [Przejdź do EVG]" | Art. 4 (equal value criteria) |
+| **Data Quality** | Footer | "Dane z okresu: 01.01.2024–31.12.2024. N=72. N<3 wygaszone (RODO)." | RODO masking rule |
+
+**UI Component:** `<QuartileAnalysisTable />` + `<QuartileInterpretation />` (Shadcn table + alert)
+
+---
+
+### 2.4 Art. 16 Report Components — The Regulatory Report
+
+**What Grażyna needs in PDF/HTML export:**
+
+| Component | Required By | Explanation Format | Citation |
+|-----------|-------------|-------------------|----------|
+| **Title** | Art. 16 ust. 1 | "Raport Równości Wynagrodzeń (Pay Gap Report)" | Required by law |
+| **Reporting Period** | Art. 16 ust. 2 | "Okres: 01.01.2024–31.12.2024" | Must be 12 months |
+| **Company Info** | Art. 16 ust. 3 | Name, KRS number, # employees | Audit trail |
+| **Mean Pay Gap** | Art. 16 ust. 2 lit. a) | "Średnia luka: X%. Metodologia: (salary_M - salary_F) / salary_M" | Show formula |
+| **Median Pay Gap** | Art. 16 ust. 2 lit. a) | "Mediana luki: Y%. Przyczyna rozbieżności: [explain if different from mean]" | Robustness check |
+| **Quartile Distribution** | Art. 16 ust. 2 lit. a) | Table (as above) | Structural analysis |
+| **Component Analysis** | Art. 16 ust. 2 lit. b) | Base salary, variable pay, allowances (separately) | Transparency |
+| **Justification** | Art. 7 ust. 3 | "Lukę uzasadniają: [factors]. Plany naprawy: [actions]." | Defense clause |
+| **Data Quality** | RODO compliance | "N<3 wygaszone. PII zamaskowane. Audit log: [date, user, changes]" | Transparency |
+
+**UI Component:** `<Art16Report />` (HTML + PDF via Puppeteer or WeasyPrint)
+
+---
+
+## 3. Grażyna FAQ — What She Will Ask & How We Answer
+
+### Q1: "Czy ta luka 12% to naruszenie prawa?"
+
+**Answer Template (formal, reassuring):**
+```
+Nie automatycznie. Art. 16 Dyrektywy nie definiuje "niedopuszczalnego" poziomu luki.
+
+Jednak:
+- Jeśli luka > 5% → Art. 9 wymaga wyjaśnienia przyczyn (Joint Pay Assessment)
+- Jeśli luka > 25% → PIP może wszcząć kontrolę (precedens orzecznictwa)
+- Twoja luka (12%) → wymaga monitorowania i planu działania
+
+Rekomendacja: Przygotuj Raport Art. 7 (uzasadnienie).
+[Link do szablonu Art. 7]
+```
+
+**UI:** Alert + modal with Art. 7 template link
+
+---
+
+### Q2: "Jakie dane są potrzebne do Raportu Art. 16?"
+
+**Answer Template:**
+```
+Minimum (Art. 16 ust. 2) — COMPLIANCE TIER:
+✅ Wynagrodzenie podstawowe (brutto, miesięczne)
+✅ Płeć (binarnie: M/K, lub "Inna/Wolę nie podawać")
+✅ Okres raportowania (minimum 12 miesięcy)
+✅ Identyfikator pracownika (do deduplication, może być anonimowy)
+
+Opcjonalnie (dla pełnej analizy) — STRATEGIA TIER:
+📊 Stanowisko (mapujemy do EVG automatycznie)
+📊 Typ umowy (UoP, UZ/UoD, B2B — ważne dla ZUS normalizacji)
+📊 Data zatrudnienia (seniority factor dla Root Cause Analysis)
+📊 Dział (department effect dla Root Cause Analysis)
+📊 Manager ID (dla Collaborative Review)
+📊 Performance rating (dla Collaborative Review)
+
+Nie potrzebujemy: PESEL, imię/nazwisko (maski są na poziomie bazy danych).
+```
+
+**UI:** Wizard step, checklist + data quality report
+
+---
+
+### Q3: "Co zrobić, jeśli EVG score jest niepoprawny?"
+
+**Answer Template:**
+```
+Dwa kroki:
+
+1. Przejrzyj ocenę AI (Art. 4):
+   - Kliknij "EVG Score: 78/100"
+   - Sprawdź 4 wymiary (Skills, Effort, Responsibility, Conditions)
+   - Przeczytaj uzasadnienie AI dla każdego wymiaru
+
+2. Zmień ręcznie + uzasadnij (Art. 4 ust. 3):
+   - Kliknij [Override Score]
+   - Nowa ocena: 72
+   - Uzasadnienie: "Stanowisko nie wymaga AWS (zmiana w 2024), obniżam Skills z 22 → 18"
+   - System zapisze wersję poprzednią (audit trail)
+
+Twoja ocena przesłania AI. Ty jesteś ekspertem, AI jest tylko narzędziem.
+```
+
+**UI:** Modal with before/after, audit trail visible, justification field mandatory
+
+---
+
+### Q4: "Czy ta platforma gromadzi dane pracowników bez zgody?"
+
+**Answer Template (RODO compliance):**
+```
+NIE. Zgodnie z RODO (Art. 6 ust. 1 lit. c):
+
+✅ Przetwarzamy dane TYLKO w celu zgodności z Dyrektywą 2023/970 (wymóg prawny)
+✅ Każdy dostęp do danych jest logowany (audit trail)
+✅ Dane N<3 są automatycznie maskowane (nigdy nie wyświetlamy grup <3 osób)
+✅ PII (PESEL, nazwisko) nigdy nie trafia do AI
+✅ Data retention: 3 lata (wymóg PIP dla audytu)
+✅ EU data residency: Hetzner Germany/Finland (nie USA)
+
+Ty kontrolujesz: kto ma dostęp, kto może eksportować, kiedy usuwamy.
+
+Przejrzyj: [Polityka prywatności + Audit Log]
+```
+
+**UI:** Privacy card + audit log viewer (admin panel)
+
+---
+
+## 4. UI Components — Implementation Guide
+
+### 4.1 Explainability Patterns (Shadcn + Tailwind)
+
+#### Pattern 1: Tooltip + Icon
+
+```tsx
+// Component: InfoTooltip
+import { Info } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Info className="w-4 h-4 text-slate-400 hover:text-teal-500 cursor-help" />
+  </TooltipTrigger>
+  <TooltipContent side="right" className="max-w-xs">
+    <p className="text-xs">Średnia różnica wynagrodzenia kobiet vs mężczyzn...</p>
+    <p className="text-xs text-slate-300 mt-2">
+      Źródło: Art. 16 Dyrektywy 2023/970
+    </p>
+  </TooltipContent>
+</Tooltip>
+```
+
+#### Pattern 2: Expandable Section (Collapsible)
+
+```tsx
+// Component: ExplainableMetric
+import { ChevronDown } from "lucide-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+
+<Collapsible>
+  <CollapsibleTrigger className="flex items-center gap-2 hover:text-teal-500">
+    <span className="font-mono text-2xl font-bold">12.5%</span>
+    <ChevronDown className="w-4 h-4" />
+  </CollapsibleTrigger>
+  <CollapsibleContent className="pt-4 border-t mt-4">
+    <div className="space-y-3">
+      <ExplanationSection title="Co to oznacza?" content="..." />
+      <ExplanationSection title="Czy to problem?" content="..." />
+      <ExplanationSection title="Co zrobić?" content="..." citation="Art. 7" />
+    </div>
+  </CollapsibleContent>
+</Collapsible>
+```
+
+#### Pattern 3: Citation Badge
+
+```tsx
+// Component: CitationBadge
+import { Scale } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+
+<Badge variant="outline" className="text-xs border-teal-500 text-teal-400">
+  <Scale className="w-3 h-3 mr-1" />
+  Art. 16 ust. 2 Dyrektywy 2023/970
+</Badge>
+```
+
+#### Pattern 4: Alert + Action
+
+```tsx
+// Component: ComplianceAlert
+import { AlertCircle } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+
+<Alert className="border-blue-500 bg-blue-50/5">
+  <AlertCircle className="h-4 w-4 text-blue-500" />
+  <AlertTitle>Konieczna akcja: Przygotuj Art. 7 Justification</AlertTitle>
+  <AlertDescription>
+    Twoja luka (12%) jest powyżej 5%. Art. 9 wymaga wyjaśnienia przyczyn.
+    <Button variant="link" size="sm" className="ml-2">
+      Przejdź do szablonu →
+    </Button>
+  </AlertDescription>
+</Alert>
+```
+
+---
+
+## 5. Copy Guidelines for Explanations (Polish, Formal Tone)
+
+### ✅ GOOD Examples (Grażyna-friendly)
+
+```
+"Luka płacowa to średnia różnica wynagrodzenia pomiędzy kobietami a mężczyznami.
+Twoja luka wynosi 12%, co oznacza, że kobiety zarabiają średnio o 12% mniej.
+Art. 9 Dyrektywy wymaga wyjaśnienia, jeśli luka przekracza 5%."
+```
+
+### ❌ BAD Examples (Confusing, too technical)
+
+```
+"Your pay gap coefficient is 1.12 (M/F ratio). This suggests a potential structural 
+inequity in your comp matrix. AI confidence: 87%."
+```
+
+**Rules:**
+- ✅ "Analiza wykazała..." (not "AI wykrył...")
+- ✅ "Zgodnie z Art. X..." (every metric cited)
+- ✅ "Raport wskazuje..." (formal tone)
+- ❌ "Dashboard insights" (no anglicisms)
+- ❌ "Check out" (use "Sprawdź")
+- ❌ "Best practices" (use "Sprawdzone rozwiązania")
+
+---
+
+## 6. Implementation Checklist — What Goes Into V1.0
+
+### Phase 1: Dashboard (Art. 16 Report Page) — Week 3 (Feb 16-22)
+
+- [ ] Main pay gap metric with tooltip
+- [ ] Quartile analysis table with narrative alert
+- [ ] Component breakdown (base / variable / allowances)
+- [ ] Legal status badge ("BRAK NARUSZENIA", "WYMAGA DZIAŁANIA", etc.)
+- [ ] PDF export button (Art. 16 compliant)
+
+### Phase 2: EVG Scoring Page — Week 4 (Feb 23 - Mar 1)
+
+- [ ] EVG score card with 4-axis breakdown
+- [ ] AI confidence badge
+- [ ] **MANDATORY Manual Override workflow** (modal + justification + audit trail)
+- [ ] Audit trail viewer (who changed what, when, why)
+- [ ] Tolerance band visualization (±5 points)
+
+### Phase 3: Compliance Checklist — Week 5 (Mar 2-8)
+
+- [ ] Required fields for Art. 16 report (data quality check)
+- [ ] N<3 suppression count ("X grup wygaszono z powodu N<3")
+- [ ] RODO compliance summary
+- [ ] Export audit log (CSV with all changes)
+
+### Phase 4: Grażyna Help Center — Week 6 (Mar 9-15)
+
+- [ ] In-app FAQ (expandable, searchable)
+- [ ] Art. 7 justification template (downloadable docx)
+- [ ] Glossary (luka płacowa, EVG, kwartyl, etc.)
+- [ ] Video tutorials (optional, linked from UI) — 3 min each:
+  - "Jak wygenerować raport Art. 16?"
+  - "Jak edytować EVG score ręcznie?"
+  - "Jak przygotować uzasadnienie Art. 7?"
+
+---
+
+## 7. Citation Mapping (Legal References)
+
+Every metric must map to exactly ONE article:
+
+| Metric | Article | Paragraph | Link to UI |
+|--------|---------|-----------|-----------|
+| Pay Gap % | 16 | (2) lit. a) | Main dashboard |
+| Quartile Distribution | 16 | (2) lit. a) | Analysis table |
+| Component Breakdown | 16 | (2) lit. b) | Report section |
+| EVG Scoring | 4 | (1), (3) | EVG modal |
+| Justification | 7 | (3) | Alert → template |
+| Data Retention | RODO | Art. 5 | Privacy settings |
+| HITL Requirement | EU AI Act | Art. 14 | EVG Override UI |
+
+---
+
+## 8. Testing Scenarios (QA Checklist)
+
+### Scenario A: Grażyna opens dashboard with 12% gap
+
+- [ ] Main metric visible immediately (no scrolling)
+- [ ] Tooltip works on hover (explains in Polish)
+- [ ] Legal status badge visible ("Wymaga działania")
+- [ ] "Przygotuj Art. 7" action button visible
+- [ ] PDF export includes all Art. 16 sections
+- [ ] No anglicisms in UI
+
+### Scenario B: Grażyna reviews EVG score for "Developer Senior"
+
+- [ ] Score 78/100 displays with confidence 89%
+- [ ] Click opens modal with 4-axis breakdown
+- [ ] Each axis shows evidence (skills mapped from job description)
+- [ ] **Manual Override button prominent and functional**
+- [ ] Override requires justification (mandatory field)
+- [ ] Audit log shows: who changed, when, from what to what, why
+- [ ] Old score still visible (before/after comparison)
+
+### Scenario C: Grażyna checks RODO compliance
+
+- [ ] Privacy page shows: what data collected, why, how long kept
+- [ ] Audit log accessible (filtered by date range)
+- [ ] N<3 suppression count visible ("5 grup wygaszono")
+- [ ] Download GDPR data request template
+- [ ] EU data residency badge visible (Hetzner Germany/Finland)
+
+---
+
+## 9. Rollout Plan
+
+| Week | Action | Success Metric |
+|------|--------|----------------|
+| 3 (16–22 Feb) | Implement Phase 1 (Dashboard) | All tooltips working, PDF exports Art. 16 compliant |
+| 4 (23 Feb–1 Mar) | Implement Phase 2 (EVG modal + Override) | Override + audit trail functional, no bugs |
+| 5 (2–8 Mar) | Implement Phase 3 (Compliance checklist) | Data quality report accurate, RODO summary complete |
+| 6 (9–15 Mar) | Implement Phase 4 (Help Center) | FAQ searchable, templates downloadable, videos linked |
+| 6 (9–15 Mar) | **Test with Grażyna persona (UX)** | 5/5 on comprehension test (can she use without training?) |
+| 6 (15 Mar) | Deploy to staging | Internal QA complete, ready for Milestone 1 |
+
+---
+
+## 10. Accessibility (WCAG 2.1 AA Minimum)
+
+### Contrast Requirements
+
+- **Normal Text (< 18px):** 4.5:1 ratio minimum
+- **Large Text (≥ 18px):** 3:1 ratio minimum
+- **UI Components:** 3:1 ratio minimum
+
+**Tool:** WebAIM Contrast Checker
+
+**Passing Combinations:**
+- ✅ White (#ffffff) on Slate-900 (#0f172a) - 17.3:1 ⭐
+- ✅ Slate-200 (#e2e8f0) on Slate-900 (#0f172a) - 13.2:1 ⭐
+- ✅ Teal (#14b8a6) on Slate-900 (#0f172a) - 5.8:1 ✓
+- ❌ Slate-400 (#94a3b8) on Slate-800 (#1e293b) - 2.9:1 ❌
+
+### Keyboard Navigation
+
+- All interactive elements must be keyboard-accessible (Tab, Enter, Escape)
+- Tab order follows visual flow (top → bottom, left → right)
+- Buttons show focus outline (never `outline: none` without custom replacement)
+- Modal traps focus (can't Tab outside modal until closed)
+
+### Screen Readers
+
+```tsx
+// Use semantic HTML elements
+<h1>Dashboard</h1>  // ✅
+<div style={{fontSize: 32}}>Dashboard</div>  // ❌
+
+// Provide alt text for images
+<img src="logo.png" alt="GapRoll Logo" />
+
+// Use aria-labels for icons
+<Info aria-label="Informacja o luce płacowej" />
+```
+
+---
+
+## References
+
+**EU Directive 2023/970** (sections 4, 7, 9, 16): `/mnt/project/DIRECTIVE_EU_2023_970.pdf`  
+**Grażyna Persona** (fears, vocabulary): `03_PERSONA_GRAZYNA.md`  
+**Frontend Standards** (color, typography, components): `05_FRONTEND_STANDARDS.md`  
+**Strategy** (product roadmap): `01_STRATEGY.md`
+
+---
+
+**END OF 08_EXPLAINABILITY_ROADMAP.md**
+
+**Next Review:** March 15, 2026 (after all phases deployed)
+
+**Key Principles:**
+- ✅ Every metric has: definition + legal citation + interpretation
+- ✅ Formal Polish (no anglicisms, "Zgodnie z Art. X...")
+- ✅ Manual Override = MANDATORY (EU AI Act + Grażyna trust)
+- ✅ Progressive disclosure (tooltip → collapsible → full report)
+- ✅ WCAG AA accessibility (contrast, keyboard nav, screen readers)
+
+# GapRoll — Feature Backlog
+## Prioritized Roadmap with Impact × Effort Analysis
+
+**Last Updated:** 2026-02-14  
+**Owner:** CPTO  
+**Status:** Living document (updated after each milestone)
+
+---
+
+## 1. Prioritization Formula
+
+```
+Priority Score = (Impact × 10) + (10 - Effort) + Strategic Bonus
+
+Impact: 1-10 (business value, user pain relieved, competitive advantage)
+Effort: 1-10 (dev time, complexity, dependencies)
+Strategic Bonus: 0-5 (data moat, regulatory arbitrage, network effects)
+
+Priority Tiers:
+- P0 (30+): Drop everything, build now
+- P1 (25-29): Next sprint
+- P2 (20-24): This quarter
+- P3 (15-19): Next quarter
+- BACKLOG (<15): Future consideration
+```
+
+---
+
+## 2. Feature Inventory (25 Features)
+
+### 2.1 BUILT (Streamlit MVP — Production)
+
+| # | Feature | Status | Notes |
+|---|---------|--------|-------|
+| 1 | CSV Upload + Auto-detect | ✅ PROD | Polish `;` separator support |
+| 2 | Column Mapping Wizard | ✅ PROD | Manual selectbox |
+| 3 | Pay Gap Calculation | ✅ PROD | Median M/F, per EVG group |
+| 4 | Fair Pay Line | ✅ PROD | Plotly scatter + regression |
+| 5 | Art. 16 Reporting | ✅ PROD | Quartile, component gaps |
+| 6 | B2B Equalizer | ✅ PROD | UoP↔B2B, ZUS 2026, NET→GROSS |
+| 7 | RODO Shield | ✅ PROD | N<3 masking, audit trail |
+| 8 | PDF Export (Art. 7) | ✅ PROD | ReportLab |
+| 9 | Multi-tenancy | ✅ PROD | Supabase RLS (org→project→user) |
+| 10 | Authentication | ✅ PROD | Supabase Auth (email/password) |
+| 11 | AI Job Scoring (basic) | ✅ PROD | GPT-4o, 1-100 scale |
+
+### 2.2 IN PROGRESS (Milestone 1 — Mar 15)
+
+| # | Feature | Target | Phase | Priority | Impact | Effort |
+|---|---------|--------|-------|----------|--------|--------|
+| 12 | **EVG Manual Override UI** | Mar 8 | 1 | **P0 (35)** | 10 | 5 |
+| 13 | **Invoice Automation** | Mar 29 | 1 | **P0 (33)** | 10 | 7 |
+| 14 | Explainability Layer | Mar 15 | 1 | P0 (30) | 9 | 6 |
+| 15 | Onboarding Automation (n8n) | Mar 15 | 1 | P1 (28) | 8 | 5 |
+| 16 | Sales Materials | Mar 8 | 1 | P1 (27) | 8 | 4 |
+| 17 | **Partner Portal v1** | Mar 15 | 1 | P1 (29) | 9 | 7 |
+| 18 | Rebrand (PayCompass→GapRoll) | Mar 1 | 1 | P0 (30) | 8 | 3 |
+
+### 2.3 QUEUED (Agents & Strategia Features — Mar-Jun)
+
+| # | Feature | Target | Phase | Priority | Impact | Effort |
+|---|---------|--------|-------|----------|--------|--------|
+| 19 | Hunter Agent (Discovery) | Mar 29 | 2 | P0 (32) | 9 | 8 |
+| 20 | **Root Cause Analysis** | Apr 19 | 2 | **P1 (30)** | 10 | 6 |
+| 21 | **Collaborative Review** | May 3 | 3 | **P1 (28)** | 9 | 7 |
+| 22 | Retention ROI Calculator | Apr 12 | 2 | P1 (26) | 8 | 4 |
+| 23 | Solio Solver v1 | Mar 29 | 2 | P1 (27) | 8 | 6 |
+| 24 | Benchmark Engine v1 (PDF) | Mar 22 | 2 | P2 (24) | 9 | 7 |
+| 25 | Guardian Agent (Legal RAG) | Apr 12 | 2 | P1 (28) | 9 | 9 |
+| 26 | HITL Approval Queue | Apr 26 | 2 | P1 (27) | 8 | 5 |
+| 27 | Analyst Agent (DSPy) | May 10 | 3 | P2 (23) | 7 | 8 |
+| 28 | Email Infrastructure | Apr 5 | 2 | P0 (30) | 8 | 3 |
+
+### 2.4 BACKLOG (Post-V1.0 — Q3-Q4 2026)
+
+| # | Feature | Phase | Priority | Impact | Effort |
+|---|---------|-------|----------|--------|--------|
+| 29 | Benchmark v2 (Web Scraping) | 3 | P2 (22) | 9 | 8 |
+| 30 | Solio Solver v2 (AI-powered) | 4 | P2 (21) | 8 | 7 |
+| 31 | Salary Review Cockpit | 4-5 | P3 (18) | 7 | 9 |
+| 32 | Gamified Merit Matrix | 4-5 | P3 (16) | 6 | 9 |
+| 33 | Smart Job Scorer | 3 | P2 (22) | 7 | 6 |
+| 34 | Justification Agent (Art. 7) | 3 | P2 (23) | 8 | 6 |
+| 35 | Partner Portal v2 (White-label) | 3 | P2 (24) | 8 | 7 |
+| 36 | SSO / SAML / Azure AD | 3 | P2 (21) | 7 | 8 |
+| 37 | API Access (for integrations) | 4 | P3 (19) | 6 | 7 |
+
+---
+
+## 3. Detailed Feature Specs
+
+### Feature #12: EVG Manual Override UI — CRITICAL (Priority 35)
+
+**Why P0:**
+- **Legal:** EU AI Act Art. 14 requires HITL for high-risk AI
+- **User:** Grażyna won't buy without override (zero trust in AI)
+- **Compliance:** Art. 4 Dyrektywy requires employer control over EVG methodology
+
+**User Story:**
+```
+As Grażyna, I need to manually override AI-generated EVG scores
+so that I can correct errors and maintain audit trail for PIP inspection.
+```
+
+**Acceptance Criteria:**
+- [ ] Click EVG score → modal opens with 4-axis breakdown
+- [ ] "Override Score" button prominent
+- [ ] Override requires justification (mandatory text field, min 20 chars)
+- [ ] Before/after comparison visible
+- [ ] Audit trail recorded (user, timestamp, old value, new value, reason)
+- [ ] Override persists across sessions
+- [ ] PDF export shows override in footnote: "EVG score manually adjusted by [user] on [date]. Justification: [reason]."
+
+**Dependencies:** None (standalone feature)
+
+**Effort Breakdown:**
+- UI components (modal, form): 2h
+- Backend (audit trail): 1h
+- Testing (edge cases): 1h
+- Total: 4h
+
+**Timeline:** Week 5 (Mar 2-8)
+
+---
+
+### Feature #13: Invoice Automation — CRITICAL (Priority 33)
+
+**Why P0:**
+- **Time savings:** 12.5h/month at 50 customers (vs manual invoicing)
+- **Scalability:** Cannot manually invoice 100+ customers
+- **Professionalism:** Auto-invoicing expected by Polish B2B
+
+**User Story:**
+```
+As a customer, when I sign up for GapRoll,
+I receive an invoice automatically via email with payment link
+so that I can pay immediately without waiting for manual invoice.
+```
+
+**Tech Stack:**
+- **Fakturownia.pl:** Invoice generation API
+  - JPK_FA export (Polish accounting standard)
+  - KSeF ready (e-faktury from July 2026)
+  - Cost: ~50 PLN/mies (100 invoices/month)
+- **Przelewy24:** Payment gateway
+  - BLIK, przelew, karty
+  - Webhook → Fakturownia status update
+  - Cost: 1.49% per transaction
+
+**Acceptance Criteria:**
+- [ ] New subscription → invoice auto-generated within 5 min
+- [ ] Invoice PDF sent via email (with payment link)
+- [ ] Customer pays → webhook updates status → confirmation email sent
+- [ ] Failed payment → retry logic (3 attempts over 7 days)
+- [ ] Manual invoice generation available (admin panel, for corrections)
+- [ ] Invoice includes: company details, KRS, NIP, payment terms (14 days)
+- [ ] Monitoring: Slack alert if invoice generation fails
+
+**Dependencies:** 
+- Fakturownia.pl account (created Week 5)
+- Przelewy24 merchant account (created Week 5)
+- Supabase webhook infrastructure
+
+**Effort Breakdown:**
+- Fakturownia API integration: 3h
+- Przelewy24 webhook: 2h
+- Email templates: 1h
+- Error handling + retry logic: 2h
+- Testing (mock payments): 2h
+- Total: 10h
+
+**Timeline:** 
+- Week 5 (Mar 2-8): Setup accounts, configure templates
+- Week 6 (Mar 9-15): Supabase integration
+- Week 7 (Mar 16-22): Testing
+- Week 8 (Mar 23-29): Production ready
+
+**ROI:** Break-even after 1 month (saves 12.5h at 50 customers, costs ~50 PLN/mies)
+
+---
+
+### Feature #20: Root Cause Analysis — STRATEGIA TIER (Priority 30)
+
+**Why P1:**
+- **Regulatory:** Art. 9 requires gap explanation if >5%
+- **Sales:** Main differentiator vs Compliance tier (justifies 2x price)
+- **Value:** Saves 1 week/year (vs manual pivot tables)
+
+**User Story:**
+```
+As Grażyna with a 12% pay gap,
+I need to understand WHY the gap exists (breakdown by cause)
+so that I can explain to the board and get budget approved for remediation.
+```
+
+**Output Example:**
+```
+Luka Płacowa: 12%
+
+Przyczyny (Root Causes):
+1. Luka Stażu Pracy (40% wpływu): 
+   - Mężczyźni: średnio 7.2 lat
+   - Kobiety: średnio 4.8 lat
+   - Różnica: 2.4 lat → wpływ na gap: 4.8%
+
+2. Dystrybucja Stanowisk (35% wpływu):
+   - Stanowiska senior: 90% mężczyźni, 10% kobiety
+   - Wpływ na gap: 4.2%
+
+3. Efekt Działowy (15% wpływu):
+   - IT (wysokie płace): 75% mężczyźni
+   - HR (niskie płace): 70% kobiety
+   - Wpływ na gap: 1.8%
+
+4. Typ Umowy (10% wpływu):
+   - B2B (wyższe płace): 20% mężczyźni vs 5% kobiet
+   - Wpływ na gap: 1.2%
+```
+
+**Acceptance Criteria:**
+- [ ] Analysis runs on-demand (button: "Analyze Root Causes")
+- [ ] Breakdown shows 4+ root causes with % contribution
+- [ ] Each cause has: description, metric (avg/median/%), impact on gap
+- [ ] Visual: pie chart or waterfall chart showing contribution
+- [ ] Export to PDF (board-ready report)
+- [ ] Legal citation: "Analiza przygotowana zgodnie z Art. 9 Dyrektywy UE 2023/970"
+
+**Dependencies:** 
+- Strategia tier data (hire_date, position_title, department, contract_type)
+
+**Algorithm:**
+```python
+# Regression decomposition
+from sklearn.linear_model import LinearRegression
+
+# Features: seniority_years, is_senior_role, is_high_pay_dept, is_b2b
+# Target: salary
+# Coefficient weights → % contribution to gap
+
+gap = median_male - median_female
+
+seniority_effect = coef_seniority * (avg_seniority_male - avg_seniority_female)
+position_effect = coef_senior * (pct_senior_male - pct_senior_female) * avg_senior_salary
+# ... etc
+
+contributions = [seniority_effect, position_effect, dept_effect, contract_effect]
+pct_contributions = contributions / sum(contributions) * 100
+```
+
+**Effort Breakdown:**
+- Algorithm (regression decomposition): 4h
+- UI (breakdown table + chart): 3h
+- PDF export template: 2h
+- Testing (edge cases, data validation): 3h
+- Total: 12h
+
+**Timeline:** Week 11 (Apr 13-19)
+
+**Sales Impact:** Estimated to increase Compliance→Strategia conversion from 35% → 45%
+
+---
+
+### Feature #21: Collaborative Review — STRATEGIA TIER (Priority 28)
+
+**Why P1:**
+- **Enterprise blocker:** Firms with 5+ managers won't buy without this
+- **Time savings:** 10 days/year (4 review cycles × 2.5 days each)
+- **Competitive:** Syndio has this, PayAnalytics doesn't (differentiator)
+
+**User Story:**
+```
+As Grażyna managing 5 department managers,
+I need each manager to propose raises for their team in one system
+so that I can approve/override all in one dashboard (no Excel email ping-pong).
+```
+
+**Workflow:**
+1. **Grażyna sets up review:**
+   - Budget: 200k PLN
+   - Deadline: 2 weeks
+   - Invites 5 managers (auto-email sent)
+
+2. **Managers propose raises:**
+   - Each manager sees only their team
+   - Proposes raises (amount + justification)
+   - Real-time budget bar: "150k PLN allocated / 200k PLN total"
+   - Conflict alert if 2 managers propose same person
+
+3. **Grażyna reviews:**
+   - Dashboard shows all proposals (sortable by dept, amount, justification)
+   - Approve/override each proposal
+   - Override requires justification
+   - Export: CSV (who gets raise, how much) + PDF board report
+
+**Acceptance Criteria:**
+- [ ] Review creation form (budget, deadline, manager selection)
+- [ ] Manager invitation emails (with login link)
+- [ ] Manager UI: team list, propose raise form, budget tracker (WebSocket real-time)
+- [ ] Grażyna dashboard: all proposals, approve/override, conflict resolution
+- [ ] Audit trail: who proposed, who approved, timestamps
+- [ ] Export: CSV + PDF
+- [ ] Email notifications: proposal submitted, proposal approved, review complete
+
+**Dependencies:**
+- Strategia tier data (manager_id, performance_rating, job_level)
+- WebSocket infrastructure (for real-time budget tracking)
+
+**Tech Stack:**
+- WebSocket: Supabase Realtime (real-time budget updates)
+- Email: Mailchimp (invitation, notification emails)
+
+**Effort Breakdown:**
+- Review creation flow: 3h
+- Manager UI (propose raise): 4h
+- Grażyna dashboard (approve/override): 4h
+- WebSocket real-time budget: 3h
+- Email notifications: 2h
+- PDF export template: 2h
+- Testing (multi-user, conflict scenarios): 4h
+- Total: 22h
+
+**Timeline:** Week 13 (Apr 27 - May 3)
+
+**Sales Impact:** Estimated to unlock enterprise segment (100-249 employees), increase ARPU 30%
+
+---
+
+### Feature #19: Hunter Agent (Discovery) — CRITICAL (Priority 32)
+
+**Why P0:**
+- **Revenue:** Enables scaling beyond manual outreach (50 → 500 customers)
+- **Data moat:** Lead database becomes strategic asset
+- **Timing:** Must start discovery NOW to have leads ready for May sales
+
+**User Story:**
+```
+As Bartek (CEO), I need an AI agent to discover and qualify Polish companies
+so that I have a pipeline of 500+ qualified leads ready for outreach in May.
+```
+
+**Workflow (LangGraph):**
+```
+[START] → [Search ICP] → [Filter PKD] → [Check VAT Status]
+→ [Enrich (KRS/CEIDG)] → [Find Decision Maker]
+→ [Score Lead] → {Score > 70?}
+├─ YES → [Queue for Outreach] → [END]
+└─ NO → [Archive] → [END]
+```
+
+**Acceptance Criteria:**
+- [ ] Search: Query KRS/CEIDG by PKD code (69.20.Z = accounting, 70.22.Z = consulting)
+- [ ] Filter: Size (50-500 employees), Revenue (>1M PLN), Active (VAT registered)
+- [ ] Enrich: KRS API (lazy loading, only if score >70%) fetches: company size, revenue, NIP
+- [ ] Decision Maker: LinkedIn scraper (CEO, CFO, HR Manager)
+- [ ] Score: Formula (size × industry_fit × revenue × recency)
+- [ ] Output: Supabase `leads` table with all fields
+- [ ] Daily limit: 100 leads/day (avoid API rate limits)
+- [ ] Cost tracking: KRS API ~1 PLN/query, budget 100 PLN/day max
+
+**Dependencies:**
+- KRS API access (paid, ~1 PLN/query)
+- CEIDG API access (free, rate limited)
+- Biała Lista Podatników API (VAT verification, free)
+- LinkedIn scraper (Cognism or Lusha, RODO-compliant)
+
+**Effort Breakdown:**
+- LangGraph flow: 4h
+- KRS/CEIDG API integration: 3h
+- LinkedIn scraper integration: 3h
+- Lead scoring algorithm: 2h
+- Database schema + UI (lead viewer): 3h
+- Testing (API errors, rate limits): 3h
+- Total: 18h
+
+**Timeline:** Week 8 (Mar 23-29)
+
+---
+
+### Feature #17: Partner Portal v1 — CRITICAL (Priority 29)
+
+**Why P1:**
+- **Revenue multiplier:** 5 partners × 50 clients = 250 customers (vs 50 direct)
+- **Sales blocker:** Cannot pitch partnerships without portal
+- **Market timing:** Must be ready by Apr 6 (accounting firm outreach starts)
+
+**User Story:**
+```
+As a partner (biuro rachunkowe), I need a portal to onboard my clients
+so that I can offer GapRoll as a value-added service and earn recurring revenue.
+```
+
+**Features:**
+- Partner dashboard: client list, MRR view, revenue share tracking
+- Client onboarding: API endpoint to create new customer
+- White-label option: rebrand as "Księgowość XYZ Compliance Pack" (custom logo, colors)
+- Co-branded reports: partner logo + GapRoll logo on Art. 16 PDFs
+- RLS architecture: partner sees all their clients, client sees only their data
+
+**Acceptance Criteria:**
+- [ ] Partner registration form (company details, KRS, NIP)
+- [ ] Partner dashboard UI (client list, MRR chart, revenue share breakdown)
+- [ ] Client onboarding API: `POST /api/partner/onboard-client` (creates customer, sends welcome email)
+- [ ] White-label config (logo upload, color picker, company name)
+- [ ] RLS rules: `partner_id` column in `customers` table, row-level security enforced
+- [ ] Revenue share calculation: automatic (partner keeps 100-150 PLN/client, we get 49-199 PLN)
+- [ ] Billing: monthly invoice sent to partner (for all clients combined)
+
+**Dependencies:**
+- Multi-tenancy architecture (Supabase RLS)
+- Invoice automation (Feature #13)
+
+**Effort Breakdown:**
+- Partner registration + auth: 3h
+- Dashboard UI: 4h
+- Client onboarding API: 3h
+- White-label config: 3h
+- RLS rules + testing: 4h
+- Revenue share calculation: 2h
+- Total: 19h
+
+**Timeline:** Week 5-6 (Mar 2-15)
+
+---
+
+## 4. Dependency Graph
+
+```
+Milestone 1 (Mar 15)
+├── EVG Manual Override (#12) → no dependencies
+├── Invoice Automation (#13) → no dependencies
+├── Explainability Layer (#14) → no dependencies
+├── Partner Portal v1 (#17) → depends on Invoice Automation (#13)
+└── Rebrand (#18) → no dependencies
+
+Strategia Features (Apr-May)
+├── Root Cause Analysis (#20) → depends on Strategia tier data
+├── Collaborative Review (#21) → depends on Strategia tier data + WebSocket
+├── Retention ROI Calculator (#22) → depends on Benchmark v1 (#24)
+└── Solio Solver v1 (#23) → no dependencies
+
+Agents (Mar-May)
+├── Hunter Discovery (#19) → no dependencies
+├── Guardian Legal RAG (#25) → depends on Weaviate setup
+└── Analyst DSPy (#27) → depends on Golden Datasets (Hunter + Guardian)
+```
+
+---
+
+## 5. Rejected Features (Out of Scope)
+
+| Feature | Reason | Alternative |
+|---------|--------|-------------|
+| Blockchain wage registry | Over-engineered, no real value | Centralized DB with audit log |
+| Employee self-service portal | Not HR tool, different persona | Focus on Grażyna |
+| Performance review module | Scope creep, unrelated to pay gap | Partner with Lattice/15Five |
+| Job board integration | Not core value prop | Manual import from LinkedIn |
+| Cryptocurrency payroll | Niche, regulatory nightmare | Focus on PLN/EUR |
+
+---
+
+## 6. Success Metrics (Feature Adoption)
+
+| Feature | Target Adoption | Measurement |
+|---------|----------------|-------------|
+| EVG Manual Override | 80% override at least 1 score | % users who click "Override Score" |
+| Invoice Automation | 100% invoices auto-generated | Manual invoices = 0 |
+| Root Cause Analysis | 60% Strategia users run analysis | % Strategia users who click "Analyze" |
+| Collaborative Review | 40% enterprises use (100+ employees) | % users with >5 managers who enable |
+| Partner Portal | 5 partners signed by May 1 | # active partners |
+| Hunter Agent | 500 qualified leads by May 1 | # leads with score >70 |
+
+---
+
+**END OF 09_FEATURE_BACKLOG.md**
+
+**Next Update:** After Milestone 1 (Mar 15, 2026)
+
+**Key Additions This Version (Feb 14, 2026):**
+- ✅ Invoice Automation (Priority P0, #13)
+- ✅ Root Cause Analysis (Priority P1, #20)
+- ✅ Collaborative Review (Priority P1, #21)
+- ✅ EVG Manual Override elevated to P0 (EU AI Act compliance)
+- ✅ Dependency graph mapped
+- ✅ Effort breakdowns for top features
+- ✅ Success metrics defined
+
+# GapRoll — Infrastructure Setup
+## Hosting, Funding, Automation & Operational Security
+
+**Last Updated:** 2026-02-14  
+**Owner:** CPTO  
+**Status:** Pre-production (deployment: Mar 1, 2026)
+
+---
+
+## 1. Hosting Strategy
+
+### 1.1 Decision: Hetzner + Coolify
+
+**Stack:**
+- **VPS:** Hetzner Cloud CPX31 (4 vCPU, 8GB RAM, 160GB SSD)
+- **Deployment:** Coolify (open-source Vercel alternative, self-hosted PaaS)
+- **Cost:** €12.90/month (~58 PLN/month)
+
+**Why NOT Vercel/Railway/Heroku:**
+- ❌ Vercel: €40-60/month, vendor lock-in, non-EU default regions
+- ❌ Railway: €20+/month, US-based (RODO concerns)
+- ❌ Heroku: Deprecated (sunset 2023), expensive
+- ✅ Hetzner: 70% cost savings, EU data residency (Germany/Finland), full control
+
+**Why Coolify (not manual Docker):**
+- ✅ Vercel-like UX but self-hosted
+- ✅ Git-based deploy (push to main → auto-deploy)
+- ✅ SSL via Let's Encrypt (automatic)
+- ✅ Can manage multiple services (Next.js + FastAPI + Redis + Weaviate on same VPS)
+- ❌ Manual Docker Compose = too much overhead for solo founder
+
+**Setup Timeline:**
+| Date | Action | Time Required | Owner |
+|------|--------|---------------|-------|
+| Feb 25 | Rent Hetzner VPS (CPX31, Germany datacenter) | 5 min | Bartek |
+| Feb 26 | Install Coolify (one-click setup) | 30 min | Bartek |
+| Feb 27 | Deploy test (Next.js + FastAPI) | 1 hour | Bartek |
+| Mar 1 | Production deploy (Milestone 1 ready) | 1 hour | Bartek |
+
+**Datacenter:** Falkenstein, Germany (closest to Poland, <20ms latency)
+
+---
+
+### 1.2 Infrastructure Components
+
+| Component | Technology | Hosting | Cost/Month |
+|-----------|-----------|---------|------------|
+| **Frontend** | Next.js 15 (App Router, RSC) | Hetzner (Coolify) | Included in VPS |
+| **Backend API** | Python FastAPI | Hetzner (Coolify) | Included in VPS |
+| **Database** | Supabase PostgreSQL | Supabase Cloud (EU) | €25 (Pro plan) |
+| **Auth** | Supabase Auth | Supabase Cloud | Included |
+| **Vector Store** | Weaviate | Hetzner (Docker) | Included in VPS |
+| **Cache** | Redis | Hetzner (Docker) | Included in VPS |
+| **Email** | Mailchimp + Postmark | Cloud | €20 + pay-per-use |
+| **Monitoring** | LangSmith | Cloud | $0 (Free tier: 5k traces/month) |
+| **Error Tracking** | Sentry | Cloud | $0 (Free tier: 10k events/month) |
+| **Invoice** | Fakturownia.pl | Cloud | 50 PLN (~€11) |
+| **Payments** | Przelewy24 | Cloud | 1.49% per transaction |
+| **Automation** | n8n.io | Cloud SaaS | €20 |
+| **CI/CD** | GitHub Actions | Cloud | $0 (included in GitHub) |
+| **Backup** | Hetzner Storage Box | Hetzner | €3.81 (1TB) |
+
+**Total Monthly Cost:**
+- **Month 1 (Feb):** €12.90 (VPS only) = ~58 PLN
+- **Month 3 (Apr):** €130 (~585 PLN) - all services active
+- **Month 6 (Jul):** €560 (~2,520 PLN) - at scale (1000 users, 100k API calls)
+
+**Cost as % of Revenue:**
+- Jun (3-5k MRR): €130 / €700 = **18.5%** (acceptable for early stage)
+- Sep (15-20k MRR): €560 / €3,500 = **16%** (healthy SaaS margin)
+- Target: <10% by Dec (economies of scale)
+
+---
+
+### 1.3 Deployment Pipeline
+
+**Git Flow:**
+```
+Developer (Bartek) commits to `main` branch
+  ↓
+GitHub webhook triggers Coolify
+  ↓
+Coolify pulls latest code
+  ↓
+Builds Next.js (npm run build)
+  ↓
+Builds FastAPI (Docker container)
+  ↓
+Runs tests (optional: can skip in early stage)
+  ↓
+Deploys to production (zero downtime)
+  ↓
+Health check (ping /api/health)
+  ↓
+Rollback if health check fails
+```
+
+**Rollback Strategy:**
+- Coolify keeps last 3 deployments
+- One-click rollback via UI
+- Database migrations: manual (via Supabase dashboard, not auto-migrated)
+
+---
+
+### 1.4 Disaster Recovery Plan
+
+**Backup Strategy:**
+- **Database:** Supabase auto-backup (daily, retained 7 days on Pro plan)
+- **Additional backup:** Daily cron job dumps Supabase → Hetzner Storage Box (retained 30 days)
+- **Code:** GitHub (source of truth, already backed up)
+- **User uploads:** Supabase Storage (replicated across EU datacenters)
+
+**Recovery Scenarios:**
+
+| Scenario | Impact | Recovery Time | Action |
+|----------|--------|---------------|--------|
+| Hetzner VPS crash | HIGH | 30 min | Spin up new VPS, run Coolify restore script |
+| Supabase outage | CRITICAL | 0 min (wait) | Supabase has 99.9% SLA, auto-failover |
+| Accidental DB deletion | CRITICAL | 2 hours | Restore from Hetzner backup (manual SQL import) |
+| Bad deployment | MEDIUM | 5 min | One-click rollback via Coolify |
+| Domain DNS issue | HIGH | 1 hour | Update DNS records, 15-60 min propagation |
+
+**Monitoring Alerts (Slack integration):**
+- API response time >2s for 5 min → alert
+- Error rate >5% → alert
+- Database CPU >80% for 10 min → alert
+- Disk space <10% free → alert
+- Invoice generation failed → immediate alert
+
+---
+
+## 2. Funding Applications
+
+### 2.1 Microsoft for Startups Founders Hub
+
+**Value:** $150,000 Azure credits (2-year validity)
+
+**Requirements:**
+- [x] Active company (Sp. z o.o.) → Getting Feb 15
+- [x] Company email domain (@gaproll.eu) → Getting Feb 18
+- [x] LinkedIn company page → Creating Feb 19
+- [x] Pitch deck (10 slides) → Already in timeline (Mar 8 sales materials)
+- [ ] Application form → Submit Feb 20
+
+**Application URL:** https://www.microsoft.com/en-us/startups
+
+**Application Timeline:**
+| Date | Action | Owner |
+|------|--------|-------|
+| Feb 18 | Domain purchased (gaproll.eu) | Bartek |
+| Feb 19 | Setup email (bartek@gaproll.eu via Google Workspace free tier) | Bartek |
+| Feb 19 | Create LinkedIn company page | Bartek |
+| Feb 20 | Fill MS Founders Hub application | Bartek |
+| Feb 25 | Follow-up email if no auto-response | Bartek |
+| Mar 10 | Expected approval (10-15 business days typical) | Microsoft |
+
+**What We'll Use Credits For:**
+
+| Service | Estimated Usage | Value (2 years) |
+|---------|----------------|-----------------|
+| **Azure OpenAI Service** | GPT-4o for agents (Hunter, Guardian, Analyst) | ~$60,000 |
+| **Bing Search API** | Hunter lead discovery (company search) | ~$12,000 |
+| **Azure Cognitive Services** | OCR for Benchmark PDF parsing | ~$5,000 |
+| **Azure Storage** | Backup redundancy (optional, Hetzner primary) | ~$3,000 |
+| **Total** | | **~$80,000 actual usage** |
+
+**Approval Probability:** **85% (HIGH)**
+
+**Rationale:**
+- ✅ B2B SaaS (their sweet spot)
+- ✅ EU compliance focus (aligned with Microsoft's EU data strategy)
+- ✅ Clear Azure OpenAI use case (not vague "AI for good")
+- ✅ Traction: MVP built, paying customers by May (shows seriousness)
+- ⚠️ Risk: We're bootstrapped (no VC backing), but many accepted without VC
+
+**If Rejected:**
+- Backup: OpenAI API credits (apply Q3 2026 if we raise pre-seed, requires investor intro)
+- Mitigation: OpenAI direct ($20/month for GPT-4o usage = affordable at small scale)
+
+---
+
+### 2.2 Scaleway Startup Program
+
+**Value:** €2,000-5,000 credits
+
+**Requirements:**
+- [x] Active company → Getting Feb 15
+- [x] Company docs (KRS extract PDF) → Available after S24 registration
+- [ ] Description of use case → Write Feb 19
+- [ ] Application form → Submit Feb 20
+
+**Application URL:** https://www.scaleway.com/en/startup-program/
+
+**Application Timeline:**
+| Date | Action |
+|------|--------|
+| Feb 16 | KRS registration complete → download extract PDF |
+| Feb 19 | Write use case: "EU data residency for RODO compliance, object storage for backups" |
+| Feb 20 | Submit application |
+| Mar 5 | Expected approval (2-3 weeks typical) |
+
+**What We'll Use Credits For:**
+
+| Service | Estimated Usage | Cost (without credits) |
+|---------|----------------|------------------------|
+| **Object Storage** | Supabase backups (daily dumps, 30-day retention) | ~€20/month |
+| **GPU Instances** | Future: custom model training (Phase 4+) | ~€200/month (if/when needed) |
+| **Total** | | ~€20/month initially |
+
+**Approval Probability:** **60% (MEDIUM)**
+
+**Rationale:**
+- ✅ EU data residency (strong fit for Scaleway's positioning)
+- ✅ Clear object storage use case
+- ⚠️ We're not AI/ML heavy (they prefer deep learning startups)
+- ⚠️ Competition: many applicants, selective program
+
+**If Rejected:**
+- Alternative: Hetzner Storage Boxes (€3.81/month for 1TB) → affordable without credits
+- No blocking impact, just nice-to-have
+
+---
+
+## 3. Automation Setup (n8n.io)
+
+### 3.1 Decision: n8n Cloud SaaS (NOT self-hosted)
+
+**Why Cloud SaaS:**
+- ✅ €20/month (unlimited workflows) vs self-hosted (VPS overhead, maintenance)
+- ✅ Zero DevOps (no Docker, no updates, no security patches)
+- ✅ Built-in monitoring (uptime, execution logs)
+- ❌ Self-hosted = more control, but Bartek is solo until Q3 (can't waste time on infra)
+
+**Cost:** €20/month (~90 PLN/month)
+
+**Start Date:** Mar 1 (after Milestone 1, when we have customers to onboard)
+
+---
+
+### 3.2 Workflow 1: Partner Onboarding (Priority P0)
+
+**Trigger:** Partner fills "Become a Partner" form (Typeform or Google Forms)
+
+**Steps:**
+1. Create partner record in Supabase (`partners` table)
+2. Send partner agreement PDF (DocuSign link or email attachment)
+3. Send onboarding video (Loom link in welcome email)
+4. Schedule kickoff call (Calendly auto-booking link)
+5. Add to partner CRM (Notion database or Airtable)
+6. Notify Slack #new-partners channel
+
+**Value:** 100% automated partner onboarding (zero manual work for Bartek)
+
+**Setup Time:** ~3 hours
+
+**Email Template (Polish, formal tone):**
+```
+Temat: Witamy w Programie Partnerskim GapRoll
+
+Szanowna Pani / Szanowny Panie,
+
+Dziękujemy za zainteresowanie współpracą z GapRoll!
+
+Następne kroki:
+1. Podpisanie umowy partnerskiej (link poniżej, 5 min)
+2. Obejrzenie filmu onboardingowego (10 min)
+3. Umówienie spotkania kickoff (30 min)
+
+[Link do umowy] [Link do filmu] [Umów spotkanie]
+
+Pozdrawiam,
+Zespół GapRoll
+```
+
+---
+
+### 3.3 Workflow 2: Customer Onboarding (Priority P0)
+
+**Trigger:** New customer signs up (Supabase webhook: `INSERT` on `customers` table)
+
+**Steps:**
+1. Send welcome email (Mailchimp: "Witamy w GapRoll" with first steps)
+2. Add to Customer.io journey (14-day email sequence):
+   - Day 1: "Jak zacząć? (krok po kroku)"
+   - Day 3: "Wygeneruj pierwszy raport Art. 16"
+   - Day 7: "5 najczęstszych błędów w EVG"
+   - Day 14: "Rozważ upgrade do Strategia (ROI calculator)"
+3. Create Notion page for customer notes (for manual follow-up if needed)
+4. Notify Slack #new-customers channel
+5. If Strategia tier: schedule onboarding call (Calendly)
+
+**Value:** Saves 30 min/customer × 50 customers/month = 25 hours/month
+
+**Setup Time:** ~2 hours
+
+---
+
+### 3.4 Workflow 3: Hunter Lead Enrichment (Priority P1)
+
+**Trigger:** Hunter agent finds company (manual trigger from dashboard: "Enrich this lead")
+
+**Steps:**
+1. Call KRS API (fetch: company size, revenue, NIP, legal form)
+2. If not in KRS → call CEIDG API (individual entrepreneurs)
+3. Store enriched data in Supabase `leads` table
+4. Return to Hunter agent for scoring
+5. If score >70 → queue for outreach
+
+**Value:** Lazy loading (only call paid KRS API when lead score >70%, saves ~70% cost)
+
+**Cost:** KRS API ~1 PLN/query, budget 30-50 PLN/day (30-50 leads enriched/day)
+
+**Setup Time:** ~2 hours
+
+---
+
+### 3.5 Workflow 4: CEO Weekly Dashboard (Priority P2)
+
+**Trigger:** Every Monday 9 AM (cron schedule)
+
+**Steps:**
+1. Query Supabase:
+   - New customers (last 7 days)
+   - MRR change (current vs previous week)
+   - Churn (customers who cancelled)
+2. Query LangSmith:
+   - Agent usage (Hunter emails sent, Guardian queries answered)
+   - Token consumption (cost tracking)
+3. Generate PDF report (via n8n PDF module or WeasyPrint)
+4. Send to bartek@gaproll.eu
+
+**Value:** Weekly snapshot without manual SQL queries (saves 1 hour/week)
+
+**Setup Time:** ~2 hours
+
+---
+
+### 3.6 Total n8n Setup
+
+| Workflow | Priority | Setup Time | Value |
+|----------|----------|------------|-------|
+| Partner Onboarding | P0 | 3h | 100% automation |
+| Customer Onboarding | P0 | 2h | Saves 25h/month |
+| Hunter Lead Enrichment | P1 | 2h | Saves 70% API cost |
+| CEO Weekly Dashboard | P2 | 2h | Saves 1h/week |
+| **Total** | | **9 hours** | **ROI: break-even after 1 month** |
+
+**Timeline:** Week 6 (Mar 9-15) — setup all workflows
+
+---
+
+## 4. Email Infrastructure
+
+### 4.1 Stack Decision
+
+| Use Case | Service | Cost | Rationale |
+|----------|---------|------|-----------|
+| **Marketing emails** | Mailchimp | €20/month (500 contacts) | GDPR-compliant, EU servers, Polish templates |
+| **Behavior-triggered emails** | Customer.io | €100/month (1000 users) | Sophisticated journeys, event tracking |
+| **Transactional emails** | Postmark | Pay-per-use (~€10/month) | 99%+ deliverability for invoices, password resets |
+| **Backup transactional** | SendGrid | Free tier (100 emails/day) | Failover redundancy |
+
+**Why NOT Mailgun/AWS SES:**
+- Mailgun: US-based, GDPR concerns
+- AWS SES: Complex setup, we're avoiding AWS (see 04_TECH_CONSTRAINTS)
+
+---
+
+### 4.2 Domain Authentication (MANDATORY before ANY email)
+
+**Setup (Feb 22, immediately after domain purchase):**
+
+1. **SPF Record** (Sender Policy Framework):
+```
+TXT record: v=spf1 include:servers.mcsv.net include:_spf.customer.io include:spf.mtasv.net ~all
+```
+
+2. **DKIM Records** (DomainKeys Identified Mail):
+- Mailchimp: auto-generated, add TXT records (provided in Mailchimp dashboard)
+- Customer.io: auto-generated, add TXT records
+- Postmark: auto-generated, add TXT records
+
+3. **DMARC Record** (Domain-based Message Authentication):
+```
+TXT record: v=DMARC1; p=none; rua=mailto:bartek@gaproll.eu
+```
+- Start with `p=none` (monitoring only)
+- Week 2: escalate to `p=quarantine` (if reports look good)
+- Week 4: escalate to `p=reject` (maximum protection)
+
+**Why CRITICAL:**
+- Without SPF/DKIM/DMARC → emails go to spam folder (death for cold outreach)
+- Gmail/Outlook REQUIRE these in 2026 (new anti-spam policies)
+
+---
+
+### 4.3 Domain Warming Protocol (6 WEEKS MINIMUM)
+
+**CRITICAL:** Cannot skip this. Skipping = blacklisted domain = business death.
+
+| Week | Daily Volume | Action | Deliverability Target |
+|------|--------------|--------|----------------------|
+| **1** (Feb 22-29) | 5-10 emails | Warm contacts only (friends, advisors, test accounts) | >98% inbox |
+| **2** (Mar 1-7) | 10-20 emails | Gradual increase, monitor bounce rate (<2%) | >97% inbox |
+| **3** (Mar 8-14) | 20-50 emails | Test small manual outreach (warm intros) | >96% inbox |
+| **4** (Mar 15-21) | 50-100 emails | Increase volume slowly, watch spam complaints (<0.5%) | >95% inbox |
+| **5** (Mar 22-28) | 100-150 emails | Approaching target volume | >95% inbox |
+| **6** (Mar 29 - Apr 4) | 150-200 emails | Stabilize at target volume | >95% inbox |
+| **7+** (Apr 5+) | 200 emails (max) | **Domain warmed** — Hunter automation can start | >95% inbox |
+
+**Monitoring (DAILY):**
+- Bounce rate (target: <2%)
+- Spam complaint rate (target: <0.5%)
+- Open rate (target: >20% for warm outreach, >10% for cold)
+- Inbox placement (use tool: mail-tester.com)
+
+**Red Flags (PAUSE immediately if any occur):**
+- Bounce rate >3%
+- Spam complaints >0.5%
+- Deliverability <90%
+- Domain listed on blacklist (check: mxtoolbox.com/blacklists)
+
+**If Domain Gets Blacklisted:**
+1. STOP all sending immediately
+2. Identify cause (bad list, content, sending pattern)
+3. Request removal from blacklist (most allow one-time delisting)
+4. Restart warming from Week 1 (cannot rush recovery)
+
+---
+
+### 4.4 Hunter Agent Email Limits (After Warming)
+
+| Period | Daily Limit | Rationale |
+|--------|-------------|-----------|
+| **Warm-up (Feb-Apr)** | 20/day | Domain warming phase |
+| **Discovery (May-Jun)** | 50/day | Manual sales, low volume |
+| **Outreach (Jul+)** | 100/day | Hunter automation validated |
+| **Hard limit (NEVER exceed)** | 200/day | Spam trigger threshold |
+
+**Monitoring Alerts:**
+- Bounce rate >3% → **PAUSE Hunter agent**
+- Spam complaints >0.5% → **Manual review required**
+- Deliverability <90% → **Domain audit**
+
+---
+
+## 5. Stealth Mode — Operational Security
+
+### 5.1 Context (Why Stealth?)
+
+**From user memory:**
+> "Bartek is employed under non-compete agreement, requiring low-profile approach with institutional rather than personal branding."
+
+**Constraints:**
+- ❌ NO personal LinkedIn posts about GapRoll (until after leaving corpo)
+- ❌ NO "Founder & CEO" title on personal LinkedIn
+- ✅ Institutional branding (GapRoll company page, NOT Bartek personal brand)
+- ✅ Agents do outreach (Hunter sends emails, NOT Bartek)
+
+---
+
+### 5.2 Red Lines (DO NOT CROSS)
+
+**Forbidden Actions (Until Non-Compete Expires):**
+
+| Action | Risk Level | Consequence if Violated |
+|--------|-----------|-------------------------|
+| Personal LinkedIn post about GapRoll | CRITICAL | Legal action, termination, lawsuit |
+| "I'm building X" on any social media (Twitter/X, Reddit, HackerNews) | CRITICAL | Traceable, permanent record |
+| Speaking at conferences/podcasts | CRITICAL | Public record, Google searchable |
+| Mentioning GapRoll to corpo colleagues (even trusted ones) | HIGH | NDAs exist, gossip spreads |
+| Using corpo laptop/email for GapRoll work | CRITICAL | Assume keylogged and monitored |
+| Using corpo WiFi for GapRoll work (even with VPN) | MEDIUM | Traffic analysis possible |
+| GitHub repo public | HIGH | Searchable, linkable to personal GitHub |
+
+---
+
+### 5.3 Safe Practices
+
+**Communication Channels (Safe):**
+
+| Channel | Safety Level | Use For |
+|---------|-------------|---------|
+| **Personal laptop** (NOT corpo) | ✅ SAFE | All GapRoll work |
+| **Personal email (Gmail)** | ✅ SAFE | External communication |
+| **Company email (@gaproll.eu)** | ✅ SAFE | Once domain purchased (Feb 18) |
+| **Personal phone (mobile data)** | ✅ SAFE | LinkedIn, emails, calls |
+| **VPN on personal devices** | ✅ SAFE | Extra privacy layer |
+| **Corpo laptop** | ❌ NEVER | Assume monitored |
+| **Corpo email** | ❌ NEVER | Monitored, auditable |
+| **Corpo WiFi** | ⚠️ RISKY | Use mobile hotspot instead |
+
+**Public Presence (Safe):**
+
+| Activity | Status | Notes |
+|----------|--------|-------|
+| **LinkedIn company page for GapRoll** | ✅ SAFE | No personal affiliation visible |
+| **Domain registration (gaproll.eu)** | ✅ SAFE | Use company name, not personal |
+| **GitHub repo (private)** | ✅ SAFE | Keep private until after leaving corpo |
+| **Pitch deck with Bartek's name** | ⚠️ RISKY | Use "GapRoll Team" instead of personal name in title slide |
+| **MS Founders Hub application** | ✅ SAFE | Uses company email, doesn't require personal LinkedIn |
+| **Partner outreach (accounting firms)** | ✅ SAFE | Hunter agent sends emails (from hello@gaproll.eu), not Bartek |
+| **Webinars** | ⚠️ RISKY | Don't host personally — use recorded video OR hire external presenter |
+| **Twitter/X account for GapRoll** | ❌ SKIP | Too public, not needed for Polish B2B market |
+| **Reddit/HackerNews posts** | ❌ SKIP | Too public, risk of corpo discovery |
+
+---
+
+### 5.4 When Can Stealth End?
+
+**Conditions (ANY of these):**
+1. ✅ Employment terminated (voluntary resignation or mutual agreement)
+2. ✅ Non-compete period expired (check contract: typically 6-12 months)
+3. ✅ Lawyer confirms safe (consult radca prawny, show employment contract + non-compete clause)
+
+**Until then:** Maintain stealth, institutional branding only, zero personal association.
+
+---
+
+## 6. Cost Projections
+
+### 6.1 Monthly Infrastructure Cost
+
+| Month | Services Active | Total Cost (EUR) | Total Cost (PLN) | MRR | % of Revenue |
+|-------|----------------|------------------|------------------|-----|--------------|
+| **Feb** | VPS only | €12.90 | ~58 PLN | 0 | N/A |
+| **Mar** | VPS + Supabase + n8n | €58 | ~261 PLN | 0 (pre-launch) | N/A |
+| **Apr** | All except high-volume email | €130 | ~585 PLN | ~3k PLN (pilot) | 19.5% |
+| **May** | All | €200 | ~900 PLN | ~10k PLN | 9% ✅ |
+| **Jun** | All + scaling | €300 | ~1,350 PLN | ~15k PLN | 9% ✅ |
+| **Sep** | At scale (500 users) | €560 | ~2,520 PLN | ~20k PLN | 12.6% |
+| **Dec** | At scale (1000 users) | €800 | ~3,600 PLN | ~50k PLN | 7.2% ✅ |
+
+**Target:** <10% infrastructure cost as % of revenue (healthy SaaS margin)
+
+**Benchmark:** Healthy B2B SaaS = 5-15% infrastructure cost
+
+---
+
+### 6.2 Cost Breakdown at Scale (Dec 2026, 1000 users)
+
+| Service | Cost/Month (EUR) | Notes |
+|---------|------------------|-------|
+| Hetzner VPS (CPX31) | €12.90 | May need upgrade to CPX41 (€26) |
+| Supabase Pro | €25 | 8GB DB, 250GB bandwidth |
+| Mailchimp | €50 | 2,500 contacts |
+| Customer.io | €150 | 5,000 users |
+| Postmark | €50 | ~10k transactional emails/month |
+| n8n.io | €20 | Unlimited workflows |
+| Fakturownia.pl | €11 (~50 PLN) | 100 invoices/month |
+| LangSmith | €100 | 50k traces/month (paid plan) |
+| Sentry | €26 | 50k events/month (paid plan) |
+| OpenAI API | €200 | GPT-4o-mini, ~2M tokens/month |
+| Hetzner Storage Box | €3.81 | 1TB backups |
+| **Total** | **~€650** | **~2,925 PLN** |
+
+**Note:** At 1000 users with 50k MRR, €650 = **1.3% of revenue** (excellent margin)
+
+---
+
+## 7. Security & Compliance
+
+### 7.1 RODO / GDPR Compliance
+
+**Data Residency:**
+- ✅ Hetzner: Germany/Finland datacenters (EU)
+- ✅ Supabase: EU region selected
+- ✅ Mailchimp: EU servers option enabled
+- ❌ Avoid: AWS US, Azure US, GCP US (default non-EU)
+
+**Data Processing Agreement (DPA):**
+- Required for all processors: Supabase, Hetzner, Mailchimp, Customer.io
+- Sign DPA with each (standard templates available)
+- Store in `/legal/DPAs/` folder
+
+**User Rights (Art. 15-22 RODO):**
+- Right to access: User can download all their data (CSV export via dashboard)
+- Right to deletion: User can delete account + all data (30-day grace period)
+- Right to portability: CSV export includes all personal data
+- Right to rectification: User can edit all profile fields
+
+---
+
+### 7.2 EU AI Act Compliance
+
+**High-Risk AI System:** EVG Engine (job evaluation affects employment decisions)
+
+**Requirements (Art. 14 EU AI Act):**
+- ✅ Human oversight (HITL): Manual Override UI (Feature #12)
+- ✅ Transparency: Explainability system (08_EXPLAINABILITY_ROADMAP.md)
+- ✅ Accuracy: Validation set >90% accuracy (Golden Datasets)
+- ✅ Robustness: Fallback to manual scoring if AI fails
+- ✅ Logging: Audit trail for all AI decisions (stored 3 years)
+
+**Documentation Required:**
+- Technical documentation (AI model card, training data sources)
+- Risk assessment (DPIA - Data Protection Impact Assessment)
+- Conformity assessment (self-assessment until mid-2027, then third-party)
+
+**Timeline:**
+- Feb-May: Build with compliance in mind (HITL, audit trails)
+- Apr: Conduct DPIA (week 12, before Beta release)
+- May: EU AI Act audit (internal, document readiness)
+
+---
+
+## 8. Monitoring & Alerts
+
+### 8.1 Critical Alerts (Slack notifications)
+
+**Infrastructure:**
+- VPS CPU >80% for 10 min
+- VPS disk <10% free
+- API response time >2s for 5 min
+- Error rate >5%
+- Database connections >80% of pool
+
+**Business:**
+- Invoice generation failed
+- Payment webhook not received (24h after subscription)
+- Customer cancellation (churn alert)
+- Partner signup
+
+**Email Deliverability:**
+- Bounce rate >3%
+- Spam complaint rate >0.5%
+- Domain blacklisted
+
+---
+
+### 8.2 Dashboards
+
+**Grafana (optional, Phase 3+):**
+- Infrastructure metrics (CPU, RAM, disk, network)
+- API performance (request rate, latency, errors)
+- Database performance (connections, query time)
+
+**LangSmith:**
+- Agent performance (Hunter, Guardian, Analyst)
+- Token consumption (cost tracking)
+- Latency distribution
+
+**Supabase Dashboard:**
+- RLS policies audit
+- Database size growth
+- Active connections
+
+---
+
+**END OF 10_INFRASTRUCTURE_SETUP.md**
+
+**Next Review:** March 1, 2026 (after production deployment)
+
+**Key Updates This Version (Feb 14, 2026):**
+- ✅ Hetzner + Coolify decision (€12.90/month vs €40-60 Vercel)
+- ✅ MS Founders Hub roadmap ($150k credits, 85% approval probability)
+- ✅ Scaleway roadmap (€2-5k credits, 60% approval probability)
+- ✅ n8n workflows (4 total, 9h setup, ROI after 1 month)
+- ✅ Email infrastructure (domain warming 6 weeks, Hunter limits)
+- ✅ Stealth mode protocols (red lines, safe practices)
+- ✅ Cost projections (Feb: €12.90, Dec: €650 = 1.3% of revenue)
+- ✅ RODO/GDPR + EU AI Act compliance requirements
+
+# GapRoll — Strategia Tier Analysis
+## EVG Reclassification, Data Requirements & ROI Justification
+
+**Last Updated:** 2026-02-14  
+**Critical Decision:** EVG Engine moved from Strategia → Compliance tier  
+**Rationale:** Art. 4 + Art. 7 EU Directive 2023/970 make EVG MANDATORY for compliance
+
+---
+
+## 1. Executive Summary
+
+**The Question:**
+> "Should EVG Engine (AI job evaluation) be in Compliance tier (99 PLN) or Strategia tier (199 PLN)?"
+
+**The Answer:**
+> **COMPLIANCE TIER (99 PLN)** — EVG is legally mandatory, not a premium feature.
+
+**Impact:**
+- ✅ Main sales argument: "99 PLN = FULL compliance including AI job evaluation"
+- ✅ Competitive advantage: PayAnalytics charges €1,100/month for same feature = **98% cheaper**
+- ✅ Removes purchasing friction (Grażyna can't skip EVG, so must upgrade to Strategia = bad UX)
+- ✅ Simplifies messaging: Compliance = everything legally required, Strategia = analytics superpowers
+
+---
+
+## 2. Legal Analysis — Why EVG is Mandatory
+
+### 2.1 Art. 4 ust. 1 — Pay Structures Requirement
+
+**Legal Text:**
+> "Państwa członkowskie podejmują niezbędne działania celem zapewnienia, aby pracodawcy dysponowali strukturami wynagrodzeń zapewniającymi równe wynagrodzenie za taką samą pracę lub pracę o takiej samej wartości."
+
+**Translation:**
+> "Member States shall take the necessary measures to ensure that employers have pay structures ensuring equal pay for the same work or work of equal value."
+
+**Implication:**
+- Employers MUST have a system to determine "work of equal value"
+- This system must be objective and gender-neutral
+- EVG (Equal Value of Work) scoring is the standard methodology (Art. 4 ust. 4: Skills, Effort, Responsibility, Conditions)
+
+**Conclusion:** Without EVG, employer cannot demonstrate compliance with Art. 4.
+
+---
+
+### 2.2 Art. 7 ust. 1 — Worker's Right to Information
+
+**Legal Text:**
+> "Pracownicy mają prawo do występowania o informacje oraz do otrzymywania na piśmie informacji dotyczących ich indywidualnego poziomu wynagrodzenia oraz średnich poziomów wynagrodzenia, w podziale na płeć, w odniesieniu do kategorii pracowników wykonujących taką samą pracę jak oni lub **pracę o takiej samej wartości**."
+
+**Translation:**
+> "Workers shall have the right to request and receive in writing information on their individual pay level and the average pay levels, by sex, for categories of workers doing the same work as them or **work of equal value**."
+
+**Implication:**
+- ANY worker can request a report comparing their pay to others doing "work of equal value"
+- Employer MUST be able to calculate "equal value" → requires EVG system
+- Without EVG, employer cannot fulfill Art. 7 requests → **legal violation**
+
+**Example Scenario:**
+```
+Anna (Developer, 8000 PLN) requests Art. 7 report.
+Question: "Who has work of equal value to mine?"
+Without EVG: Grażyna has NO SYSTEM to answer → cannot comply with Art. 7
+With EVG: System shows "Developer Senior (EVG 78)" = equal value → report generated
+```
+
+**Conclusion:** EVG is MANDATORY to fulfill Art. 7 requests.
+
+---
+
+### 2.3 EU AI Act Art. 14 — HITL Requirement
+
+**Legal Text:**
+> "High-risk AI systems shall be designed and developed in such a way that they can be effectively overseen by natural persons during the period in which they are in use."
+
+**Classification:**
+- EVG Engine = high-risk AI (affects employment decisions: hiring, promotion, pay)
+- Requires: Human-in-the-Loop (HITL) = Manual Override capability
+
+**Implication:**
+- Manual Override is NOT optional, it's LEGALLY REQUIRED
+- Without Manual Override → EU AI Act violation
+- Grażyna MUST be able to override AI scores (she won't trust AI without this anyway)
+
+**Conclusion:** Manual Override is mandatory, further proving EVG must be in Compliance tier (cannot charge extra for legal requirement).
+
+---
+
+## 3. Competitive Analysis
+
+### 3.1 How Competitors Price EVG
+
+| Competitor | EVG Feature | Price | Our Price (Compliance) | Savings |
+|-----------|-------------|-------|------------------------|---------|
+| **PayAnalytics** | AI job evaluation | €1,100/month (~5,000 PLN) | 99 PLN/month | **98% cheaper** |
+| **Syndio** | Job architecture | €800/month (~3,600 PLN) | 99 PLN/month | **97% cheaper** |
+| **Pequity** | Leveling system | €1,250/month (~5,600 PLN) | 99 PLN/month | **98% cheaper** |
+
+**Key Insight:**
+- Competitors charge €800-1,250/month for job evaluation
+- We charge 99 PLN/month (~€22)
+- **Pricing strategy:** Use EVG in Compliance tier as PRIMARY sales weapon ("98% cheaper than PayAnalytics")
+
+---
+
+### 3.2 Strategia Tier — What Justifies 2x Price?
+
+**Challenge:** If Compliance (99 PLN) already has EVG, why pay 199 PLN for Strategia?
+
+**Answer:** Strategia tier provides ANALYTICS SUPERPOWERS that save 3 weeks/year.
+
+**Time Savings Breakdown:**
+
+| Feature | Time Saved/Year | Value (PLN) |
+|---------|----------------|-------------|
+| **Root Cause Analysis** | 1 week (40h) | 2,000 PLN (at 50 PLN/hour Grażyna's time) |
+| **Collaborative Review** | 10 days (80h) | 4,000 PLN |
+| **Retention ROI Calculator** | 4 hours | 200 PLN |
+| **Solio Solver** | 4 days (32h) | 1,600 PLN |
+| **Benchmark Engine** | 2 days (16h) | 800 PLN |
+| **Total** | **~3 weeks (168h)** | **~8,600 PLN** |
+
+**Strategia Cost:** 199 PLN/month × 12 = 2,388 PLN/year
+
+**ROI:** 8,600 PLN saved / 2,388 PLN cost = **360% ROI** (updated from 251%, more conservative estimate)
+
+**Sales Pitch:**
+```
+"Compliance tier (99 PLN) spełnia wymogi prawne.
+Strategia tier (199 PLN) oszczędza Ci 3 tygodnie rocznie = 8600 PLN wartości.
+Koszt: 2388 PLN/rok.
+ROI: 360%."
+```
+
+---
+
+## 4. Data Requirements — Upsell Path
+
+### 4.1 Compliance Tier (99 PLN) — 4 Fields MINIMUM
+
+**Required Fields (legally mandatory for Art. 16 + EVG):**
+
+```csv
+employee_id,salary_monthly_gross,gender,reporting_period
+001,8000,K,2024-Q1
+002,9500,M,2024-Q1
+003,7200,K,2024-Q1
+```
+
+**What This Unlocks:**
+- ✅ Art. 16 Report (quartile analysis, pay gap %)
+- ✅ EVG Engine (AI scoring + Manual Override)
+- ✅ Worker Reports (Art. 7 requests)
+- ✅ Fair Pay Line
+- ✅ B2B Equalizer (if contract_type provided, otherwise UoP assumed)
+- ✅ PDF Export
+
+**Limitation:** Cannot run Root Cause Analysis, Collaborative Review, etc. (missing data)
+
+---
+
+### 4.2 Strategia Tier (199 PLN) — 12 Fields FULL
+
+**Required Fields (for all Strategia features):**
+
+```csv
+employee_id,salary_monthly_gross,gender,reporting_period,
+position_title,department,hire_date,manager_id,
+contract_type,employment_type,performance_rating,job_level
+001,8000,K,2024-Q1,Developer Senior,IT,2020-05-15,MGR001,UoP,full-time,4,L3
+002,9500,M,2024-Q1,Developer Senior,IT,2018-03-20,MGR001,UoP,full-time,5,L4
+003,7200,K,2024-Q1,Developer Junior,IT,2023-01-10,MGR001,UoP,full-time,3,L2
+```
+
+**What This Unlocks:**
+- ✅ All Compliance features +
+- ✅ **Root Cause Analysis** (uses: position_title, department, hire_date, contract_type)
+- ✅ **Collaborative Review** (uses: manager_id, performance_rating, job_level)
+- ✅ **Retention ROI Calculator** (uses: hire_date for turnover calculation)
+- ✅ **Solio Solver** (uses: job_level for internal equity)
+- ✅ **Benchmark Engine** (uses: position_title for market comp matching)
+- ✅ **Smart Job Scorer** (uses: position_title for auto-classification)
+
+---
+
+### 4.3 Upsell Flow (In-App Experience)
+
+**Step 1: Customer uploads 4 columns (Compliance tier)**
+```
+✅ CSV uploaded successfully!
+✅ Generating Art. 16 Report...
+✅ EVG scoring in progress...
+```
+
+**Step 2: Customer sees Compliance features working**
+```
+Dashboard shows:
+- Pay Gap: 12%
+- Quartile Analysis (table)
+- EVG Scores (all positions scored)
+- PDF Export button
+```
+
+**Step 3: Customer sees blurred preview of Strategia features**
+```
+🔓 Odblokuj Root Cause Analysis
+
+Dowiedz się DLACZEGO luka wynosi 12%:
+[Blurred preview showing pie chart with percentages]
+
+Aby odblokować tę funkcję:
+1. Upgrade do Strategia (199 PLN/mies)
+2. Uzupełnij dane: position_title, department, hire_date, contract_type
+
+[Upgrade do Strategia] [Dowiedz się więcej]
+```
+
+**Step 4: Customer upgrades, adds 8 more columns**
+```
+✅ Upgraded to Strategia!
+Please upload updated CSV with additional columns:
+- position_title
+- department
+- hire_date
+- manager_id
+- contract_type
+- employment_type
+- performance_rating
+- job_level
+
+[Download CSV Template]
+```
+
+**Step 5: Customer uploads full data, all features unlock**
+```
+✅ Root Cause Analysis available!
+✅ Collaborative Review available!
+✅ Retention ROI Calculator available!
+✅ Solio Solver available!
+✅ Benchmark Engine available!
+```
+
+---
+
+## 5. Sales Messaging
+
+### 5.1 Compliance Tier Pitch (99 PLN)
+
+**Headline:**
+> "Pełna zgodność z Dyrektywą UE 2023/970 za 99 PLN/mies"
+
+**Key Messages:**
+- ✅ Wszystko co wymaga prawo:
+  - Raport Art. 16 (kwartyle, luka płacowa)
+  - Wartościowanie stanowisk EVG (Art. 4) — AI + możliwość edycji ręcznej
+  - Raporty dla pracowników (Art. 7)
+  - Ekwivalent B2B (specyfika polska: UoP↔B2B)
+  - Ochrona RODO (N<3 maskowanie)
+- ✅ **98% taniej niż PayAnalytics** (oni: €1,100/mies, my: 99 PLN/mies)
+- ✅ **Bez ryzyka:** 14 dni trial, pełny dostęp do Compliance
+- ✅ **Gotowe za 15 minut:** Upload CSV → Raport gotowy
+
+**Target:** Small firms (<100 employees), budget-conscious HR managers
+
+---
+
+### 5.2 Strategia Tier Pitch (199 PLN)
+
+**Headline:**
+> "Zamień Grażynę w strategicznego partnera zarządu"
+
+**Key Messages:**
+- ✅ Compliance tier spełnia wymogi. Strategia tier oszczędza Ci **3 tygodnie rocznie**.
+- ✅ **Root Cause Analysis:** Dowiedz się DLACZEGO luka 12% (nie tylko ILE)
+  - Argument dla zarządu: "Potrzebujemy 180k PLN na podniesienie stażu kobiet" (backed by data)
+- ✅ **Collaborative Review:** 5 menedżerów × 2.5 dnia = 12.5 dnia oszczędności (no more Excel ping-pong)
+- ✅ **Retention ROI Calculator:** "Zamknięcie luki z 12% → 5% oszczędzi 240k PLN/rok na rekrutacji"
+- ✅ **Benchmark Engine:** "Czy płacimy DevOps fair?" (porównanie z rynkiem)
+- ✅ **Solio Solver:** Scenariusze budżetowe (co by było gdyby... 3 ścieżki optymalizacji)
+- ✅ **ROI: 360%** (oszczędzasz 8600 PLN, płacisz 2388 PLN/rok)
+
+**Target:** Medium-Large firms (100+ employees), HR managers with strategic ambitions
+
+---
+
+### 5.3 Objection Handling
+
+**Objection 1:** "Mamy tylko 60 pracowników, nie potrzebujemy EVG"
+**Response:**
+```
+"Rozumiem, ale Art. 7 Dyrektywy daje KAŻDEMU pracownikowi prawo do zapytania:
+'Porównaj moją pensję z osobami wykonującymi pracę o równej wartości.'
+Bez EVG nie możesz odpowiedzieć → naruszenie Dyrektywy.
+GapRoll daje Ci EVG za 99 PLN/mies (PayAnalytics: €1,100/mies)."
+```
+
+**Objection 2:** "Strategia to za drogo, wystarczy nam Compliance"
+**Response:**
+```
+"Compliance tier (99 PLN) spełnia wymogi prawne — to dobry start.
+Ale: Strategia (199 PLN) oszczędza Ci 3 tygodnie rocznie.
+Twój czas = 50 PLN/h → 3 tygodnie = 8600 PLN wartości.
+Strategia kosztuje 2388 PLN/rok → ROI 360%.
+To nie koszt, to inwestycja która się zwraca 3.6x."
+```
+
+**Objection 3:** "AI może się mylić, nie ufam automatycznemu wartościowaniu"
+**Response:**
+```
+"Zgadzam się! Dlatego KAŻDY EVG score możesz edytować ręcznie.
+AI to tylko propozycja — Ty masz ostateczną kontrolę.
+System zapisuje, kto zmienił, kiedy, dlaczego (audit trail dla PIP).
+To wymóg EU AI Act (Art. 14) — człowiek musi mieć nadzór."
+```
+
+---
+
+## 6. Conversion Funnel Projections
+
+### 6.1 Baseline (Without EVG Reclassification)
+
+**Old Assumption (EVG in Strategia):**
+```
+Trial Signups: 100
+↓
+Compliance Tier (without EVG): 15 (15% conversion) ← LOW because can't fulfill Art. 7
+↓
+Strategia Tier (with EVG): 5 (33% of Compliance upgrade) ← Forced upgrade to get EVG
+↓
+Total Paying: 20 (20% overall conversion)
+MRR: 15 × 99 + 5 × 199 = 2,480 PLN
+```
+
+**Problem:** Low Compliance conversion (15%) because customers realize they NEED EVG for Art. 7 compliance → friction.
+
+---
+
+### 6.2 Improved (With EVG in Compliance)
+
+**New Assumption (EVG in Compliance):**
+```
+Trial Signups: 100
+↓
+Compliance Tier (with EVG): 30 (30% conversion) ← DOUBLED because full compliance at 99 PLN
+↓
+Strategia Tier (upsell from Compliance): 15 (50% of Compliance upgrade) ← Root Cause + Collaborative compelling
+↓
+Total Paying: 45 (45% overall conversion)
+MRR: 30 × 99 + 15 × 199 = 5,955 PLN
+```
+
+**Impact:** 2.4x MRR increase (5,955 vs 2,480 PLN) by moving EVG to Compliance tier.
+
+---
+
+### 6.3 Target Conversion Rates (Q2-Q4 2026)
+
+| Metric | Q2 2026 | Q4 2026 | 2027 | Notes |
+|--------|---------|---------|------|-------|
+| **Trial → Compliance** | 25% | 30% | 35% | Increases as product matures, word-of-mouth |
+| **Compliance → Strategia** | 40% | 50% | 60% | Root Cause + Collaborative Review drive upgrades |
+| **Overall (Trial → Paid)** | 40% | 45% | 50% | Industry benchmark: 20-30% (we're above avg) |
+
+**Why Higher Than Industry:**
+- Strong value prop (98% cheaper than competitors)
+- Legal urgency (EU Directive deadline: Jun 7, 2026)
+- Clear ROI (360% for Strategia tier)
+
+---
+
+## 7. Financial Impact — Tier Reclassification
+
+### 7.1 Revenue Impact (Jun-Sep 2026)
+
+**Scenario: 50 Customers by Sep 2026**
+
+**Old Model (EVG in Strategia):**
+```
+Compliance (no EVG): 35 × 99 PLN = 3,465 PLN
+Strategia (with EVG): 15 × 199 PLN = 2,985 PLN
+Total MRR: 6,450 PLN
+```
+
+**New Model (EVG in Compliance):**
+```
+Compliance (with EVG): 25 × 99 PLN = 2,475 PLN
+Strategia (analytics): 25 × 199 PLN = 4,975 PLN
+Total MRR: 7,450 PLN
+```
+
+**Difference:** +1,000 PLN MRR (+15.5% revenue increase)
+
+**Why:** 50% Compliance→Strategia conversion (vs 43% in old model) because Root Cause + Collaborative are compelling, not forced.
+
+---
+
+### 7.2 CAC Impact
+
+**Old Model (EVG in Strategia):**
+- Sales pitch: "Basic compliance 99 PLN, but you need EVG (extra 100 PLN) for Art. 7"
+- Friction: Grażyna feels tricked ("hidden cost")
+- CAC: ~250 PLN (more objection handling, longer sales cycle)
+
+**New Model (EVG in Compliance):**
+- Sales pitch: "Full compliance 99 PLN (98% cheaper than PayAnalytics)"
+- Smooth: Grażyna feels it's a no-brainer
+- CAC: ~150 PLN (shorter sales cycle, clear value prop)
+
+**Savings:** 100 PLN per customer × 50 customers = 5,000 PLN saved in Q2-Q3 sales costs
+
+---
+
+## 8. Conclusion & Recommendation
+
+### 8.1 Summary
+
+**Question:** Should EVG be in Compliance (99 PLN) or Strategia (199 PLN)?
+
+**Answer:** **COMPLIANCE (99 PLN)**
+
+**Rationale:**
+1. **Legal:** Art. 4 + Art. 7 make EVG MANDATORY (not optional)
+2. **Competitive:** Competitors charge €800-1,250/month → we charge 99 PLN = **98% cheaper** (main sales weapon)
+3. **UX:** Removing friction (customers don't feel forced to upgrade)
+4. **Revenue:** Increases MRR by 15.5% (better Compliance→Strategia conversion)
+5. **CAC:** Reduces acquisition cost by 40% (simpler pitch, less objection handling)
+
+**Impact:**
+- ✅ Higher conversion rates (Trial→Paid: 45% vs 30%)
+- ✅ Better unit economics (lower CAC, higher LTV)
+- ✅ Stronger competitive position (98% cheaper messaging)
+- ✅ Compliance-first positioning (reduces legal risk for customers)
+
+---
+
+### 8.2 Action Items
+
+- [x] Update 01_STRATEGY.md: Move EVG to Compliance tier (Section 4.3)
+- [x] Update pricing tables: Feature matrix (Section 8.2)
+- [x] Update sales materials: Compliance pitch emphasizes EVG (Mar 8)
+- [x] Update website copy: Landing page, pricing page (Rebrand sprint, Feb 23-Mar 1)
+- [x] Update Help Center: FAQ "Why is EVG included in Compliance?" (Mar 9-15)
+
+---
+
+**END OF 11_STRATEGIA_TIER_ANALYSIS.md**
+
+**Next Review:** After first 50 customers (Sep 2026) — validate conversion rate assumptions
+
+**Key Decision (Feb 14, 2026):**
+- ✅ EVG Engine + Manual Override = COMPLIANCE TIER (99 PLN)
+- ✅ Justification: Art. 4 + Art. 7 EU Directive 2023/970 make EVG legally mandatory
+- ✅ Competitive advantage: "98% cheaper than PayAnalytics" (€1,100/mies vs 99 PLN/mies)
+- ✅ Strategia tier justification: ROI 360% (saves 3 weeks/year = 8,600 PLN value, costs 2,388 PLN/year)
+- ✅ Target conversion: 50% Compliance→Strategia (vs 35% industry baseline)

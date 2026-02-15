@@ -79,7 +79,7 @@ export function RegisterForm() {
       <CardHeader>
         <CardTitle>Zarejestruj się</CardTitle>
         <CardDescription>
-          Stwórz konto aby korzystać z PayCompass
+          Stwórz konto aby korzystać z GapRoll
         </CardDescription>
       </CardHeader>
       <CardContent>

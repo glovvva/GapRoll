@@ -42,7 +42,7 @@ export function Sidebar() {
           href="/dashboard"
           className="text-xl font-bold text-primary transition-colors duration-200 hover:opacity-90"
         >
-          PayCompass
+          GapRoll
         </Link>
       </div>
 

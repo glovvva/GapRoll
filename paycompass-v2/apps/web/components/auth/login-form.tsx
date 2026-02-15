@@ -52,7 +52,7 @@ export function LoginForm() {
       <CardHeader>
         <CardTitle>Zaloguj się</CardTitle>
         <CardDescription>
-          Wprowadź swoje dane aby uzyskać dostęp do PayCompass
+          Wprowadź swoje dane aby uzyskać dostęp do GapRoll
         </CardDescription>
       </CardHeader>
       <CardContent>

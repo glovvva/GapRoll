@@ -21,6 +21,7 @@ class Settings:
     def __init__(self) -> None:
         self._supabase_url: str | None = None
         self._supabase_key: str | None = None
+        self._supabase_jwt_secret: str = ""
         self._environment: str | None = None
         self._openai_api_key: str = ""
         self._load()
@@ -29,7 +30,12 @@ class Settings:
         """Wczytaj i zwaliduj zmienne środowiskowe."""
         self._supabase_url = os.getenv("SUPABASE_URL", "").strip() or None
         self._supabase_key = os.getenv("SUPABASE_KEY", "").strip() or None
-        self._environment = os.getenv("ENVIRONMENT", "development").strip() or "development"
+        self._supabase_jwt_secret = (
+            os.getenv("SUPABASE_JWT_SECRET", "").strip() or ""
+        )
+        self._environment = (
+            os.getenv("ENVIRONMENT", "development").strip() or "development"
+        )
         self._openai_api_key = os.getenv("OPENAI_API_KEY", "").strip() or ""
 
     @property
@@ -51,6 +57,11 @@ class Settings:
     def OPENAI_API_KEY(self) -> str:
         """Klucz API OpenAI (opcjonalny, do EVG scoringu)."""
         return self._openai_api_key
+
+    @property
+    def SUPABASE_JWT_SECRET(self) -> str:
+        """JWT Secret z Supabase Dashboard (Settings → API)."""
+        return self._supabase_jwt_secret
 
     def is_supabase_configured(self) -> bool:
         """Czy Supabase jest skonfigurowane (URL i KEY ustawione)."""

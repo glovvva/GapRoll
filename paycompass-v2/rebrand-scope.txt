@@ -1,0 +1,119 @@
+# Pre-rebrand backup and scope analysis
+# Generated: 2026-02-14
+# Directory: paycompass-v2
+
+## 1. Git status at analysis time
+
+**Status: NOT CLEAN**
+- Branch: master (up to date with origin/master)
+- Modified (not staged): apps/api/config.py, apps/api/requirements.txt, apps/api/routers/analysis.py, apps/api/routers/upload.py, apps/web/app/dashboard/evg/page.tsx, apps/web/app/dashboard/page.tsx
+- Untracked: package-lock.json (parent), apps/api/routers/auth.py, docs/
+
+**Backup branch created:** backup-pre-rebrand (contains same commits as master; uncommitted changes are not on the backup branch unless committed there first)
+
+---
+
+## 2. PayCompass occurrences (case-insensitive scan)
+
+Scanned: apps/web, apps/api, packages (N/A), root config files, docs.
+
+### 2.1 apps/web (6 files)
+
+apps/web/app/dashboard/page.tsx
+  - Line 157: "Witamy w PayCompass"
+
+apps/web/app/layout.tsx
+  - Line 5: title: "PayCompass V2"
+
+apps/web/app/page.tsx
+  - Line 67: "PayCompass V2 - Full Stack Test"
+
+apps/web/components/auth/login-form.tsx
+  - Line 55: "Wprowadź swoje dane aby uzyskać dostęp do PayCompass"
+
+apps/web/components/auth/register-form.tsx
+  - Line 82: "Stwórz konto aby korzystać z PayCompass"
+
+apps/web/components/dashboard/sidebar.tsx
+  - Line 45: "PayCompass"
+
+### 2.2 apps/api (1 file)
+
+apps/api/main.py
+  - Line 2: "PayCompass API v2 - Main FastAPI application."
+  - Line 11: title="PayCompass API"
+  - Line 34: return {"message": "PayCompass API v2"}
+
+### 2.3 packages
+
+No "packages" directory found. No scan.
+
+### 2.4 Root config files
+
+No PayCompass/paycompass in root-level config files (e.g. package.json only under apps/web; no PayCompass string in it).
+
+### 2.5 docs (11 files)
+
+docs/00_CONTEXT_MEMORY.md
+  - PayCompass → GapRoll rationale, session notes, risks, tech debt
+
+docs/01_STRATEGY.md
+  - Previous Name: PayCompass; Rebrand task
+
+docs/03_PERSONA_GRAZYNA.md
+  - Previous Name: PayCompass
+
+docs/04_TECH_CONSTRAINTS.md
+  - Previous Name: PayCompass; Rebrand task
+
+docs/05_FRONTEND_STANDARDS.md
+  - Previous Name: PayCompass
+
+docs/06_AGENT_BLUEPRINTS.md
+  - Previous Name: PayCompass; Rebrand task
+
+docs/07_SKILL_LIBRARY.md
+  - Previous Name: PayCompass; Rebrand task
+
+docs/09_FEATURE_BACKLOG.md
+  - Rebrand (PayCompass→GapRoll) feature row
+
+docs/99_GAPROLL_BIBLE_COLLATED
+  - Multiple occurrences (collated doc)
+
+docs/outputs/contrast-audit.md
+  - Path reference: paycompass-v2/docs/...
+
+docs/outputs/dashboard-integration-checklist.md
+  - "Welcome to PayCompass" card checklist items; path reference
+
+docs/outputs/i18n-polish-audit.md
+  - PayCompass as proper name, "Welcome to PayCompass" translation, path reference
+
+---
+
+## 3. Summary
+
+| Area       | Files with "PayCompass" | Notes                                      |
+|-----------|--------------------------|--------------------------------------------|
+| apps/web  | 6                        | UI strings, title, sidebar, auth copy      |
+| apps/api  | 1                        | main.py: docstring, OpenAPI title, root msg |
+| packages  | 0                        | No packages/ directory                     |
+| Root config | 0                     | No matches in root configs                 |
+| docs      | 11                       | Strategy, persona, backlog, outputs        |
+| **Total** | **18**                   |                                            |
+
+---
+
+## 4. Rebrand checklist (suggested order)
+
+1. **apps/api/main.py** — API title and message (3 occurrences)
+2. **apps/web/app/layout.tsx** — page title
+3. **apps/web/app/page.tsx** — landing/test title
+4. **apps/web/app/dashboard/page.tsx** — "Witamy w PayCompass"
+5. **apps/web/components/dashboard/sidebar.tsx** — app name in nav
+6. **apps/web/components/auth/login-form.tsx** — login copy
+7. **apps/web/components/auth/register-form.tsx** — register copy
+8. **docs/** — update "Previous Name" and rebrand references (optional: keep for history)
+
+End of report.

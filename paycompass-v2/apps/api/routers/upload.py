@@ -9,11 +9,14 @@ from typing import Any, Dict, List, Optional
 
 import chardet
 import pandas as pd
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+
+from routers.auth import get_current_user
 from pydantic import BaseModel
 
 from config import settings
 from supabase import create_client
+from routers.analysis import invalidate_dashboard_cache
 
 router = APIRouter(tags=["upload"])
 
@@ -218,7 +221,10 @@ async def preview_csv(file: UploadFile = File(...)) -> dict[str, Any]:
     summary="Zapisz dane do Supabase",
     description="Batch insert wierszy z preview do tabeli payroll_data.",
 )
-async def save_data(body: SaveDataRequest) -> dict[str, Any]:
+async def save_data(
+    body: SaveDataRequest,
+    user_id: str = Depends(get_current_user),
+) -> dict[str, Any]:
     """
     POST /save - przyjmuje filename i rows (lista wierszy z preview),
     mapuje kolumny (PL/EN) i wykonuje batch insert do Supabase.
@@ -228,8 +234,6 @@ async def save_data(body: SaveDataRequest) -> dict[str, Any]:
             status_code=503,
             detail="Supabase nie jest skonfigurowane (SUPABASE_URL / SUPABASE_KEY).",
         )
-
-    user_id = "00000000-0000-0000-0000-000000000000"
     column_mapping = body.column_mapping
 
     required_fields = ["first_name", "last_name", "position", "gender", "salary"]
@@ -280,6 +284,8 @@ async def save_data(body: SaveDataRequest) -> dict[str, Any]:
             status_code=500,
             detail=f"Błąd zapisu do bazy: {e!s}",
         ) from e
+
+    invalidate_dashboard_cache(user_id)
 
     return {
         "success": True,
