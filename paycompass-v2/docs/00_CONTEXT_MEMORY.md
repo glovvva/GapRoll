@@ -1,7 +1,7 @@
 # GapRoll — Context Memory
 ## Distilled Wisdom & Operational State
 
-**Last Updated:** 2026-02-14  
+**Last Updated:** 2026-02-15 (Session H: Rebrand complete)  
 **Rule:** Update this file at the END of every working session.
 
 ---
@@ -11,10 +11,10 @@
 | Dimension | Status |
 |-----------|--------|
 | **Current Phase** | Phase 0 — Company Formation (Feb 14-22) |
-| **Sprint Focus** | S24 registration (Feb 15) → PKO BP account (Feb 16) → Domains (Feb 18) → MS Founders Hub (Feb 20) |
+| **Sprint Focus** | Rebrand complete ✅ → S24 registration (Feb 15) → Domains (Feb 18) |
 | **Blocking Risk** | Domain email required for MS Founders Hub ($150k credits) — CANNOT apply without @gaproll.eu email |
 | **Next Milestone** | Milestone 1: Platform Baseline (Mar 15, 2026) — Product-Ready for paying customers |
-| **Critical Path** | Spółka (Feb 15) → Bank (Feb 16) → Domains (Feb 18) → Invoice setup (Mar 2-8) → Sales materials (Mar 8) → Partner Portal (Mar 15) |
+| **Critical Path** | ✅ Rebrand done (Feb 15) → Spółka (Feb 15) → Bank (Feb 16) → Domains (Feb 18) → Invoice setup (Mar 2-8) → Sales materials (Mar 8) → Partner Portal (Mar 15) |
 
 ---
 
@@ -170,6 +170,8 @@
 | 30 | **EVG is Compliance, not Premium** (Art. 4 + Art. 7 make it mandatory) | **Feb 14** |
 | 31 | **Invoice automation = Priority Zero** (saves 12.5h/month at 50 customers) | **Feb 14** |
 | 32 | **Realistic targets > ambitious** (Jun 8 = 10-20 customers, not 50) | **Feb 14** |
+| 33 | **Rebrand early** — Brand consistency from company Day 0 eliminates technical debt and sales friction. | **Feb 15** |
+| 34 | **Framer for landing pages** — Custom marketing sites in Framer (not Next.js) = faster iteration, better designer control, embed widget for app. | **Feb 15** |
 
 ---
 
@@ -578,23 +580,68 @@
 
 ---
 
+### Session H: Rebrand Sprint PayCompass → GapRoll (2026-02-15)
+
+**Duration:** 3h  
+**Sprint:** Week 2/16 — Company Formation  
+**Focus:** Complete codebase rebrand
+
+**Completed:**
+1. ✅ Global rebrand: 37 files (frontend 13, backend 5, root 2, docs 3)
+2. ✅ Frontend: layout.tsx metadata, landing page, auth forms, sidebar, manifest.json
+3. ✅ Backend: main.py API title "GapRoll API v2", descriptions, root endpoint
+4. ✅ Root monorepo: README.md, package.json (@gaproll/web workspace)
+5. ✅ Email templates roadmap → EMAIL_TEMPLATES_PLAN.md (Week 5 prep)
+6. ✅ Build verification: Next.js production (22s, 12 pages), uvicorn OK
+7. ✅ Git commit: 689d64a (+12,386 / -169 lines)
+
+**Decisions Made:**
+- Commit strategy: Combined explainability (Session G) + rebrand (Session H) in one commit
+- Root package.json: Monorepo with dev:web / dev:api scripts
+- PWA manifest: "GapRoll" short_name for mobile add-to-home
+- Email templates: Deferred to Week 5 (Invoice automation sprint Mar 2-8)
+
+**Lessons Learned:**
+- LESSON 36: Rebrand BEFORE company registration = brand consistency from Day 0
+- LESSON 37: Root package.json in monorepo enables unified dev scripts (npm run dev:web)
+- LESSON 38: manifest.json critical for PWA UX (mobile add-to-home screen)
+- LESSON 39: Git LF→CRLF warnings on Windows = non-issue (autocrlf auto-handled)
+- LESSON 40: Cursor find-replace across 37 files in 3h = faster than manual (10x productivity)
+
+**Blockers Resolved:**
+1. MS Founders Hub application unblocked → can apply Feb 20 with @gaproll.eu email
+2. LinkedIn company page unblocked → consistent branding ready
+3. Demo screenshots unblocked → no "PayCompass" watermark in UI
+4. Sales materials unblocked → all docs reference GapRoll
+
+**Next Session Goals:**
+1. Landing page marketing copy (Framer design)
+2. Solio Model v1 discussion + implementation plan
+3. Action plan for Feb 16-22 (post-company registration)
+4. Optional: Push commit 689d64a to GitHub backup
+
+**Metrics:**
+- Files rebranded: 37
+- Code occurrences: 18 "PayCompass" → "GapRoll"
+- Build time: 22s (Next.js production)
+- Commit size: +12,386 / -169 lines
+- Zero breaking changes (API/DB unchanged)
+
+---
+
 ## 9. Next Actions (Feb 14-22)
 
 ### IMMEDIATE (This Week):
 | Date | Action | Priority | Owner | Status |
 |------|--------|----------|-------|--------|
-| **Feb 15** | S24 registration (Sp. z o.o.) | P0 | Bartek | ⏳ SCHEDULED |
-| **Feb 16** | PKO BP bank account | P0 | Bartek | ⏳ PENDING |
-| **Feb 16** | Benchmark v1 START (PDF parser prototype) | P1 | Bartek | ⏳ TODO |
-| **Feb 18** | Domain purchase (gaproll.eu/.pl/.com) | P0 | Bartek | ⏳ PENDING |
-| **Feb 18** | Google Workspace setup (bartek@gaproll.eu) | P0 | Bartek | ⏳ PENDING |
-| **Feb 19** | LinkedIn company page | P1 | Bartek | ⏳ TODO |
-| **Feb 20** | MS Founders Hub application | P0 | Bartek | ⏳ TODO |
-| **Feb 20** | Scaleway application | P1 | Bartek | ⏳ TODO |
-| **Feb 22** | Domain warming START (SPF/DKIM/DMARC) | P0 | Bartek | ⏳ TODO |
+| **Feb 15** | Rebrand sprint | P0 | Bartek | ✅ DONE (commit 689d64a) |
+| **Feb 15** | S24 registration (Sp. z o.o.) | P0 | Bartek | ⏳ TODAY |
+| **Feb 15** | Landing page (Framer design) | P1 | Bartek | ⏳ IN PROGRESS |
+| **Feb 15** | Solio Model v1 design | P1 | Bartek | ⏳ PLANNED |
+| **Feb 16** | PKO BP bank account | P0 | Bartek | ⏳ TOMORROW |
 
 ### NEXT WEEK (Feb 23 - Mar 1):
-- Rebrand sprint: Landing page copy, Next.js codebase, email templates
+- Landing page marketing copy (Framer), email templates (Week 5)
 - Explainability Phase 1-2: Dashboard tooltips, EVG modal
 
 ### MARCH (Critical Month):
@@ -613,21 +660,22 @@
 | Non-compete violation | CRITICAL | Medium | Stealth mode protocols (see 10_INFRASTRUCTURE_SETUP.md) |
 | Manual invoicing bottleneck | HIGH | High (if not automated) | **RESOLVED** — Invoice automation Week 5-8 (Priority P0) |
 | Unrealistic Jun targets demotivate | MEDIUM | Medium | **RESOLVED** — Targets adjusted: Jun 10-20, Sep 50 |
-| PayCompass branding in codebase | MEDIUM | High | Rebrand sprint Week 4 (Feb 23 - Mar 1) |
+| PayCompass branding in codebase | MEDIUM | — | **RESOLVED** — Rebrand complete (Feb 15, commit 689d64a) |
 | Partner Portal not ready for sales | HIGH | Medium | **RESOLVED** — Moved to Mar 15 (Week 6, Milestone 1) |
 
 ---
 
 ## 11. Tech Debt
 
-| Item | Severity | Deadline | Owner |
-|------|----------|----------|-------|
-| PayCompass → GapRoll global find-replace | CRITICAL | Mar 1 | Bartek |
-| Streamlit sunset (migration complete) | CRITICAL | Mar 15 | Bartek |
-| EVG Manual Override UI (missing HITL) | CRITICAL | Mar 8 | Bartek |
-| Invoice automation (manual = time sink) | **RESOLVED** | Mar 29 | Bartek |
-| Partner Portal (sales blocker) | **RESOLVED** | Mar 15 | Bartek |
-| Domain warming (cold email blocked) | IN PROGRESS | Apr 5 | Bartek |
+| Item | Severity | Deadline | Owner | Status |
+|------|----------|----------|-------|--------|
+| PayCompass → GapRoll rebrand | CRITICAL | Mar 1 | Bartek | ✅ RESOLVED (Feb 15) |
+| Landing page marketing copy | HIGH | Feb 22 | Bartek | ⏳ IN PROGRESS (Framer) |
+| Streamlit sunset (migration complete) | CRITICAL | Mar 15 | Bartek | ⏳ TODO |
+| EVG Manual Override UI (missing HITL) | CRITICAL | Mar 8 | Bartek | ⏳ TODO |
+| Invoice automation (manual = time sink) | **RESOLVED** | Mar 29 | Bartek | ✅ RESOLVED |
+| Partner Portal (sales blocker) | **RESOLVED** | Mar 15 | Bartek | ✅ RESOLVED |
+| Domain warming (cold email blocked) | IN PROGRESS | Apr 5 | Bartek | ⏳ TODO |
 
 ---
 
@@ -660,11 +708,11 @@
 
 **Next Update:** After Milestone 1 (Mar 15, 2026)
 
-**Critical Updates This Version (Feb 14, 2026):**
-- ✅ 8 Sessions logged (A–G + Session 2026-02-14); Session 2026-02-14: Explainability System + RODO Fixes + Backend Integration (6.5h)
-- ✅ EVG reclassification documented (Strategia → Compliance)
-- ✅ Invoice automation added to Next Actions (Priority P0)
-- ✅ Realistic targets updated (Jun 10-20, Sep 50)
-- ✅ Strategic Rules expanded (30 → 32 rules)
-- ✅ Current Phase: Company Formation (Feb 14-22)
-- ✅ Key Metrics updated with 3 milestones (Jun, Sep, Dec)
+**Critical Updates This Version (Feb 15, 2026):**
+- ✅ Session H: Rebrand Sprint PayCompass → GapRoll (3h, commit 689d64a, 37 files)
+- ✅ Section 1: Sprint Focus + Critical Path updated (Rebrand done ✅)
+- ✅ Next Actions: Rebrand DONE, S24 TODAY, Landing/Solio added
+- ✅ Tech Debt: PayCompass → GapRoll RESOLVED; Landing page IN PROGRESS
+- ✅ Strategic Rules 33–34: Rebrand early, Framer for landing pages
+- ✅ Current Risks: PayCompass branding RESOLVED
+- ✅ 9 Sessions logged (A–H)
