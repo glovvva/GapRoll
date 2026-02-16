@@ -60,32 +60,32 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-8">
+    <div className="flex min-h-screen items-center justify-center bg-forest-deep p-8">
       <Card className="max-w-2xl p-6">
         <CardHeader>
-          <CardTitle className="text-foreground">
+          <CardTitle className="text-text-primary">
             GapRoll - Full Stack Test
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
-          <h2 className="text-lg font-semibold text-foreground">
+          <h2 className="text-lg font-semibold text-text-primary">
             Backend Status
           </h2>
 
-          <div className="rounded border bg-card p-4">
+          <div className="rounded border bg-forest-card p-4">
             <p className="font-mono text-primary">
               Root endpoint: {apiStatus.message}
             </p>
             <p className="font-mono text-green-500">
               Health status: {apiStatus.status}
             </p>
-            <p className="font-mono text-muted-foreground">
+            <p className="font-mono text-text-secondary">
               Environment: {apiStatus.environment}
             </p>
           </div>
 
           {loading && (
-            <p className="text-sm text-muted-foreground">Loading...</p>
+            <p className="text-sm text-text-secondary">Loading...</p>
           )}
 
           {error && (

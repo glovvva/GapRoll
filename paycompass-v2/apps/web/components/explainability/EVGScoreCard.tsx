@@ -72,8 +72,8 @@ function AxisBar({
   const bar = (
     <div className="space-y-1">
       <div className="flex justify-between text-xs">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-mono text-foreground">{value}/{max}</span>
+        <span className="text-text-secondary">{label}</span>
+        <span className="font-mono text-text-primary">{value}/{max}</span>
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div
@@ -130,10 +130,10 @@ export function EVGScoreCard({
 
   return (
     <TooltipProvider>
-      <div className="rounded-lg border border-border bg-card p-4 space-y-4">
+      <div className="rounded-lg border border-teal-primary/15 bg-forest-card p-4 space-y-4">
         {/* Score + Confidence */}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-2xl font-bold font-mono text-foreground">
+          <span className="text-2xl font-bold font-mono text-text-primary">
             {score}/100
           </span>
           <ConfidenceBadge confidence={confidence} />
@@ -157,7 +157,7 @@ export function EVGScoreCard({
 
         {/* Override */}
         {onOverride && (
-          <div className="space-y-3 pt-2 border-t border-border">
+          <div className="space-y-3 pt-2 border-t border-teal-primary/15">
             {!showOverride ? (
               <Button
                 variant="outline"
@@ -169,7 +169,7 @@ export function EVGScoreCard({
             ) : (
               <div className="space-y-2">
                 <div className="flex gap-2 items-center">
-                  <label className="text-xs text-muted-foreground w-20">
+                  <label className="text-xs text-text-secondary w-20">
                     Nowa ocena:
                   </label>
                   <Input
@@ -182,7 +182,7 @@ export function EVGScoreCard({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-xs text-text-secondary">
                     Uzasadnienie:
                   </label>
                   <Input

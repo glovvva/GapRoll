@@ -135,7 +135,7 @@ export function ColumnMapper({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-foreground">Mapowanie Kolumn</CardTitle>
+        <CardTitle className="text-text-primary">Mapowanie Kolumn</CardTitle>
         <CardDescription>
           Dopasuj kolumny z CSV do pól systemu
         </CardDescription>
@@ -144,7 +144,7 @@ export function ColumnMapper({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {SYSTEM_FIELDS.map(({ key, label, required }) => (
             <div key={key} className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
+              <label className="text-sm font-medium text-text-primary">
                 {label}
                 {required && <span className="text-destructive"> *</span>}
               </label>

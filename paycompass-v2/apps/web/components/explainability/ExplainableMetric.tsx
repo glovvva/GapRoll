@@ -62,7 +62,7 @@ export function ExplainableMetric({
 
   return (
     <Collapsible className="group">
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className="rounded-lg border border-teal-primary/15 bg-forest-card p-4">
         <CollapsibleTrigger asChild>
           <button
             type="button"
@@ -75,7 +75,7 @@ export function ExplainableMetric({
                 {unit}
               </span>
               {/* Label w pełnej szerokości, badge w osobnej linii pod spodem */}
-              <span className="text-sm font-medium text-foreground mt-2 block">
+              <span className="text-sm font-medium text-text-primary mt-2 block">
                 {label}
               </span>
               <CitationBadge
@@ -92,12 +92,12 @@ export function ExplainableMetric({
                 </span>
               )}
             </div>
-            <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 mt-0.5 ml-2" />
+            <ChevronDown className="h-5 w-5 shrink-0 text-text-secondary transition-transform group-data-[state=open]:rotate-180 mt-0.5 ml-2" />
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="mt-4 space-y-3 border-t border-border pt-4">
-            <p className="text-sm text-muted-foreground leading-relaxed">
+          <div className="mt-4 space-y-3 border-t border-teal-primary/15 pt-4">
+            <p className="text-sm text-text-secondary leading-relaxed">
               {explanation}
             </p>
             <div className="flex flex-wrap items-center gap-2">

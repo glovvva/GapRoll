@@ -140,10 +140,10 @@ export function ComplianceAlert({
       <AlertDescription>
         <div className="space-y-2">
           {effectiveTitle && (
-            <p className="font-semibold text-foreground">{effectiveTitle}</p>
+            <p className="font-semibold text-text-primary">{effectiveTitle}</p>
           )}
           {effectiveDescription && (
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-text-secondary leading-relaxed">
               {effectiveDescription}
             </p>
           )}

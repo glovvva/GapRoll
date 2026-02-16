@@ -102,7 +102,7 @@ export default function PayGapPage() {
       <div className="mx-auto max-w-7xl">
         <div className="flex min-h-[400px] items-center justify-center">
           <Loader2 className="size-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">
+          <span className="ml-3 text-text-secondary">
             Ładowanie analizy...
           </span>
         </div>
@@ -138,13 +138,13 @@ export default function PayGapPage() {
     const data = payload[0].payload;
 
     return (
-      <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+      <div className="bg-forest-card border border-teal-primary/15 rounded-lg p-3 shadow-lg">
         <p className="font-semibold text-sm">{data.name}</p>
-        <p className="text-xs text-muted-foreground">{data.position}</p>
+        <p className="text-xs text-text-secondary">{data.position}</p>
         <p className="text-sm font-mono font-bold mt-1">
           {data.salary.toLocaleString()} PLN
         </p>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-text-secondary mt-1">
           {data.gender === "Male" ? "Mężczyzna" : "Kobieta"}
         </p>
       </div>
@@ -158,7 +158,7 @@ export default function PayGapPage() {
         <h1 className="text-3xl font-semibold text-primary">
           Analiza Luki Płacowej
         </h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-text-secondary">
           Porównanie wynagrodzeń między mężczyznami a kobietami
         </p>
       </div>
@@ -201,18 +201,18 @@ export default function PayGapPage() {
                     + ryzyko kary
                   </li>
                 </ul>
-                <p className="mt-2 text-xs text-muted-foreground">
+                <p className="mt-2 text-xs text-text-secondary">
                   W UE średnia luka płacowa to ~13%. Cel: {"<"}5%.
                 </p>
               </InfoTooltip>
             </CardTitle>
-            <TrendingDown className="size-4 text-muted-foreground" />
+            <TrendingDown className="size-4 text-text-secondary" />
           </CardHeader>
           <CardContent>
             <div className="font-mono text-2xl font-bold text-primary">
               {data.overall_gap_percent.toFixed(1)}%
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-xs text-text-secondary">
               Kobiety zarabiają{" "}
               {(100 - data.overall_gap_percent).toFixed(1)}% mediany mężczyzn
             </p>
@@ -225,13 +225,13 @@ export default function PayGapPage() {
             <CardTitle className="text-sm font-medium">
               Mediana (mężczyźni)
             </CardTitle>
-            <DollarSign className="size-4 text-muted-foreground" />
+            <DollarSign className="size-4 text-text-secondary" />
           </CardHeader>
           <CardContent>
             <div className="font-mono text-2xl font-bold text-primary">
               {data.median_male.toLocaleString()} PLN
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-xs text-text-secondary">
               {data.count_male} pracowników
             </p>
           </CardContent>
@@ -243,13 +243,13 @@ export default function PayGapPage() {
             <CardTitle className="text-sm font-medium">
               Mediana (kobiety)
             </CardTitle>
-            <DollarSign className="size-4 text-muted-foreground" />
+            <DollarSign className="size-4 text-text-secondary" />
           </CardHeader>
           <CardContent>
             <div className="font-mono text-2xl font-bold text-primary">
               {data.median_female.toLocaleString()} PLN
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-xs text-text-secondary">
               {data.count_female} pracownic
             </p>
           </CardContent>
@@ -269,7 +269,7 @@ export default function PayGapPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border">
+                <tr className="border-b border-teal-primary/15">
                   <th className="px-4 py-3 text-left font-semibold">
                     Stanowisko
                   </th>
@@ -295,7 +295,7 @@ export default function PayGapPage() {
                   return (
                     <tr
                       key={idx}
-                      className="border-b border-border/50 hover:bg-secondary/50"
+                      className="border-b border-teal-primary/15/50 hover:bg-secondary/50"
                     >
                       <td className="px-4 py-3">{pos.position}</td>
                       <td
@@ -303,7 +303,7 @@ export default function PayGapPage() {
                         title={maskGap ? rodoTooltip : undefined}
                       >
                         {maskGap ? (
-                          <span className="italic text-muted-foreground">
+                          <span className="italic text-text-secondary">
                             RODO
                           </span>
                         ) : (
@@ -334,7 +334,7 @@ export default function PayGapPage() {
                           ? "***"
                           : `${pos.median_female!.toLocaleString()} PLN`}
                       </td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">
+                      <td className="px-4 py-3 text-center text-text-secondary">
                         {pos.count_male} / {pos.count_female}
                         {(pos.count_male < 3 || pos.count_female < 3) && (
                           <span
@@ -352,7 +352,7 @@ export default function PayGapPage() {
             </table>
           </div>
           {data.gap_by_position.some((p) => p.masked) && (
-            <p className="mt-4 text-xs italic text-muted-foreground">
+            <p className="mt-4 text-xs italic text-text-secondary">
               *** Dane ukryte zgodnie z RODO (mniej niż 3 osoby w grupie)
             </p>
           )}
@@ -455,7 +455,7 @@ export default function PayGapPage() {
       <ExplainerCard title="Co to jest Linia Fair Pay?" variant="info">
         <div>
           <h4 className="font-semibold mb-1">CO TO JEST:</h4>
-          <p className="text-muted-foreground">
+          <p className="text-text-secondary">
             Linia Fair Pay to linia regresji pokazująca „sprawiedliwe”
             wynagrodzenie wg wartości pracy (wynik EVG). Im wyższy wynik EVG
             (trudniejsza, bardziej odpowiedzialna praca), tym wyższe
@@ -465,7 +465,7 @@ export default function PayGapPage() {
 
         <div>
           <h4 className="font-semibold mb-1">JAK TO CZYTAĆ:</h4>
-          <ul className="space-y-1 text-muted-foreground">
+          <ul className="space-y-1 text-text-secondary">
             <li>
               ✅ <strong>Punkty NA linii:</strong> Wynagrodzenie odpowiada wartości
               pracy
@@ -483,7 +483,7 @@ export default function PayGapPage() {
 
         <div>
           <h4 className="font-semibold mb-1">CO TO OZNACZA DLA CIEBIE:</h4>
-          <p className="text-muted-foreground">
+          <p className="text-text-secondary">
             Jeśli <strong>kobiety są głównie poniżej linii</strong>, a{" "}
             <strong>mężczyźni powyżej</strong> → może to wskazywać na
             dyskryminację płacową za pracę o tej samej wartości.
@@ -492,7 +492,7 @@ export default function PayGapPage() {
 
         <div>
           <h4 className="font-semibold mb-1">CO ZROBIĆ:</h4>
-          <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+          <ol className="list-decimal list-inside space-y-1 text-text-secondary">
             <li>Sprawdź kto jest {">"}10% poniżej linii</li>
             <li>Porównaj M/K na podobnych wynikach EVG (±5 punktów)</li>
             <li>Jeśli różnica {">"}5% → przeprowadź korektę wynagrodzeń</li>
@@ -525,7 +525,7 @@ export default function PayGapPage() {
                     {data.fair_pay_line.intercept.toFixed(2)}
                   </span>
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-text-secondary">
                   Punkty <strong>poniżej linii</strong> mogą wskazywać na
                   niedopłacenie względem wartości pracy. Linia rośnie wraz z
                   rosnącym wynikiem EVG (↗️).
@@ -540,7 +540,7 @@ export default function PayGapPage() {
                     {data.fair_pay_line.intercept.toFixed(2)}
                   </span>
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-text-secondary">
                   Punkty <strong>poniżej linii</strong> mogą wskazywać na
                   niedopłacenie. (Uwaga: linia bazuje na pozycjach, nie EVG
                   score - uruchom scoring w zakładce EVG dla dokładniejszej

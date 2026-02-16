@@ -127,13 +127,13 @@ export default function DataPage() {
     <div className="mx-auto max-w-7xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-foreground">Upload Danych CSV</CardTitle>
+          <CardTitle className="text-text-primary">Upload Danych CSV</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {uploading && (
             <div className="flex flex-col items-center justify-center gap-3 py-8">
               <Loader2 className="size-8 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">Parsowanie CSV...</p>
+              <p className="text-sm text-text-secondary">Parsowanie CSV...</p>
             </div>
           )}
 
@@ -167,7 +167,7 @@ export default function DataPage() {
           {step === "saving" && (
             <div className="flex items-center justify-center p-8">
               <Loader2 className="size-8 animate-spin text-primary" />
-              <span className="ml-3 text-sm text-muted-foreground">
+              <span className="ml-3 text-sm text-text-secondary">
                 Zapisywanie danych...
               </span>
             </div>

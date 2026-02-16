@@ -32,12 +32,12 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-card",
+        "fixed left-0 top-0 z-40 h-screen w-64 border-r border-teal-primary/15 bg-forest-card",
         "transition-colors duration-200"
       )}
     >
       {/* Logo / tytuł */}
-      <div className="border-b border-border p-4">
+      <div className="border-b border-teal-primary/15 p-4">
         <Link
           href="/dashboard"
           className="text-xl font-bold text-primary transition-colors duration-200 hover:opacity-90"
@@ -56,10 +56,10 @@ export function Sidebar() {
               href={href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-4 py-3 transition-colors duration-200",
-                "hover:bg-secondary/50 hover:text-foreground",
+                "hover:bg-secondary/50 hover:text-text-primary",
                 isActive
                   ? "bg-secondary font-semibold text-primary"
-                  : "text-muted-foreground"
+                  : "text-text-secondary"
               )}
             >
               <Icon className="size-5 shrink-0" />

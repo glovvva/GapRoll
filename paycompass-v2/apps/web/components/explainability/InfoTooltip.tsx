@@ -43,7 +43,7 @@ export function InfoTooltip({
           >
             <HelpCircle
               className={cn(
-                "h-4 w-4 text-muted-foreground inline-block",
+                "h-4 w-4 text-text-secondary inline-block",
                 className
               )}
               aria-hidden
@@ -51,7 +51,7 @@ export function InfoTooltip({
           </span>
         </TooltipTrigger>
         <TooltipContent
-          className="max-w-[300px] border border-border bg-[var(--bg-secondary)] p-3 text-sm text-[var(--text-secondary)]"
+          className="max-w-[300px] border border-teal-primary/15 bg-[var(--bg-secondary)] p-3 text-sm text-[var(--text-secondary)]"
           side="top"
         >
           {children}

@@ -10,44 +10,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        forest: {
+          deep: "#0A3A2A", // Główne tło
+          card: "#0F4A36", // Karty, surface
+          surface: "#134D3A", // Hover, active states
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+        teal: {
+          primary: "#14b8a6", // CTA, linki
+          hover: "#0d9488", // Hover na CTA
+          light: "#5eead4", // Badges, highlights
         },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+        legal: {
+          gold: "#F59E0B", // Compliance badges
+          "gold-muted": "#D97706",
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        text: {
+          primary: "#F1F5F9", // slate-100
+          secondary: "#CBD5E1", // slate-300
+          muted: "#94A3B8", // slate-400
         },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+      },
+      fontFamily: {
+        heading: ["var(--font-lora)", "Georgia", "serif"],
+        body: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        DEFAULT: "8px",
+        lg: "12px",
+      },
+      boxShadow: {
+        "glow-teal": "0 0 40px -12px rgba(20, 184, 166, 0.2)",
+        "glow-gold": "0 0 30px -10px rgba(245, 158, 11, 0.15)",
       },
     },
   },

@@ -113,7 +113,7 @@ export default function ReportPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-3 text-muted-foreground">
+        <span className="ml-3 text-text-secondary">
           Ładowanie raportu...
         </span>
       </div>
@@ -380,7 +380,7 @@ export default function ReportPage() {
               (q) => q.median_male == null || q.median_female == null
             ) && (
               <p
-                className="mt-4 text-xs italic text-muted-foreground"
+                className="mt-4 text-xs italic text-text-secondary"
                 style={{ color: "#94a3b8" }}
               >
                 *** Dane ukryte zgodnie z RODO (mniej niż 3 osoby w grupie)

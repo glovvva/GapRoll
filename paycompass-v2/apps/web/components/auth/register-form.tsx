@@ -140,7 +140,7 @@ export function RegisterForm() {
             )}
           </Button>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-sm text-center text-text-secondary">
             Masz już konto?{" "}
             <a href="/login" className="text-primary hover:underline">
               Zaloguj się

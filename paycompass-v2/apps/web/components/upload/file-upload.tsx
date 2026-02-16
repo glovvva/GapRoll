@@ -111,9 +111,9 @@ export function FileUpload({ onFileSelect, maxSizeMB = 10 }: FileUploadProps) {
         }}
         className={cn(
           "flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center transition-colors duration-200",
-          "border-border bg-card hover:border-primary/50 hover:bg-primary/5",
-          isDragging && "border-primary bg-primary/5",
-          hasFile && "border-primary bg-primary/10",
+          "border-teal-primary/15 bg-forest-card hover:border-primary/50 hover:bg-teal-primary/5",
+          isDragging && "border-primary bg-teal-primary/5",
+          hasFile && "border-primary bg-teal-primary/10",
           uploading && "pointer-events-none opacity-70"
         )}
       >
@@ -128,18 +128,18 @@ export function FileUpload({ onFileSelect, maxSizeMB = 10 }: FileUploadProps) {
 
         {!hasFile ? (
           <>
-            <Upload className="mb-3 size-10 text-muted-foreground" />
-            <p className="text-sm font-medium text-foreground">
+            <Upload className="mb-3 size-10 text-text-secondary" />
+            <p className="text-sm font-medium text-text-primary">
               Przeciągnij plik CSV tutaj
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">lub kliknij</p>
+            <p className="mt-1 text-sm text-text-secondary">lub kliknij</p>
           </>
         ) : (
           <div className="flex w-full flex-col items-center gap-2">
-            <p className="truncate text-sm font-medium text-foreground" title={file.name}>
+            <p className="truncate text-sm font-medium text-text-primary" title={file.name}>
               {file.name}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-text-secondary">
               {formatFileSize(file.size)}
             </p>
             <Button

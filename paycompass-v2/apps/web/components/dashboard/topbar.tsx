@@ -52,12 +52,12 @@ export function Topbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-card px-6",
+        "sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-teal-primary/15 bg-forest-card px-6",
         "transition-colors duration-200"
       )}
     >
       {/* Lewa strona - breadcrumb */}
-      <p className="text-sm font-medium text-foreground">{breadcrumb}</p>
+      <p className="text-sm font-medium text-text-primary">{breadcrumb}</p>
 
       {/* Prawa strona - notyfikacje, ustawienia, user */}
       <div className="flex items-center gap-4">
@@ -79,7 +79,7 @@ export function Topbar() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled
-              className="text-xs text-muted-foreground"
+              className="text-xs text-text-secondary"
             >
               {userEmail}
             </DropdownMenuItem>

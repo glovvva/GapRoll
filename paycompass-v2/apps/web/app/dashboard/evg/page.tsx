@@ -129,7 +129,7 @@ export default function EVGPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-semibold text-primary">EVG Scoring</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-text-secondary">
           Wartościowanie stanowisk pracy zgodnie z Art. 4 Dyrektywy UE 2023/970
         </p>
       </div>
@@ -149,7 +149,7 @@ export default function EVGPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-text-secondary">
                 <p className="mb-2">
                   Scoring bazuje na 4 kryteriach (po 25 punktów każde):
                 </p>
@@ -187,7 +187,7 @@ export default function EVGPage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Loader2 className="mb-4 size-12 animate-spin text-primary" />
             <p className="text-lg font-semibold">Analizuję stanowiska...</p>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm text-text-secondary">
               To może potrwać 10-30 sekund
             </p>
           </CardContent>
@@ -307,7 +307,7 @@ export default function EVGPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border">
+                  <tr className="border-b border-teal-primary/15">
                     <th className="px-4 py-3 text-left font-semibold">
                       Stanowisko
                     </th>
@@ -332,14 +332,14 @@ export default function EVGPage() {
                   {sortedScores.map((score, idx) => (
                     <tr
                       key={idx}
-                      className="border-b border-border/50 hover:bg-secondary/50"
+                      className="border-b border-teal-primary/15/50 hover:bg-secondary/50"
                     >
                       <td className="px-4 py-3 font-medium">{score.position}</td>
                       <td className="px-4 py-3 text-center">
                         <span className="font-mono text-lg font-bold text-primary">
                           {score.evg_score}
                         </span>
-                        <span className="ml-1 text-xs text-muted-foreground">
+                        <span className="ml-1 text-xs text-text-secondary">
                           /100
                         </span>
                       </td>
@@ -363,13 +363,13 @@ export default function EVGPage() {
 
             {/* Reasoning Section */}
             <div className="mt-6 space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground">
+              <h3 className="text-sm font-semibold text-text-secondary">
                 Uzasadnienia AI:
               </h3>
               {sortedScores.map((score, idx) => (
                 <div key={idx} className="text-sm">
                   <span className="font-semibold">{score.position}:</span>{" "}
-                  <span className="text-muted-foreground">
+                  <span className="text-text-secondary">
                     {score.reasoning}
                   </span>
                 </div>
@@ -385,7 +385,7 @@ export default function EVGPage() {
             <h4 className="font-semibold mb-1">
               METODOLOGIA (Art. 4 Dyrektywy UE 2023/970):
             </h4>
-            <p className="text-muted-foreground mb-2">
+            <p className="text-text-secondary mb-2">
               System ocenia każde stanowisko według 4 obiektywnych kryteriów:
             </p>
             <div className="space-y-2">
@@ -393,7 +393,7 @@ export default function EVGPage() {
                 <span className="font-mono font-bold text-primary">
                   Umiejętności (0-25):
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-text-secondary">
                   Wykształcenie, certyfikaty, doświadczenie, ekspertyza techniczna
                 </span>
               </div>
@@ -401,7 +401,7 @@ export default function EVGPage() {
                 <span className="font-mono font-bold text-primary">
                   Wysiłek (0-25):
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-text-secondary">
                   Wysiłek fizyczny i umysłowy, stres, intensywność pracy
                 </span>
               </div>
@@ -409,7 +409,7 @@ export default function EVGPage() {
                 <span className="font-mono font-bold text-primary">
                   Odpowiedzialność (0-25):
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-text-secondary">
                   Odpowiedzialność za decyzje, budżet, zarządzanie, wpływ na firmę
                 </span>
               </div>
@@ -417,7 +417,7 @@ export default function EVGPage() {
                 <span className="font-mono font-bold text-primary">
                   Warunki (0-25):
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-text-secondary">
                   Bezpieczeństwo, środowisko pracy, podróże, równowaga praca–życie
                 </span>
               </div>
@@ -426,7 +426,7 @@ export default function EVGPage() {
 
           <div>
             <h4 className="font-semibold mb-1">CZY MOGĘ UFAĆ AI?</h4>
-            <p className="text-muted-foreground">
+            <p className="text-text-secondary">
               ✅ System używa GPT-4o (najnowszy model OpenAI) wytrenowany na
               międzynarodowych standardach wyceny pracy.
               <br />
@@ -439,10 +439,10 @@ export default function EVGPage() {
             <h4 className="font-semibold mb-1">
               CZY INSPEKTOR PIP TO ZAAKCEPTUJE?
             </h4>
-            <p className="text-muted-foreground">
+            <p className="text-text-secondary">
               ✅ Tak - o ile zachowasz dokumentację:
             </p>
-            <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-2">
+            <ul className="list-disc list-inside text-text-secondary space-y-1 ml-2">
               <li>
                 Wydruk scoringu z uzasadnieniem AI (dostępny w PDF)
               </li>

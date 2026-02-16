@@ -1,5 +1,19 @@
 import type { Metadata } from "next";
+import { Lora, Inter } from "next/font/google";
 import "./globals.css";
+
+const lora = Lora({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-lora",
+  display: "swap",
+  weight: ["400", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "GapRoll",
@@ -12,8 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">{children}</body>
+    <html lang="pl" className={`${lora.variable} ${inter.variable}`}>
+      <body className="font-body bg-forest-deep text-text-primary antialiased">
+        {children}
+      </body>
     </html>
   );
 }

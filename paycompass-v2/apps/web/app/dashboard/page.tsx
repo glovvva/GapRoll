@@ -153,7 +153,7 @@ export default function HomePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-foreground">
+          <CardTitle className="text-text-primary">
             Witamy w GapRoll
           </CardTitle>
         </CardHeader>
@@ -164,13 +164,13 @@ export default function HomePage() {
                 key={label}
                 className="rounded-lg bg-secondary p-4 transition-colors duration-200"
               >
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center gap-2 text-text-secondary">
                   <Icon className="size-5 shrink-0" />
                   <span className="text-sm font-medium">{label}</span>
                 </div>
                 <p
                   className={`mt-2 text-2xl font-semibold ${
-                    destructive ? "text-destructive" : "text-foreground"
+                    destructive ? "text-destructive" : "text-text-primary"
                   }`}
                 >
                   {value}

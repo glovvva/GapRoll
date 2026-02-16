@@ -47,7 +47,7 @@ export function DataPreview({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-foreground">
+        <CardTitle className="text-text-primary">
           Podgląd: {filename}
         </CardTitle>
         <CardDescription>
@@ -58,30 +58,30 @@ export function DataPreview({
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-4">
           <div className="rounded bg-secondary p-3">
-            <p className="text-xs text-muted-foreground">Separator</p>
-            <p className="font-mono text-sm text-foreground">{separator}</p>
+            <p className="text-xs text-text-secondary">Separator</p>
+            <p className="font-mono text-sm text-text-primary">{separator}</p>
           </div>
           <div className="rounded bg-secondary p-3">
-            <p className="text-xs text-muted-foreground">Encoding</p>
-            <p className="font-mono text-sm text-foreground">{encoding}</p>
+            <p className="text-xs text-text-secondary">Encoding</p>
+            <p className="font-mono text-sm text-text-primary">{encoding}</p>
           </div>
           <div className="rounded bg-secondary p-3">
-            <p className="text-xs text-muted-foreground">Preview</p>
-            <p className="font-mono text-sm text-foreground">
+            <p className="text-xs text-text-secondary">Preview</p>
+            <p className="font-mono text-sm text-text-primary">
               {safePreview.length} wierszy
             </p>
           </div>
         </div>
 
         {/* Tabela */}
-        <div className="max-h-96 overflow-x-auto overflow-y-auto rounded border border-border">
+        <div className="max-h-96 overflow-x-auto overflow-y-auto rounded border border-teal-primary/15">
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10 bg-secondary">
               <tr>
                 {safeColumnNames.map((name) => (
                   <th
                     key={name}
-                    className="border-b border-border px-3 py-2 text-left font-medium text-foreground"
+                    className="border-b border-teal-primary/15 px-3 py-2 text-left font-medium text-text-primary"
                   >
                     {name}
                   </th>
@@ -93,13 +93,13 @@ export function DataPreview({
                 <tr
                   key={i}
                   className={
-                    i % 2 === 0 ? "bg-card" : "bg-secondary/30"
+                    i % 2 === 0 ? "bg-forest-card" : "bg-secondary/30"
                   }
                 >
                   {safeColumnNames.map((col) => (
                     <td
                       key={col}
-                      className="border-b border-border px-3 py-2 text-foreground"
+                      className="border-b border-teal-primary/15 px-3 py-2 text-text-primary"
                     >
                       {String(row[col] ?? "")}
                     </td>

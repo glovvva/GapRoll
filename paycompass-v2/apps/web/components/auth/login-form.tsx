@@ -100,7 +100,7 @@ export function LoginForm() {
             )}
           </Button>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-sm text-center text-text-secondary">
             Nie masz konta?{" "}
             <a href="/register" className="text-primary hover:underline">
               Zarejestruj się
