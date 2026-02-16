@@ -27,7 +27,7 @@ const faqs = [
   {
     question: "Gdzie są przechowywane dane pracowników?",
     answer:
-      "Wszystkie dane są przechowywane w Polsce (datacenter Hetzner w Niemczech, zgodność z RODO). Używamy szyfrowania end-to-end (AES-256) i nie udostępniamy danych podmiotom trzecim. Możesz usunąć dane w każdej chwili.",
+      "Dane przechowywane w UE, pełna zgodność z RODO. Szyfrowanie AES-256. Możesz usunąć dane w każdej chwili.",
   },
   {
     question: "Czy raport jest zgodny z wymogami GUS/PIP/ZUS?",
