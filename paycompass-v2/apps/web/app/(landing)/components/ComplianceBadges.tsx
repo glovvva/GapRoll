@@ -13,7 +13,7 @@ const badges = [
   },
   {
     icon: Lock,
-    iconColor: "text-teal-primary",
+    iconColor: "text-[#6B9FD4]",
     title: "RODO Compliance",
     description:
       "Dane przetwarzane w Polsce, szyfrowanie end-to-end, zgodność z art. 32 RODO",
@@ -41,7 +41,7 @@ export default function ComplianceBadges() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * index, duration: 0.5 }}
             whileHover={{ y: -4 }}
-            className="rounded-lg border border-teal-primary/10 bg-forest-card p-6 transition-all duration-300 hover:border-teal-primary/30"
+            className="rounded-lg border border-[#6B9FD4]/10 bg-card p-6 transition-all duration-300 hover:border-[#6B9FD4]/30"
           >
             <Icon
               className={`mb-4 h-8 w-8 ${iconColor}`}

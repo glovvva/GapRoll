@@ -6,7 +6,7 @@ import { Upload, Brain, BarChart3, FileText, Check } from "lucide-react";
 const features = [
   {
     icon: Upload,
-    iconColor: "text-teal-primary",
+    iconColor: "text-[#6B9FD4]",
     title: "Upload danych w 2 minuty",
     description:
       "Wgraj CSV z danymi pracowników (imię, stanowisko, wynagrodzenie, płeć). System automatycznie rozpoznaje kolumny i waliduje dane.",
@@ -58,10 +58,10 @@ export default function FeaturesGrid() {
   return (
     <section
       aria-labelledby="features-heading"
-      className="mx-auto max-w-7xl bg-forest-deep px-6 py-24"
+      className="mx-auto max-w-7xl bg-background px-6 py-24"
     >
       <div className="text-center">
-        <span className="mb-4 inline-block rounded-full border border-teal-primary/30 px-3 py-1 text-sm text-teal-primary">
+        <span className="mb-4 inline-block rounded-full border border-[#6B9FD4]/30 px-3 py-1 text-sm text-[#6B9FD4]">
           Funkcje
         </span>
         <h2
@@ -84,7 +84,7 @@ export default function FeaturesGrid() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * index, duration: 0.5 }}
             whileHover={{ y: -4 }}
-            className="rounded-lg border border-teal-primary/10 bg-forest-card p-8 transition-all duration-300 hover:border-teal-primary/30 hover:shadow-glow-teal"
+            className="rounded-lg border border-[#6B9FD4]/10 bg-card p-8 transition-all duration-300 hover:border-[#6B9FD4]/30 hover:shadow-glow-teal"
           >
             <div className="mb-4 flex items-center gap-4">
               <Icon
@@ -102,7 +102,7 @@ export default function FeaturesGrid() {
               {bullets.map((bullet) => (
                 <li key={bullet} className="flex items-start gap-2">
                   <Check
-                    className="mt-0.5 h-5 w-5 flex-shrink-0 text-teal-primary"
+                    className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#6B9FD4]"
                     aria-hidden
                   />
                   <span className="text-sm text-text-secondary">{bullet}</span>

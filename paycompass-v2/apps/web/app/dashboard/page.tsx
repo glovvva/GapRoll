@@ -7,9 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileText, Scale, TrendingDown, Users } from "lucide-react";
+import { ArrowDown, FileText, Scale, TrendingDown, Users } from "lucide-react";
 import { ExplainableMetric } from "@/components/explainability/ExplainableMetric";
 import { ComplianceAlert } from "@/components/explainability/ComplianceAlert";
+import { LegalStatusAlert } from "@/components/explainability/LegalStatusAlert";
+import { CitationBadge } from "@/components/explainability/CitationBadge";
 import { fetchWithAuth } from "@/lib/api-client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -85,15 +87,20 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
+      {!loading && data && (
+        <LegalStatusAlert gapPercent={payGapPercent} threshold={5} />
+      )}
       {payGapPercent > 5 && data && (
-        <ComplianceAlert
-          payGapPercent={payGapPercent}
-          citation={data.median_gap_citation}
-          action={{
-            label: "Zobacz Plan Działania",
-            href: "/solio-solver",
-          }}
-        />
+        <div className="rounded-lg border border-border bg-card shadow-sm transition-all duration-150 ease-brand hover:border-[#6B9FD4]/40 hover:shadow-md">
+          <ComplianceAlert
+            payGapPercent={payGapPercent}
+            citation={data.median_gap_citation}
+            action={{
+              label: "Zobacz Plan Działania",
+              href: "/dashboard/solio",
+            }}
+          />
+        </div>
       )}
 
       {error && (
@@ -105,14 +112,14 @@ export default function HomePage() {
       {loading && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="overflow-hidden">
+            <Card key={i} className="overflow-hidden border-border">
               <CardHeader className="space-y-2 pb-2">
-                <div className="h-5 w-32 animate-pulse rounded bg-muted" />
-                <div className="h-8 w-20 animate-pulse rounded bg-muted" />
+                <div className="h-5 w-32 animate-pulse rounded bg-elevated" />
+                <div className="h-8 w-20 animate-pulse rounded bg-elevated" />
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="h-4 w-full animate-pulse rounded bg-muted" />
-                <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+                <div className="h-4 w-full animate-pulse rounded bg-elevated" />
+                <div className="h-4 w-3/4 animate-pulse rounded bg-elevated" />
               </CardContent>
             </Card>
           ))}
@@ -121,39 +128,57 @@ export default function HomePage() {
 
       {!loading && data && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <ExplainableMetric
-            label="Luka Płacowa (Mediana)"
-            value={data.median_gap_percent ?? 0}
-            unit="%"
-            citation={data.median_gap_citation}
-            explanation={data.median_gap_explanation}
-            confidence={data.median_gap_confidence ?? 0}
-            status={gapStatus(data.median_gap_percent)}
-          />
-          <ExplainableMetric
-            label="Luka w Kwartylu 4 (najwyższe zarobki)"
-            value={data.quartile4_gap_percent ?? 0}
-            unit="%"
-            citation={data.quartile4_gap_citation}
-            explanation={data.quartile4_gap_explanation}
-            confidence={data.quartile4_gap_confidence ?? 0}
-            status={gapStatus(data.quartile4_gap_percent)}
-          />
-          <ExplainableMetric
-            label="Wskaźnik Reprezentacji Kobiet (Zarząd)"
-            value={data.female_representation_percent ?? 0}
-            unit="%"
-            citation={data.female_representation_citation}
-            explanation={data.female_representation_explanation}
-            confidence={data.female_representation_confidence ?? 0}
-            status={representationStatus(data.female_representation_percent)}
-          />
+          <div
+            className={`rounded-lg bg-card border border-border p-6 shadow-sm transition-all duration-150 ease-brand hover:border-[#6B9FD4]/40 hover:shadow-md border-l-4 ${gapStatus(data.median_gap_percent) !== "good" ? "border-l-[#C45A5A]" : "border-l-[#5BAD7F]"}`}
+          >
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <CitationBadge
+                article="Art. 16 ust. 2 Dyrektywy UE 2023/970"
+                description="Art. 16 ust. 2: Raportowanie luki płacowej (mediana) w podziale na płeć. Wynik analizy służy do oceny zgodności z Dyrektywą."
+              />
+            </div>
+            <ExplainableMetric
+              label="Luka Płacowa (Mediana)"
+              value={data.median_gap_percent ?? 0}
+              unit="%"
+              citation={data.median_gap_citation}
+              explanation={data.median_gap_explanation}
+              confidence={data.median_gap_confidence ?? 0}
+              status={gapStatus(data.median_gap_percent)}
+            />
+          </div>
+          <div
+            className={`rounded-lg bg-card border border-border p-6 shadow-sm transition-all duration-150 ease-brand hover:border-[#6B9FD4]/40 hover:shadow-md border-l-4 ${gapStatus(data.quartile4_gap_percent) !== "good" ? "border-l-[#C45A5A]" : "border-l-[#5BAD7F]"}`}
+          >
+            <ExplainableMetric
+              label="Luka w Kwartylu 4 (najwyższe zarobki)"
+              value={data.quartile4_gap_percent ?? 0}
+              unit="%"
+              citation={data.quartile4_gap_citation}
+              explanation={data.quartile4_gap_explanation}
+              confidence={data.quartile4_gap_confidence ?? 0}
+              status={gapStatus(data.quartile4_gap_percent)}
+            />
+          </div>
+          <div
+            className={`rounded-lg bg-card border border-border p-6 shadow-sm transition-all duration-150 ease-brand hover:border-[#6B9FD4]/40 hover:shadow-md border-l-4 ${representationStatus(data.female_representation_percent) === "good" ? "border-l-[#5BAD7F]" : "border-l-[#C45A5A]"}`}
+          >
+            <ExplainableMetric
+              label="Wskaźnik Reprezentacji Kobiet (Zarząd)"
+              value={data.female_representation_percent ?? 0}
+              unit="%"
+              citation={data.female_representation_citation}
+              explanation={data.female_representation_explanation}
+              confidence={data.female_representation_confidence ?? 0}
+              status={representationStatus(data.female_representation_percent)}
+            />
+          </div>
         </div>
       )}
 
-      <Card>
+      <Card className="border-border">
         <CardHeader>
-          <CardTitle className="text-text-primary">
+          <CardTitle className="text-foreground">
             Witamy w GapRoll
           </CardTitle>
         </CardHeader>
@@ -162,15 +187,23 @@ export default function HomePage() {
             {metrics.map(({ label, value, icon: Icon, destructive }) => (
               <div
                 key={label}
-                className="rounded-lg bg-secondary p-4 transition-colors duration-200"
+                className={`rounded-lg border border-border p-4 transition-all duration-150 ease-brand hover:border-[#6B9FD4]/40 hover:shadow-md ${
+                  destructive
+                    ? "border-l-4 border-l-[#C45A5A] bg-card"
+                    : "border-l-4 border-l-[#6B9FD4] bg-card"
+                }`}
               >
-                <div className="flex items-center gap-2 text-text-secondary">
-                  <Icon className="size-5 shrink-0" />
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  {destructive ? (
+                    <ArrowDown className="size-5 shrink-0 text-[#C45A5A]" />
+                  ) : (
+                    <Icon className="size-5 shrink-0" />
+                  )}
                   <span className="text-sm font-medium">{label}</span>
                 </div>
                 <p
                   className={`mt-2 text-2xl font-semibold ${
-                    destructive ? "text-destructive" : "text-text-primary"
+                    destructive ? "text-[#C45A5A]" : "text-foreground"
                   }`}
                 >
                   {value}

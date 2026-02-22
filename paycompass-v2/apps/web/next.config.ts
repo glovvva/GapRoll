@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: 'http://localhost:8000/:path*',
       },
+      {
+        source: '/root-cause/:path*',
+        destination: 'http://localhost:8000/root-cause/:path*',
+      },
     ]
   },
   images: {

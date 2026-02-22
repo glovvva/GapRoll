@@ -32,6 +32,7 @@ import {
 } from "recharts";
 import { HelpCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CHART_COLORS } from "@/lib/chart-colors";
 
 const ART16_CITATION = "Art. 16 Dyrektywy UE 2023/970";
 
@@ -271,8 +272,8 @@ export default function ReportPage() {
                     cursor={{ fill: "rgba(148, 163, 184, 0.1)" }}
                   />
                   <Legend />
-                  <Bar dataKey="Mężczyźni" fill="#4A90E2" />
-                  <Bar dataKey="Kobiety" fill="#FF6B9D" />
+                  <Bar dataKey="Mężczyźni" fill={CHART_COLORS.men} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Kobiety" fill={CHART_COLORS.women} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -403,7 +404,7 @@ export default function ReportPage() {
             )}
 
             <Collapsible>
-              <CollapsibleTrigger className="text-sm flex items-center gap-2 hover:underline mt-4" style={{ color: "#14b8a6" }}>
+              <CollapsibleTrigger className="text-sm flex items-center gap-2 hover:underline mt-4" style={{ color: "#6B9FD4" }}>
                 <HelpCircle className="h-4 w-4" />
                 Jak interpretować?
               </CollapsibleTrigger>
@@ -478,7 +479,7 @@ export default function ReportPage() {
           <Button
             variant="default"
             className="gap-2"
-            style={{ backgroundColor: "#14b8a6" }}
+            style={{ backgroundColor: "#6B9FD4" }}
           >
             <FileDown className="h-4 w-4" />
             Eksportuj PDF

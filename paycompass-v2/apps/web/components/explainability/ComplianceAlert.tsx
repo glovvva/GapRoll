@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CitationBadge } from "@/components/explainability/CitationBadge";
 import { cn } from "@/lib/utils";
 
-/** Domyślna ścieżka do Planu Działania (Solio Solver). */
+/** Domyślna ścieżka do Planu Działania (Symulator korekty wynagrodzeń). */
 export const COMPLIANCE_ACTION_HREF = "/dashboard/solio";
 
 /**
@@ -36,7 +36,7 @@ export interface ComplianceAlertProps {
   title?: string;
   /** Opis – formalna polszczyzna, cytowanie Art. 9 */
   description?: string;
-  /** Akcja CTA – domyślnie "Zobacz Plan Działania" → Solio Solver */
+  /** Akcja CTA – domyślnie "Zobacz Plan Działania" → Symulator */
   action?: {
     label: string;
     href?: string;

@@ -74,14 +74,14 @@ export function DataPreview({
         </div>
 
         {/* Tabela */}
-        <div className="max-h-96 overflow-x-auto overflow-y-auto rounded border border-teal-primary/15">
+        <div className="max-h-96 overflow-x-auto overflow-y-auto rounded border border-[#6B9FD4]/15">
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10 bg-secondary">
               <tr>
                 {safeColumnNames.map((name) => (
                   <th
                     key={name}
-                    className="border-b border-teal-primary/15 px-3 py-2 text-left font-medium text-text-primary"
+                    className="border-b border-[#6B9FD4]/15 px-3 py-2 text-left font-medium text-text-primary"
                   >
                     {name}
                   </th>
@@ -93,13 +93,13 @@ export function DataPreview({
                 <tr
                   key={i}
                   className={
-                    i % 2 === 0 ? "bg-forest-card" : "bg-secondary/30"
+                    i % 2 === 0 ? "bg-card" : "bg-secondary/30"
                   }
                 >
                   {safeColumnNames.map((col) => (
                     <td
                       key={col}
-                      className="border-b border-teal-primary/15 px-3 py-2 text-text-primary"
+                      className="border-b border-[#6B9FD4]/15 px-3 py-2 text-text-primary"
                     >
                       {String(row[col] ?? "")}
                     </td>

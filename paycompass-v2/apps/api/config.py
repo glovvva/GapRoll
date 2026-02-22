@@ -21,6 +21,7 @@ class Settings:
     def __init__(self) -> None:
         self._supabase_url: str | None = None
         self._supabase_key: str | None = None
+        self._supabase_service_role_key: str | None = None
         self._supabase_jwt_secret: str = ""
         self._environment: str | None = None
         self._openai_api_key: str = ""
@@ -30,6 +31,7 @@ class Settings:
         """Wczytaj i zwaliduj zmienne środowiskowe."""
         self._supabase_url = os.getenv("SUPABASE_URL", "").strip() or None
         self._supabase_key = os.getenv("SUPABASE_KEY", "").strip() or None
+        self._supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip() or None
         self._supabase_jwt_secret = (
             os.getenv("SUPABASE_JWT_SECRET", "").strip() or ""
         )
@@ -47,6 +49,11 @@ class Settings:
     def SUPABASE_KEY(self) -> str | None:
         """Klucz anon Supabase."""
         return self._supabase_key
+
+    @property
+    def SUPABASE_SERVICE_ROLE_KEY(self) -> str | None:
+        """Klucz service_role Supabase (pomija RLS). Używany przez backend do odczytu profiles itd."""
+        return self._supabase_service_role_key
 
     @property
     def ENVIRONMENT(self) -> str:

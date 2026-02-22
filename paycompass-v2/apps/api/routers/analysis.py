@@ -158,7 +158,8 @@ async def get_pay_gap_analysis(
                 detail="Supabase nie jest skonfigurowane.",
             )
 
-        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        key = settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY
+        supabase = create_client(settings.SUPABASE_URL, key)
 
         response = (
             supabase.table("payroll_data")
@@ -171,7 +172,6 @@ async def get_pay_gap_analysis(
             raise HTTPException(status_code=404, detail="Brak danych do analizy")
 
         data = response.data
-        print(f"DEBUG: Fetched {len(data)} records for analysis")
 
         evg_scores = {}
         try:
@@ -185,9 +185,8 @@ async def get_pay_gap_analysis(
                 evg_scores = {
                     s["position"]: s["evg_score"] for s in scores_response.data
                 }
-                print(f"DEBUG: Loaded {len(evg_scores)} EVG scores from cache")
-        except Exception as e:
-            print(f"DEBUG: No EVG scores found (table may not exist): {e}")
+        except Exception:
+            pass
 
         male_salaries = []
         female_salaries = []
@@ -232,12 +231,6 @@ async def get_pay_gap_analysis(
         gap_by_position = calculate_gap_by_position(data)
 
         fair_pay_line = calculate_fair_pay_line(data_points)
-        print(
-            f"DEBUG: Fair Pay Line - slope: {fair_pay_line['slope']}, intercept: {fair_pay_line['intercept']}"
-        )
-        print(
-            f"DEBUG: Fair Pay Line uses EVG: {fair_pay_line.get('use_evg', False)}"
-        )
 
         return {
             "overall_gap_percent": round(overall_gap_percent, 2),
@@ -395,8 +388,6 @@ Format odpowiedzi:
         )
         result["total_score"] = total
 
-        print(f"DEBUG: Scored {position} → {total}/100")
-
         return result
 
     except Exception as e:
@@ -420,7 +411,8 @@ async def score_positions(
                 detail="OpenAI API key not configured",
             )
 
-        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        key = settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY
+        supabase = create_client(settings.SUPABASE_URL, key)
         results = []
 
         for position in request.positions:
@@ -435,10 +427,9 @@ async def score_positions(
 
                 if cached.data:
                     results.append(cached.data[0])
-                    print(f"DEBUG: Cache hit for {position}")
                     continue
             except Exception:
-                print("DEBUG: Cache table doesn't exist, skipping cache")
+                pass
 
             score_data = await score_position_with_ai(position)
 
@@ -455,8 +446,8 @@ async def score_positions(
 
             try:
                 supabase.table("job_valuations").insert(record).execute()
-            except Exception as e:
-                print(f"DEBUG: Could not cache result: {e}")
+            except Exception:
+                pass
 
             results.append(record)
 
@@ -483,9 +474,9 @@ async def clear_evg_cache(
                 status_code=503,
                 detail="Supabase nie jest skonfigurowane.",
             )
-        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        key = settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY
+        supabase = create_client(settings.SUPABASE_URL, key)
         supabase.table("job_valuations").delete().eq("user_id", user_id).execute()
-        print(f"DEBUG: Cleared EVG cache for user_id={user_id}")
         return {"ok": True, "message": "Cache wyczyszczony."}
     except HTTPException:
         raise
@@ -516,7 +507,8 @@ async def get_dashboard_metrics(
                 status_code=503,
                 detail="Supabase nie jest skonfigurowane.",
             )
-        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        key = settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY
+        supabase = create_client(settings.SUPABASE_URL, key)
         response = (
             supabase.table("payroll_data")
             .select("position, gender, salary")
@@ -653,7 +645,8 @@ async def get_art16_analysis(
                 detail="Supabase nie jest skonfigurowane.",
             )
 
-        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        key = settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY
+        supabase = create_client(settings.SUPABASE_URL, key)
 
         response = (
             supabase.table("payroll_data")
@@ -800,11 +793,6 @@ async def get_art16_analysis(
             "percent_female": round(total_female / total_employees * 100, 2)
             if total_employees else 0,
         }
-
-        print(
-            f"DEBUG: Art.16 - {len(all_salaries)} employees, {len(quartiles)} quartiles"
-        )
-        print(f"DEBUG: Joint Assessment Required: {joint_assessment_required}")
 
         return {
             "quartiles": quartiles,

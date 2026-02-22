@@ -14,17 +14,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const pathLabels: Record<string, string> = {
-  "/dashboard": "Dashboard",
+  "/dashboard": "Strona Główna",
   "/dashboard/data": "Data Upload",
-  "/dashboard/paygap": "Pay Gap",
-  "/dashboard/evg": "EVG Scoring",
-  "/dashboard/report": "Art. 16 Report",
+  "/dashboard/paygap": "Analiza Luki Płacowej",
+  "/dashboard/evg": "Wartościowanie Stanowisk",
+  "/dashboard/report": "Raport Art. 16",
+  "/dashboard/solio": "Optymalizator Budżetowy",
 };
 
 function getBreadcrumb(pathname: string): string {
-  return pathLabels[pathname] ?? pathname.replace("/dashboard", "Dashboard").replace(/-/g, " ") ?? "Dashboard";
+  const pageName = pathLabels[pathname] ?? (pathname.replace("/dashboard", "").replace(/^\//, "").replace(/-/g, " ") ? pathname.replace("/dashboard", "").replace(/^\//, "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Strona Główna");
+  return `Dashboard › ${pageName}`;
 }
 
 export function Topbar() {
@@ -52,7 +55,7 @@ export function Topbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-teal-primary/15 bg-forest-card px-6",
+        "sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-card px-6",
         "transition-colors duration-200"
       )}
     >
@@ -67,6 +70,7 @@ export function Topbar() {
         <Button variant="ghost" size="icon" aria-label="Ustawienia">
           <Settings className="size-5" />
         </Button>
+        <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2">

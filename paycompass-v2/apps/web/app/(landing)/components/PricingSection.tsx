@@ -48,10 +48,10 @@ export default function PricingSection() {
     <section
       id="cennik"
       aria-labelledby="pricing-heading"
-      className="mx-auto max-w-7xl bg-forest-deep px-6 py-24"
+      className="mx-auto max-w-7xl bg-background px-6 py-24"
     >
       <div className="text-center">
-        <span className="mb-4 inline-block rounded-full border border-teal-primary/30 px-3 py-1 text-sm text-teal-primary">
+        <span className="mb-4 inline-block rounded-full border border-[#6B9FD4]/30 px-3 py-1 text-sm text-[#6B9FD4]">
           Cennik
         </span>
         <h2
@@ -73,15 +73,15 @@ export default function PricingSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * index, duration: 0.5 }}
             whileHover={tier.highlight ? undefined : { y: -4 }}
-            className={`relative flex flex-col rounded-lg border bg-forest-card p-8 ${
+            className={`relative flex flex-col rounded-lg border bg-card p-8 ${
               tier.highlight
-                ? "border-teal-primary shadow-glow-teal"
-                : "border-teal-primary/10 transition-all duration-300 hover:border-teal-primary/30"
+                ? "border-[#6B9FD4] shadow-glow-teal"
+                : "border-[#6B9FD4]/10 transition-all duration-300 hover:border-[#6B9FD4]/30"
             }`}
           >
             {tier.highlight && tier.badge && (
               <div
-                className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-teal-primary px-4 py-1 text-sm font-semibold text-forest-deep"
+                className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#6B9FD4] px-4 py-1 text-sm font-semibold text-foreground"
                 aria-hidden
               >
                 {tier.badge}
@@ -106,7 +106,7 @@ export default function PricingSection() {
               {tier.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-3">
                   <Check
-                    className="mt-0.5 h-5 w-5 flex-shrink-0 text-teal-primary"
+                    className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#6B9FD4]"
                     aria-hidden
                   />
                   <span className="text-sm text-text-secondary">{feature}</span>
@@ -119,7 +119,7 @@ export default function PricingSection() {
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.98 }}
-                  className="w-full rounded-lg bg-teal-primary py-4 text-lg font-semibold text-forest-deep transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary min-h-[48px]"
+                  className="w-full rounded-lg bg-[#6B9FD4] py-4 text-lg font-semibold text-foreground transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B9FD4] min-h-[48px]"
                 >
                   {tier.cta}
                 </motion.button>
@@ -127,7 +127,7 @@ export default function PricingSection() {
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.98 }}
-                  className="w-full rounded-lg border border-teal-primary/30 py-4 text-lg font-semibold text-teal-primary transition-colors hover:bg-teal-primary/10 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary min-h-[48px]"
+                  className="w-full rounded-lg border border-[#6B9FD4]/30 py-4 text-lg font-semibold text-[#6B9FD4] transition-colors hover:bg-[#6B9FD4]/10 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B9FD4] min-h-[48px]"
                 >
                   {tier.cta}
                 </motion.button>

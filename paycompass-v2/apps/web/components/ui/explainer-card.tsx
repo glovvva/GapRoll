@@ -14,7 +14,7 @@ export function ExplainerCard({
 }: ExplainerCardProps) {
   const bgColors = {
     default: "bg-secondary/30",
-    info: "bg-teal-primary/10 border-teal-primary/50",
+    info: "bg-[#6B9FD4]/10 border-[#6B9FD4]/50",
     warning: "bg-yellow-500/10 border-yellow-500/50",
   };
 

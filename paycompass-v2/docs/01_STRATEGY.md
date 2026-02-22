@@ -636,6 +636,36 @@ contract_type,employment_type,performance_rating,job_level
 - [ ] **Invoice automation integrated** (Fakturownia + Przelewy24 tested)
 
 ---
+### 9.5 Exit Strategy — ERP Acquisition Targets
+
+**Thesis:** GapRoll's primary exit vector is acquisition by a Polish/CEE ERP vendor seeking to plug the Pay Transparency compliance gap in their product suite. Compliance tools are "sticky" (low churn) and defensible (regulatory moat).
+
+**Primary Target: Symfonia (Accel-KKR / MidEuropa)**
+- **Why:** Most aggressive acquirer in CEE. Recent buys: HRTec, Reset2, Cloud Planet, NextUp (Romania). Building "total employee lifecycle" ecosystem.
+- **Market share:** ~25% of 50-500 segment (premium, compliance-conscious clients)
+- **Integration:** REST WebAPI, ISV partner program available
+- **CEE multiplier:** Symfonia→NextUp Romania = 2 markets with 1 relationship
+- **Action (Q3-Q4 2026):** Apply to ISV program after 50 customers. Build Symfonia connector as acquisition signal.
+
+**Secondary Target: Comarch (CVC Capital Partners)**
+- **Why:** Recently delisted, PE-optimized. CVC wants sticky SaaS add-ons to protect Optima install base (~35% market share).
+- **Risk:** On-prem dominated (90%), integration technically harder (hybrid SQL/API)
+- **Action (2027):** Volume play — demonstrate shared client count to get attention.
+
+**Tertiary Target: Asseco Solutions (CEE via Helios)**
+- **Why:** Dominant in CZ+SK (Helios iNuvio >30%). Federation model = slow M&A.
+- **Requirement:** €1M+ ARR minimum before serious conversations.
+- **Action (2027+):** CEE expansion via Helios integration = 2 countries with 1 codebase.
+
+**Pre-Conditions (before ANY ERP integration work):**
+1. ≥50 paying customers (demand validation)
+2. Customer survey: "Z jakiego systemu kadrowo-płacowego korzystacie?"
+3. ≥3 customers explicitly request specific ERP connector
+4. Pre-seed funding raised OR organic revenue covers 8-week sprint cost
+
+**Source:** Gemini Deep Research — Polish & CEE ERP Ecosystem Analysis (Feb 2026)
+
+-----------------------------
 
 ## 10. Strategic Lessons (Feb 13-14, 2026)
 
@@ -651,7 +681,8 @@ contract_type,employment_type,performance_rating,job_level
 8. **HITL = Non-Negotiable:** EU AI Act + Grażyna's zero trust = Manual Override mandatory for EVG
 9. **Invoice Automation = Priority Zero:** 12.5h/month saved at 50 customers, cost ~50 PLN/mies = ROI after 1 month
 10. **Realistic Targets:** Jun 8 = 10-20 customers (not 50!), Sep = 50 customers (aggressive but achievable)
-
+11. **ERP Integration = Exit Signal, Not MVP Feature:** Strategically critical for acquisition (Symfonia/Comarch/Asseco) but operacyjnie przedwczesna before PMF. CSV-first → API-second. Validate demand with survey at 50 customers. (Source: Gemini ERP Report, Feb 2026)
+12. **PESEL = Free Gender Detection:** 10th digit parity determines gender (Even=K, Odd=M). Implement in CSV parser — saves Grażyna one column of manual work. Zero cost, high UX impact.
 ---
 
 **END OF 01_STRATEGY.md**

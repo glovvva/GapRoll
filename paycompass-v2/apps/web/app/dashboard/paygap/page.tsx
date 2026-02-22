@@ -24,6 +24,7 @@ import {
 } from "recharts";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { ExplainerCard } from "@/components/ui/explainer-card";
+import { CHART_COLORS } from "@/lib/chart-colors";
 import {
   Collapsible,
   CollapsibleContent,
@@ -138,7 +139,7 @@ export default function PayGapPage() {
     const data = payload[0].payload;
 
     return (
-      <div className="bg-forest-card border border-teal-primary/15 rounded-lg p-3 shadow-lg">
+      <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
         <p className="font-semibold text-sm">{data.name}</p>
         <p className="text-xs text-text-secondary">{data.position}</p>
         <p className="text-sm font-mono font-bold mt-1">
@@ -269,7 +270,7 @@ export default function PayGapPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-teal-primary/15">
+                <tr className="border-b border-[#6B9FD4]/15">
                   <th className="px-4 py-3 text-left font-semibold">
                     Stanowisko
                   </th>
@@ -295,7 +296,7 @@ export default function PayGapPage() {
                   return (
                     <tr
                       key={idx}
-                      className="border-b border-teal-primary/15/50 hover:bg-secondary/50"
+                      className="border-b border-[#6B9FD4]/15/50 hover:bg-secondary/50"
                     >
                       <td className="px-4 py-3">{pos.position}</td>
                       <td
@@ -425,14 +426,14 @@ export default function PayGapPage() {
                 <Scatter
                   name="Mężczyźni"
                   data={data.data_points.filter((d) => d.gender === "Male")}
-                  fill="#4A90E2"
+                  fill={CHART_COLORS.men}
                 />
 
                 {/* Female data points */}
                 <Scatter
                   name="Kobiety"
                   data={data.data_points.filter((d) => d.gender === "Female")}
-                  fill="#FF6B9D"
+                  fill={CHART_COLORS.women}
                 />
 
                 {/* Fair Pay Line */}
@@ -440,7 +441,7 @@ export default function PayGapPage() {
                   name="Linia Fair Pay"
                   data={data.fair_pay_line.line_points}
                   dataKey="salary"
-                  stroke="#14b8a6"
+                  stroke={CHART_COLORS.total}
                   strokeWidth={2}
                   strokeDasharray="5 5"
                   dot={false}

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Info } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -11,39 +11,57 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Ikona pomocy z tooltipem. Zgodne z 05_FRONTEND_STANDARDS: tło var(--bg-secondary),
- * tekst var(--text-secondary) 14px, max-width 300px. Z aria-label dla dostępności.
- *
- * @example
- * <InfoTooltip>
- *   <p>Wyjaśnienie wskaźnika zgodnie z Art. 16.</p>
- * </InfoTooltip>
+ * Ikona informacji z tooltipem. Dla Grażyny (HR): każde metric z wyjaśnieniem i opcjonalnym cytatem.
+ * Użycie z content: <InfoTooltip content="..." citation="Art. 16 Dyrektywy UE 2023/970" />
+ * Użycie z children: <InfoTooltip><p>...</p></InfoTooltip>
  */
 export interface InfoTooltipProps {
-  children: React.ReactNode;
+  /** Główny tekst wyjaśnienia (formalna polszczyzna) */
+  content?: string;
+  /** Opcjonalny cytat prawny wyświetlany jako badge pod content */
+  citation?: string;
+  /** Zamiast content/citation: dowolna treść tooltipa */
+  children?: React.ReactNode;
   className?: string;
-  /** Etykieta dla screen readerów (domyślnie: "Pomoc") */
   ariaLabel?: string;
 }
 
 export function InfoTooltip({
+  content,
+  citation,
   children,
   className,
-  ariaLabel = "Pomoc",
+  ariaLabel = "Informacja",
 }: InfoTooltipProps) {
+  const body =
+    content !== undefined ? (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">{content}</p>
+        {citation && (
+          <span className="inline-flex items-center rounded border border-border bg-muted/50 px-2 py-0.5 text-xs text-muted-foreground">
+            ⚖️ {citation}
+          </span>
+        )}
+      </div>
+    ) : (
+      children
+    );
+
+  const Icon = content !== undefined ? Info : HelpCircle;
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            className="inline-flex cursor-help"
+            className="inline-flex cursor-help align-middle"
             role="button"
             tabIndex={0}
             aria-label={ariaLabel}
           >
-            <HelpCircle
+            <Icon
               className={cn(
-                "h-4 w-4 text-text-secondary inline-block",
+                "h-4 w-4 text-muted-foreground inline-block",
                 className
               )}
               aria-hidden
@@ -51,10 +69,10 @@ export function InfoTooltip({
           </span>
         </TooltipTrigger>
         <TooltipContent
-          className="max-w-[300px] border border-teal-primary/15 bg-[var(--bg-secondary)] p-3 text-sm text-[var(--text-secondary)]"
+          className="max-w-[300px] border border-border bg-card p-3 text-sm"
           side="top"
         >
-          {children}
+          {body}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -36,10 +36,10 @@ export default function HowItWorks() {
     <section
       id="jak-to-dziala"
       aria-labelledby="how-it-works-heading"
-      className="mx-auto max-w-7xl bg-forest-deep px-6 py-24"
+      className="mx-auto max-w-7xl bg-background px-6 py-24"
     >
       <div className="text-center">
-        <span className="mb-4 inline-block rounded-full border border-teal-primary/30 px-3 py-1 text-sm text-teal-primary">
+        <span className="mb-4 inline-block rounded-full border border-[#6B9FD4]/30 px-3 py-1 text-sm text-[#6B9FD4]">
           Proces
         </span>
         <h2
@@ -63,14 +63,14 @@ export default function HowItWorks() {
               transition={{ delay: 0.2 * index, duration: 0.6 }}
               className="relative flex-1"
             >
-              <div className="absolute -left-4 -top-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-teal-primary bg-teal-primary/10">
-                <span className="font-heading text-2xl font-bold text-teal-primary">
+              <div className="absolute -left-4 -top-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#6B9FD4] bg-[#6B9FD4]/10">
+                <span className="font-heading text-2xl font-bold text-[#6B9FD4]">
                   {number}
                 </span>
               </div>
-              <div className="relative rounded-lg border border-teal-primary/10 bg-forest-card p-8 pt-12 transition-all duration-300 hover:border-teal-primary/30">
+              <div className="relative rounded-lg border border-[#6B9FD4]/10 bg-card p-8 pt-12 transition-all duration-300 hover:border-[#6B9FD4]/30">
                 <Icon
-                  className="mb-4 h-12 w-12 text-teal-primary"
+                  className="mb-4 h-12 w-12 text-[#6B9FD4]"
                   aria-hidden="true"
                 />
                 <h3 className="mb-3 font-heading text-2xl font-semibold text-text-primary">
@@ -87,7 +87,7 @@ export default function HowItWorks() {
             {index < steps.length - 1 && (
               <div className="hidden flex-shrink-0 items-center justify-center mx-4 md:flex">
                 <ChevronRight
-                  className="h-8 w-8 text-teal-primary/40"
+                  className="h-8 w-8 text-[#6B9FD4]/40"
                   aria-hidden
                 />
               </div>

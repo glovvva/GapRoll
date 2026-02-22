@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { CheckCircle, CreditCard, Globe, Shield } from "lucide-react";
+import GapAnimation from "@/components/marketing/GapAnimation";
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -12,82 +14,85 @@ export default function Hero() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="relative flex min-h-screen items-center justify-center px-6 py-20 md:py-32"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-20 md:py-32"
     >
       {/* Background gradient */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-forest-card/40 opacity-40 blur-[120px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-elevated/40 opacity-40 blur-[120px]"
       />
 
-      <div className="relative mx-auto max-w-4xl text-center">
-        {/* Badge */}
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1fr,1fr] lg:gap-16">
+        {/* Left column — Typography */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="inline-block rounded-full border border-legal-gold/30 bg-legal-gold/5 px-4 py-2 text-sm text-legal-gold"
+          transition={{ duration: 0.6 }}
+          className="max-w-xl"
         >
-          Dyrektywa UE 2023/970 · Termin: 7 czerwca 2026
-        </motion.div>
+          <span className="mb-6 inline-block rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-mono uppercase tracking-widest text-[#6B9FD4]">
+            EU Dyrektywa 2023/970 · Termin: 7 czerwca 2026
+          </span>
 
-        {/* H1 */}
-        <motion.h1
-          id="hero-heading"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 font-heading text-4xl font-bold leading-[1.15] tracking-tight text-text-primary md:text-[3.5rem]"
-        >
-          Raport zgodności płacowej gotowy w 15 minut
-        </motion.h1>
+          <h1
+            id="hero-heading"
+            className="font-black leading-[1.05] tracking-[-0.03em] text-foreground text-5xl max-sm:font-sans max-sm:text-4xl max-sm:font-bold sm:font-display sm:text-6xl"
+          >
+            Raport zgodności płacowej{" "}
+            <span className="brand-gradient-text">gotowy w 15 minut.</span>
+          </h1>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mx-auto mt-6 max-w-3xl text-lg leading-[1.7] text-text-secondary md:text-xl"
-        >
-          Automatyczne wartościowanie stanowisk, analiza luki płacowej i raport
-          Art. 16 — bez Excela, bez stresu, z pełną kontrolą.
-        </motion.p>
+          <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Od podstawowych danych kadrowych do pełnej dokumentacji zgodności:
+            wartościowanie stanowisk, analiza wynagrodzeń i gotowe odpowiedzi
+            na wnioski pracowników.
+          </p>
 
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
-          <motion.div whileTap={{ scale: 0.98 }}>
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/register"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-teal-primary px-8 py-4 text-lg font-semibold text-forest-deep transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary"
+              className="inline-flex items-center justify-center rounded-xl bg-[#6B9FD4] px-8 py-3.5 font-medium text-white transition-all duration-150 ease-brand hover:bg-[#5A8FC4] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(107,159,212,0.35)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-              Rozpocznij darmowy trial
+              Sprawdź dysproporcje płac →
             </Link>
-          </motion.div>
-          <motion.div whileTap={{ scale: 0.98 }}>
             <button
               type="button"
               onClick={() => scrollToSection("jak-to-dziala")}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-lg border border-teal-primary/30 px-8 py-4 text-lg font-semibold text-teal-primary transition-colors hover:bg-teal-primary/10 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary"
+              className="inline-flex items-center justify-center rounded-xl border border-border px-8 py-3.5 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-              Zobacz jak działa →
+              Zobacz jak działa ↓
             </button>
-          </motion.div>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-surface/50 px-3 py-2 backdrop-blur-sm">
+              <Shield className="h-4 w-4 shrink-0 text-[#6B9FD4]" />
+              <span className="text-sm font-medium text-muted-foreground">RODO</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-surface/50 px-3 py-2 backdrop-blur-sm">
+              <Globe className="h-4 w-4 shrink-0 text-[#6B9FD4]" />
+              <span className="text-sm font-medium text-muted-foreground">EU hosting</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-surface/50 px-3 py-2 backdrop-blur-sm">
+              <CheckCircle className="h-4 w-4 shrink-0 text-[#5BAD7F]" />
+              <span className="text-sm font-medium text-muted-foreground">14 dni za darmo</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-surface/50 px-3 py-2 backdrop-blur-sm">
+              <CreditCard className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">Bez karty kredytowej</span>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Subtext */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-6 text-sm text-text-muted"
+        {/* Right column — GapAnimation */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="max-w-lg lg:justify-self-end"
         >
-          14 dni za darmo · Bez karty kredytowej · RODO compliance
-        </motion.p>
+          <GapAnimation />
+        </motion.div>
       </div>
     </section>
   );

@@ -68,7 +68,7 @@ export default function FAQ() {
       <Accordion type="single" collapsible className="w-full">
         {faqs.map((faq, index) => (
           <AccordionItem key={index} value={`item-${index}`}>
-            <AccordionTrigger className="text-left font-heading text-lg text-text-primary transition-colors hover:text-teal-primary">
+            <AccordionTrigger className="text-left font-heading text-lg text-text-primary transition-colors hover:text-[#6B9FD4]">
               {faq.question}
             </AccordionTrigger>
             <AccordionContent className="leading-relaxed text-text-secondary">

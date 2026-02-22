@@ -41,9 +41,9 @@ function ConfidenceBadge({ confidence }: { confidence: number }) {
   const variant =
     confidence > 0.8 ? "good" : confidence >= 0.7 ? "warning" : "critical";
   const styles = {
-    good: "bg-emerald-500/20 text-emerald-400 border-emerald-500/40",
-    warning: "bg-amber-500/20 text-amber-400 border-amber-500/40",
-    critical: "bg-red-500/20 text-red-400 border-red-500/40",
+    good: "badge-correct",
+    warning: "badge-review",
+    critical: "badge-alert",
   };
   return (
     <span
@@ -78,7 +78,7 @@ function AxisBar({
       <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, backgroundColor: "#3b82f6" }}
+          style={{ width: `${pct}%`, backgroundColor: "#6B9FD4" }}
         />
       </div>
     </div>
@@ -130,7 +130,7 @@ export function EVGScoreCard({
 
   return (
     <TooltipProvider>
-      <div className="rounded-lg border border-teal-primary/15 bg-forest-card p-4 space-y-4">
+      <div className="rounded-lg border border-border bg-card p-4 space-y-4">
         {/* Score + Confidence */}
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-2xl font-bold font-mono text-text-primary">
@@ -157,7 +157,7 @@ export function EVGScoreCard({
 
         {/* Override */}
         {onOverride && (
-          <div className="space-y-3 pt-2 border-t border-teal-primary/15">
+          <div className="space-y-3 pt-2 border-t border-border">
             {!showOverride ? (
               <Button
                 variant="outline"

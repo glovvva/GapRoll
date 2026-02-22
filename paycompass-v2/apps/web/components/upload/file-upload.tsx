@@ -111,9 +111,9 @@ export function FileUpload({ onFileSelect, maxSizeMB = 10 }: FileUploadProps) {
         }}
         className={cn(
           "flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center transition-colors duration-200",
-          "border-teal-primary/15 bg-forest-card hover:border-primary/50 hover:bg-teal-primary/5",
-          isDragging && "border-primary bg-teal-primary/5",
-          hasFile && "border-primary bg-teal-primary/10",
+          "border-border bg-card hover:border-primary/50 hover:bg-primary/5",
+          isDragging && "border-primary bg-primary/5",
+          hasFile && "border-primary bg-primary/10",
           uploading && "pointer-events-none opacity-70"
         )}
       >

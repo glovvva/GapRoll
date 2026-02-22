@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -16,6 +17,8 @@ import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,7 +42,11 @@ export function LoginForm() {
         throw authError;
       }
 
-      window.location.href = "/dashboard";
+      // Use router.push so Next.js navigation fires after the session cookie
+      // is written — avoids a race condition with window.location.href.
+      const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
+      router.push(redirectTo);
+      router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Błąd logowania");
     } finally {

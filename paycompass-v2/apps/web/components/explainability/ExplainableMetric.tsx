@@ -28,64 +28,91 @@ import { cn } from "@/lib/utils";
  * />
  */
 export interface ExplainableMetricProps {
-  value: number;
-  unit: string;
+  value: number | string;
+  unit?: string;
   label: string;
-  explanation: string;
-  citation: string;
-  status?: "good" | "warning" | "critical";
+  /** Wyjaśnienie metryki (formalna polszczyzna) */
+  explanation?: string;
+  /** Alias dla explanation — treść tooltipa */
+  tooltip?: string;
+  citation?: string;
+  status?: "good" | "warning" | "critical" | "ok" | "danger";
   /** Opcjonalna pewność 0–1; przy < 0.7 wyświetlany jest badge "Wymaga weryfikacji" */
   confidence?: number;
   actionLabel?: string;
   onAction?: () => void;
 }
 
-const citationVariantMap = {
-  good: "info" as const,
-  warning: "warning" as const,
-  critical: "critical" as const,
+const citationVariantMap: Record<string, "info" | "warning" | "critical"> = {
+  good: "info",
+  ok: "info",
+  warning: "warning",
+  critical: "critical",
+  danger: "critical",
+};
+
+const statusDotClasses: Record<string, string> = {
+  good: "bg-[#5BAD7F]",
+  ok: "bg-[#5BAD7F]",
+  warning: "bg-[#C4934A]",
+  critical: "bg-[#C45A5A]",
+  danger: "bg-[#C45A5A]",
 };
 
 export function ExplainableMetric({
   value,
-  unit,
+  unit = "",
   label,
   explanation,
+  tooltip,
   citation,
   status = "good",
   confidence,
   actionLabel,
   onAction,
 }: ExplainableMetricProps) {
-  const citationVariant = citationVariantMap[status];
+  const effectiveStatus = status === "ok" ? "good" : status === "danger" ? "critical" : status;
+  const citationVariant = citationVariantMap[effectiveStatus] ?? "info";
   const showVerificationBadge = confidence !== undefined && confidence < 0.7;
+  const explanationText = tooltip ?? explanation;
 
   return (
     <Collapsible className="group">
-      <div className="rounded-lg border border-teal-primary/15 bg-forest-card p-4">
+      <div className="rounded-lg border border-border bg-card p-4">
         <CollapsibleTrigger asChild>
           <button
             type="button"
             className="flex w-full items-start justify-between text-left hover:opacity-90 transition-opacity"
           >
             <div className="flex flex-col gap-1 min-w-0 flex-1">
-              {/* Wartość na górze: JetBrains Mono 1.5rem (24px), font-weight 700 */}
-              <span className="font-mono text-2xl font-bold tabular-nums text-[var(--text-primary)]">
-                {value}
-                {unit}
-              </span>
-              {/* Label w pełnej szerokości, badge w osobnej linii pod spodem */}
-              <span className="text-sm font-medium text-text-primary mt-2 block">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-2xl font-bold tabular-nums text-foreground">
+                  {value}
+                  {unit}
+                </span>
+                {status && (
+                  <span
+                    className={cn(
+                      "h-2 w-2 shrink-0 rounded-full",
+                      statusDotClasses[effectiveStatus] ?? statusDotClasses.good
+                    )}
+                    aria-hidden
+                  />
+                )}
+              </div>
+              <span className="text-sm font-medium text-foreground mt-2 block">
                 {label}
               </span>
-              <CitationBadge
-                citation={citation}
-                variant={citationVariant}
-                className="mt-1"
-              />
+              {citation && (
+                <CitationBadge
+                  citation={citation}
+                  variant={citationVariant}
+                  className="mt-1"
+                />
+              )}
               {showVerificationBadge && (
                 <span
-                  className="inline-flex w-fit mt-1 items-center rounded-md border border-[var(--accent-amber)] bg-[var(--accent-amber)]/10 px-2 py-0.5 text-xs font-medium text-[var(--accent-amber)]"
+                  className="inline-flex w-fit mt-1 items-center rounded-md border px-2 py-0.5 text-xs font-medium badge-review"
                   role="status"
                 >
                   Wymaga weryfikacji
@@ -96,10 +123,12 @@ export function ExplainableMetric({
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="mt-4 space-y-3 border-t border-teal-primary/15 pt-4">
-            <p className="text-sm text-text-secondary leading-relaxed">
-              {explanation}
-            </p>
+          <div className="mt-4 space-y-3 border-t border-border pt-4">
+            {explanationText && (
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {explanationText}
+              </p>
+            )}
             <div className="flex flex-wrap items-center gap-2">
               {actionLabel && onAction && (
                 <Button

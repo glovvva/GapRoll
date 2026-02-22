@@ -28,6 +28,13 @@ import { Loader2, Sparkles, CheckCircle2, RefreshCw } from "lucide-react";
 import { fetchWithAuth } from "@/lib/api-client";
 import { ExplainerCard } from "@/components/ui/explainer-card";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { CitationBadge } from "@/components/explainability/CitationBadge";
+import {
+  EVGScoreCard,
+  type EVGPosition,
+  type EVGAxes,
+} from "@/components/evg/EVGScoreCard";
+import { EVGDetailModal } from "@/components/evg/EVGDetailModal";
 
 interface EVGScore {
   position: string;
@@ -38,6 +45,10 @@ interface EVGScore {
   responsibility: number;
   conditions: number;
   reasoning: string;
+  ai_confidence?: number;
+  is_overridden?: boolean;
+  overridden_by?: string | null;
+  overridden_at?: string | null;
 }
 
 type ToastMessage = { type: "success"; text: string } | { type: "error"; text: string } | null;
@@ -50,6 +61,40 @@ export default function EVGPage() {
   const [confirmRefreshOpen, setConfirmRefreshOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [toast, setToast] = useState<ToastMessage>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [detailPositionId, setDetailPositionId] = useState<string | null>(null);
+  const [detailPositionName, setDetailPositionName] = useState("");
+  const [detailAxes, setDetailAxes] = useState<EVGAxes | null>(null);
+
+  function openOverrideModal(positionId: string, positionName: string, axes: EVGAxes) {
+    setDetailPositionId(positionId);
+    setDetailPositionName(positionName);
+    setDetailAxes(axes);
+    setDetailModalOpen(true);
+  }
+
+  function handleOverrideSuccess(
+    positionId: string,
+    newScore: number,
+    newAxes: EVGAxes
+  ) {
+    setScores((prev) =>
+      prev.map((s) =>
+        s.position === positionId
+          ? {
+              ...s,
+              evg_score: newScore,
+              skills: newAxes.skills,
+              effort: newAxes.effort,
+              responsibility: newAxes.responsibility,
+              conditions: newAxes.conditions,
+              is_overridden: true,
+              overridden_at: new Date().toISOString(),
+            }
+          : s
+      )
+    );
+  }
 
   async function handleRunScoring() {
     try {
@@ -151,20 +196,40 @@ export default function EVGPage() {
             <div className="space-y-4">
               <div className="text-sm text-text-secondary">
                 <p className="mb-2">
-                  Scoring bazuje na 4 kryteriach (po 25 punktów każde):
+                  Wynik analizy bazuje na 4 kryteriach (po 25 punktów każde):
                 </p>
                 <ul className="ml-2 list-inside list-disc space-y-1">
-                  <li>
-                    <strong>Umiejętności</strong> – wykształcenie, ekspertyza techniczna
+                  <li className="flex items-center gap-1.5">
+                    <strong>Umiejętności</strong>
+                    <InfoTooltip
+                      content="Wymagane kwalifikacje, wykształcenie i doświadczenie do wykonywania pracy"
+                      citation="Art. 4 Dyrektywy UE 2023/970"
+                    />
+                    <span className="sr-only"> – wykształcenie, ekspertyza techniczna</span>
                   </li>
-                  <li>
-                    <strong>Wysiłek</strong> – wysiłek fizyczny i umysłowy, stres
+                  <li className="flex items-center gap-1.5">
+                    <strong>Wysiłek</strong>
+                    <InfoTooltip
+                      content="Fizyczny i umysłowy wysiłek wymagany na stanowisku"
+                      citation="Art. 4 Dyrektywy UE 2023/970"
+                    />
+                    <span className="sr-only"> – wysiłek fizyczny i umysłowy, stres</span>
                   </li>
-                  <li>
-                    <strong>Odpowiedzialność</strong> – decyzje, zarządzanie, budżet
+                  <li className="flex items-center gap-1.5">
+                    <strong>Odpowiedzialność</strong>
+                    <InfoTooltip
+                      content="Zakres odpowiedzialności za zasoby, ludzi i decyzje"
+                      citation="Art. 4 Dyrektywy UE 2023/970"
+                    />
+                    <span className="sr-only"> – decyzje, zarządzanie, budżet</span>
                   </li>
-                  <li>
-                    <strong>Warunki</strong> – warunki pracy, bezpieczeństwo
+                  <li className="flex items-center gap-1.5">
+                    <strong>Warunki</strong>
+                    <InfoTooltip
+                      content="Warunki środowiskowe i ryzyko zawodowe na stanowisku"
+                      citation="Art. 4 Dyrektywy UE 2023/970"
+                    />
+                    <span className="sr-only"> – warunki pracy, bezpieczeństwo</span>
                   </li>
                 </ul>
               </div>
@@ -202,6 +267,74 @@ export default function EVGPage() {
             Scoring zakończony! Przeanalizowano {scores.length} stanowisk.
           </AlertDescription>
         </Alert>
+      )}
+
+      {/* Wartościowanie Stanowisk — karty z możliwością ręcznej korekty (HITL) */}
+      {scores.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-lg font-semibold text-primary">
+              Wartościowanie Stanowisk
+            </h2>
+            <CitationBadge
+              article="Art. 4 Dyrektywy UE 2023/970"
+              description="Art. 4 ust. 3: Stanowiska o równej wartości pracy oceniane według obiektywnych kryteriów, w tym umiejętności, wysiłek, odpowiedzialność i warunki pracy. EU AI Act Art. 14 — możliwość ręcznej korekty (HITL)."
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            EU AI Act Art. 14 (HITL) — ręczna korekta oceny z uzasadnieniem
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {sortedScores.map((score) => {
+              const position: EVGPosition = {
+                id: score.position,
+                name: score.position,
+                evg_score: score.evg_score,
+                ai_confidence: score.ai_confidence ?? 0.85,
+                is_overridden: score.is_overridden ?? false,
+                overridden_by: score.overridden_by ?? null,
+                overridden_at: score.overridden_at ?? null,
+              };
+              const axes: EVGAxes = {
+                skills: score.skills,
+                effort: score.effort,
+                responsibility: score.responsibility,
+                conditions: score.conditions,
+              };
+              return (
+                <EVGScoreCard
+                  key={score.position}
+                  position={position}
+                  axes={axes}
+                  onOverride={() =>
+                    openOverrideModal(score.position, score.position, axes)
+                  }
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Modal szczegółów EVG i ręcznej korekty */}
+      {detailAxes && detailPositionId && (
+        <EVGDetailModal
+          open={detailModalOpen}
+          onOpenChange={setDetailModalOpen}
+          positionName={detailPositionName}
+          positionId={detailPositionId}
+          axes={detailAxes}
+          onSuccess={(data) =>
+            handleOverrideSuccess(
+              detailPositionId,
+              data.new_score,
+              data.new_axes
+            )
+          }
+          onToast={(message) =>
+            setToast({ type: "success", text: message })
+          }
+        />
       )}
 
       {/* Error */}
@@ -307,7 +440,7 @@ export default function EVGPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-teal-primary/15">
+                  <tr className="border-b border-[#6B9FD4]/15">
                     <th className="px-4 py-3 text-left font-semibold">
                       Stanowisko
                     </th>
@@ -315,16 +448,40 @@ export default function EVGPage() {
                       Wynik Całkowity
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Umiejętności
+                      <span className="inline-flex items-center gap-1">
+                        Umiejętności
+                        <InfoTooltip
+                          content="Wymagane kwalifikacje, wykształcenie i doświadczenie do wykonywania pracy"
+                          citation="Art. 4 Dyrektywy UE 2023/970"
+                        />
+                      </span>
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Wysiłek
+                      <span className="inline-flex items-center gap-1">
+                        Wysiłek
+                        <InfoTooltip
+                          content="Fizyczny i umysłowy wysiłek wymagany na stanowisku"
+                          citation="Art. 4 Dyrektywy UE 2023/970"
+                        />
+                      </span>
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Odpowiedzialność
+                      <span className="inline-flex items-center gap-1">
+                        Odpowiedzialność
+                        <InfoTooltip
+                          content="Zakres odpowiedzialności za zasoby, ludzi i decyzje"
+                          citation="Art. 4 Dyrektywy UE 2023/970"
+                        />
+                      </span>
                     </th>
                     <th className="px-4 py-3 text-center font-semibold">
-                      Warunki
+                      <span className="inline-flex items-center gap-1">
+                        Warunki
+                        <InfoTooltip
+                          content="Warunki środowiskowe i ryzyko zawodowe na stanowisku"
+                          citation="Art. 4 Dyrektywy UE 2023/970"
+                        />
+                      </span>
                     </th>
                   </tr>
                 </thead>
@@ -332,7 +489,7 @@ export default function EVGPage() {
                   {sortedScores.map((score, idx) => (
                     <tr
                       key={idx}
-                      className="border-b border-teal-primary/15/50 hover:bg-secondary/50"
+                      className="border-b border-[#6B9FD4]/15/50 hover:bg-secondary/50"
                     >
                       <td className="px-4 py-3 font-medium">{score.position}</td>
                       <td className="px-4 py-3 text-center">

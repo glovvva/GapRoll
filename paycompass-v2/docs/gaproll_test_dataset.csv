@@ -1,0 +1,95 @@
+﻿employee_id;gender;salary;department;position;evg_group;contract_type;hire_year
+EMP0001;M;10500;IT;Architekt IT;EVG-3;UoP;2016
+EMP0002;M;9200;IT;Tester QA;EVG-3;UoP;2015
+EMP0003;M;10400;IT;Programista Senior;EVG-3;UoP;2015
+EMP0004;M;17950;IT;Kierownik IT;EVG-3;UoP;2022
+EMP0005;M;9800;IT;Programista Junior;EVG-3;UoP;2020
+EMP0006;M;11250;IT;Programista Senior;EVG-3;UoP;2021
+EMP0007;M;13450;IT;Architekt IT;EVG-3;UoP;2015
+EMP0008;K;7500;IT;Tester QA;EVG-3;B2B;2021
+EMP0009;M;11450;IT;Architekt IT;EVG-3;UoP;2016
+EMP0010;M;10850;IT;Programista Senior;EVG-3;B2B;2018
+EMP0011;K;8150;IT;DevOps Engineer;EVG-3;UoP;2020
+EMP0012;M;10200;IT;Architekt IT;EVG-3;UoP;2016
+EMP0013;M;12900;IT;Programista Senior;EVG-3;UoP;2017
+EMP0014;K;6900;Finanse;Kontroler;EVG-2;UoP;2015
+EMP0015;M;10300;Finanse;Księgowy;EVG-2;UoP;2019
+EMP0016;M;9950;Finanse;Kontroler;EVG-2;UoP;2022
+EMP0017;K;8850;Finanse;Dyrektor Finansowy;EVG-2;UoP;2018
+EMP0018;K;7100;Finanse;Kontroler;EVG-2;UoP;2021
+EMP0019;K;9750;Finanse;Dyrektor Finansowy;EVG-2;UoP;2017
+EMP0020;K;6200;Finanse;Księgowy;EVG-2;B2B;2017
+EMP0021;K;10700;Finanse;Dyrektor Finansowy;EVG-2;UoP;2021
+EMP0022;K;10400;Finanse;Dyrektor Finansowy;EVG-2;UoP;2023
+EMP0023;K;6450;Finanse;Księgowy;EVG-2;UoP;2023
+EMP0024;K;6450;Finanse;Analityk Finansowy;EVG-2;UoP;2017
+EMP0025;K;8050;Finanse;Analityk Finansowy;EVG-2;B2B;2023
+EMP0026;K;8100;Finanse;Analityk Finansowy;EVG-2;UoP;2017
+EMP0027;K;10450;Finanse;Główny Księgowy;EVG-2;B2B;2023
+EMP0028;K;7350;Finanse;Kontroler;EVG-2;UoP;2016
+EMP0029;K;7000;Finanse;Analityk Finansowy;EVG-2;UoP;2024
+EMP0030;K;8000;Finanse;Księgowy;EVG-2;B2B;2023
+EMP0031;K;10950;Finanse;Główny Księgowy;EVG-2;UoP;2023
+EMP0032;M;9500;Finanse;Kontroler;EVG-2;UoP;2018
+EMP0033;K;6150;HR;Rekruter;EVG-1;UoP;2020
+EMP0034;K;6400;HR;HR Business Partner;EVG-1;UoP;2018
+EMP0035;M;7100;HR;Specjalista HR;EVG-1;UoP;2024
+EMP0036;K;5600;HR;Specjalista HR;EVG-1;UoP;2015
+EMP0037;K;6550;HR;Specjalista HR;EVG-1;UoP;2022
+EMP0038;K;6650;HR;Rekruter;EVG-1;UoP;2018
+EMP0039;K;7550;HR;Dyrektor HR;EVG-1;UoP;2021
+EMP0040;K;8650;HR;Dyrektor HR;EVG-1;B2B;2015
+EMP0041;K;5600;HR;Specjalista HR;EVG-1;UoP;2020
+EMP0042;K;6000;HR;Specjalista HR;EVG-1;UoP;2023
+EMP0043;K;7500;HR;Dyrektor HR;EVG-1;UoP;2018
+EMP0044;K;6400;HR;Specjalista HR;EVG-1;B2B;2023
+EMP0045;M;7350;HR;HR Business Partner;EVG-1;UoP;2016
+EMP0046;K;5850;HR;Rekruter;EVG-1;UoP;2022
+EMP0047;K;7000;HR;Dyrektor HR;EVG-1;UoP;2015
+EMP0048;K;8600;HR;Kierownik HR;EVG-1;UoP;2023
+EMP0049;K;7400;HR;Dyrektor HR;EVG-1;UoP;2018
+EMP0050;K;6600;HR;HR Business Partner;EVG-1;UoP;2020
+EMP0051;M;7000;HR;HR Business Partner;EVG-1;UoP;2023
+EMP0052;M;6600;HR;HR Business Partner;EVG-1;B2B;2016
+EMP0053;K;7150;Sprzedaż;Key Account Manager;EVG-2;UoP;2024
+EMP0054;M;7650;Sprzedaż;Przedstawiciel Handlowy;EVG-2;UoP;2024
+EMP0055;K;10050;Sprzedaż;Dyrektor Sprzedaży;EVG-2;UoP;2020
+EMP0056;M;8050;Sprzedaż;Specjalista ds. Sprzedaży;EVG-2;UoP;2019
+EMP0057;M;7100;Sprzedaż;Przedstawiciel Handlowy;EVG-2;UoP;2024
+EMP0058;K;7700;Sprzedaż;Przedstawiciel Handlowy;EVG-2;UoP;2019
+EMP0059;M;14850;Sprzedaż;Dyrektor Sprzedaży;EVG-2;UoP;2018
+EMP0060;M;10600;Sprzedaż;Key Account Manager;EVG-2;B2B;2019
+EMP0061;K;8250;Sprzedaż;Przedstawiciel Handlowy;EVG-2;B2B;2019
+EMP0062;K;6050;Sprzedaż;Przedstawiciel Handlowy;EVG-2;UoP;2016
+EMP0063;K;6600;Sprzedaż;Key Account Manager;EVG-2;UoP;2018
+EMP0064;K;8300;Sprzedaż;Key Account Manager;EVG-2;UoP;2019
+EMP0065;K;9200;Sprzedaż;Dyrektor Sprzedaży;EVG-2;UoP;2021
+EMP0066;M;6550;Marketing;Copywriter;EVG-2;UoP;2019
+EMP0067;M;11250;Marketing;Dyrektor Marketingu;EVG-2;UoP;2023
+EMP0068;M;8850;Marketing;Specjalista Marketing;EVG-2;B2B;2023
+EMP0069;M;8400;Marketing;Copywriter;EVG-2;UoP;2021
+EMP0070;M;7500;Marketing;Copywriter;EVG-2;B2B;2015
+EMP0071;K;6000;Marketing;Manager Marketingu;EVG-2;UoP;2020
+EMP0072;K;8150;Marketing;Dyrektor Marketingu;EVG-2;B2B;2018
+EMP0073;K;6700;Marketing;Manager Marketingu;EVG-2;UoP;2020
+EMP0074;K;8500;Marketing;Dyrektor Marketingu;EVG-2;UoP;2016
+EMP0075;M;7950;Marketing;Specjalista Marketing;EVG-2;UoP;2022
+EMP0076;M;6900;Marketing;Manager Marketingu;EVG-2;UoP;2018
+EMP0077;M;6300;Marketing;Copywriter;EVG-2;B2B;2019
+EMP0078;M;7650;Marketing;SEO Specialist;EVG-2;UoP;2023
+EMP0079;M;6450;Marketing;Specjalista Marketing;EVG-2;B2B;2019
+EMP0080;M;6150;Marketing;Copywriter;EVG-2;UoP;2021
+EMP0081;M;7800;Marketing;Copywriter;EVG-2;UoP;2023
+EMP0082;M;6000;Operacje;Specjalista Operacyjny;EVG-1;UoP;2021
+EMP0083;M;6250;Operacje;Specjalista Operacyjny;EVG-1;UoP;2020
+EMP0084;K;5400;Operacje;Koordynator;EVG-1;UoP;2021
+EMP0085;M;7250;Operacje;Kierownik Operacyjny;EVG-1;UoP;2021
+EMP0086;K;5950;Operacje;Specjalista Operacyjny;EVG-1;UoP;2023
+EMP0087;K;6600;Operacje;Kierownik Operacyjny;EVG-1;UoP;2024
+EMP0088;K;6950;Operacje;Kierownik Operacyjny;EVG-1;UoP;2018
+EMP0089;K;4950;Operacje;Specjalista Operacyjny;EVG-1;UoP;2024
+EMP0090;M;6150;Operacje;Specjalista Operacyjny;EVG-1;UoP;2018
+EMP0091;M;6000;Operacje;Koordynator;EVG-1;B2B;2024
+EMP0092;K;5750;Operacje;Koordynator;EVG-1;UoP;2024
+EMP0093;M;6500;Operacje;Analityk Procesów;EVG-1;UoP;2017
+EMP0094;K;5000;Operacje;Koordynator;EVG-1;B2B;2018

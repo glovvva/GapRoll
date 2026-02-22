@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // CRITICAL: darkMode via class (controlled by next-themes)
   darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,51 +11,75 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        forest: {
-          deep: "#0A3A2A", // Główne tło
-          card: "#0F4A36", // Karty, surface
-          surface: "#134D3A", // Hover, active states
+        // ── BRAND PRIMARIES (Pantone-matched, muted) ──────────────────
+        brand: {
+          pink: "#D4789C", // Pantone 225 C — Women data ONLY
+          blue: "#6B9FD4", // Pantone 2382 C — Men data ONLY + CTA
+          navy: "#0F1B2D", // Pantone 296 C — UI Anchor
         },
-        teal: {
-          primary: "#14b8a6", // CTA, linki
-          hover: "#0d9488", // Hover na CTA
-          light: "#5eead4", // Badges, highlights
+        // ── SEMANTIC / ACTION (NOT gender) ───────────────────────────
+        status: {
+          correct: "#5BAD7F", // Salary Correct / Zgodność
+          action: "#C4934A", // Recommend Raise / Akcja
+          review: "#7B6FAF", // Under Review / W toku
+          alert: "#C45A5A", // Over Market / Naruszenie
         },
-        legal: {
-          gold: "#F59E0B", // Compliance badges
-          "gold-muted": "#D97706",
+        // Flat keys so text-status-*, bg-status-*, border-status-* work
+        "status-correct": "#5BAD7F",
+        "status-action": "#C4934A",
+        "status-review": "#7B6FAF",
+        "status-alert": "#C45A5A",
+        // ── CSS VARIABLE TOKENS (switch with dark/light) ─────────────
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        surface: "hsl(var(--surface))",
+        elevated: "hsl(var(--elevated))",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
-        text: {
-          primary: "#F1F5F9", // slate-100
-          secondary: "#CBD5E1", // slate-300
-          muted: "#94A3B8", // slate-400
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       fontFamily: {
-        heading: ["var(--font-lora)", "Georgia", "serif"],
-        body: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "Fira Code", "monospace"],
       },
       borderRadius: {
-        DEFAULT: "8px",
         lg: "12px",
+        md: "8px",
+        sm: "6px",
       },
-      boxShadow: {
-        "glow-teal": "0 0 40px -12px rgba(20, 184, 166, 0.2)",
-        "glow-gold": "0 0 30px -10px rgba(245, 158, 11, 0.15)",
+      transitionTimingFunction: {
+        brand: "cubic-bezier(0.4, 0, 0.2, 1)",
+      },
+      transitionDuration: {
+        micro: "150ms",
+        section: "280ms",
+        load: "300ms",
       },
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+        "fade-in": {
+          from: { opacity: "0", transform: "translateY(4px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 280ms cubic-bezier(0.4, 0, 0.2, 1)",
+        shimmer: "shimmer 2s linear infinite",
       },
     },
   },
