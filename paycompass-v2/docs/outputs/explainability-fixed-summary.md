@@ -64,7 +64,7 @@
   - Tło: **`var(--bg-secondary)`** → `bg-[var(--bg-secondary)]`.  
   - Tekst: **`var(--text-secondary)`**, **14px** → `text-sm text-[var(--text-secondary)]`.  
   - **Max-width: 300px** → `max-w-[300px]`.  
-  - Zachowane: `border border-border`, `p-3`.
+  - Zachowane: `border border-teal-primary/15`, `p-3`.
 - **Dokumentacja:** JSDoc + przykład.
 
 ---
@@ -108,7 +108,7 @@ Komponenty używają wyłącznie tych zmiennych (np. `text-[var(--text-primary)]
 ## 6. Zasady spełnione
 
 - **Tailwind:** Tylko klasy utility; brak własnych plików CSS dla tych komponentów.
-- **Kolory:** Wyłącznie przez `var(--accent-*)`, `var(--text-*)`, `var(--bg-secondary)` (oraz istniejące `border-border`, `text-foreground`, `text-muted-foreground` gdzie pasuje).
+- **Kolory:** Wyłącznie przez `var(--accent-*)`, `var(--text-*)`, `var(--bg-secondary)` (oraz istniejące `border-teal-primary/15`, `text-text-primary`, `text-text-secondary` gdzie pasuje).
 - **Brak hardcoded hex** w komponentach explainability.
 - **TypeScript:** Strict mode; poprawione typy w ComplianceAlert (action z onClick vs href).
 - **JSDoc:** Komentarze z przykładami dla CitationBadge, ExplainableMetric, InfoTooltip, ComplianceAlert.

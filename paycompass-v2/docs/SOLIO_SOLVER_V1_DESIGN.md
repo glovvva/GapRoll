@@ -706,7 +706,7 @@ interface PresetCardProps {
 }
 
 // Visual: Similar to Solio FPL's Default/High Risk/Low Risk/Optimistic/Safe cards
-// Colors: Inactive: slate-800 border-slate-700
+// Colors: Inactive: slate-800 border-teal-primary/15
 //         Active: slate-800 border-teal-500 ring-1 ring-teal-500/20
 ```
 

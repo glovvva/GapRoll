@@ -154,9 +154,9 @@
 ### 5.1 Dashboard Layout
 
 ```tsx
-<div className="min-h-screen bg-slate-900 text-slate-100">
+<div className="min-h-screen bg-forest-deep text-text-primary">
   {/* Sidebar */}
-  <aside className="fixed left-0 top-0 h-screen w-64 border-r border-slate-700 bg-slate-800">
+  <aside className="fixed left-0 top-0 h-screen w-64 border-r border-teal-primary/15 bg-forest-card">
     <nav>{/* Navigation */}</nav>
   </aside>
 
@@ -165,7 +165,7 @@
     {/* Page Header */}
     <header className="mb-8">
       <h1 className="text-3xl font-semibold">Dashboard</h1>
-      <p className="text-slate-400">Przegląd zgodności z Dyrektywą UE 2023/970</p>
+      <p className="text-text-secondary">Przegląd zgodności z Dyrektywą UE 2023/970</p>
     </header>
 
     {/* Content Grid */}
@@ -181,14 +181,14 @@
 ### 5.2 Landing Page Layout
 
 ```tsx
-<div className="min-h-screen bg-slate-900 text-slate-100">
+<div className="min-h-screen bg-forest-deep text-text-primary">
   {/* Hero Section */}
   <section className="flex min-h-screen items-center justify-center px-8">
     <div className="max-w-4xl text-center">
       <h1 className="text-5xl font-bold">
         Pełna zgodność z Dyrektywą UE 2023/970 za 99 PLN/mies
       </h1>
-      <p className="mt-6 text-xl text-slate-300">
+      <p className="mt-6 text-xl text-text-secondary">
         Raport Art. 16 gotowy w 15 minut. Bez Excel, bez stresu.
       </p>
       <Button size="lg" className="mt-8">
@@ -335,7 +335,7 @@ import { CheckCircle, AlertCircle, Info } from "lucide-react"
 
 <CheckCircle className="h-5 w-5 text-green-500" />
 <AlertCircle className="h-5 w-5 text-amber-500" />
-<Info className="h-4 w-4 text-slate-400" />
+<Info className="h-4 w-4 text-text-secondary" />
 ```
 
 ---
@@ -346,7 +346,7 @@ import { CheckCircle, AlertCircle, Info } from "lucide-react"
 
 | State | Border | Icon | Message Color |
 |-------|--------|------|---------------|
-| **Default** | `border-slate-700` | None | N/A |
+| **Default** | `border-teal-primary/15` | None | N/A |
 | **Focus** | `border-teal-500` | None | N/A |
 | **Valid** | `border-green-500` | ✓ | `text-green-500` |
 | **Error** | `border-red-500` | ✗ | `text-red-500` |
@@ -356,7 +356,7 @@ import { CheckCircle, AlertCircle, Info } from "lucide-react"
 <div>
   <Input
     className={cn(
-      "border-slate-700",
+      "border-teal-primary/15",
       error && "border-red-500",
       success && "border-green-500"
     )}
@@ -416,9 +416,9 @@ import { Loader2 } from "lucide-react"
 **Pattern:**
 ```tsx
 <div className="flex flex-col items-center justify-center py-12">
-  <FileX className="h-12 w-12 text-slate-400 mb-4" />
+  <FileX className="h-12 w-12 text-text-secondary mb-4" />
   <h3 className="text-lg font-medium">Brak danych</h3>
-  <p className="text-sm text-slate-400 mb-6">
+  <p className="text-sm text-text-secondary mb-6">
     Prześlij plik CSV aby wygenerować raport.
   </p>
   <Button>Prześlij plik</Button>

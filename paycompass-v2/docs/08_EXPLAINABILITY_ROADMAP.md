@@ -239,11 +239,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 <Tooltip>
   <TooltipTrigger asChild>
-    <Info className="w-4 h-4 text-slate-400 hover:text-teal-500 cursor-help" />
+    <Info className="w-4 h-4 text-text-secondary hover:text-teal-500 cursor-help" />
   </TooltipTrigger>
   <TooltipContent side="right" className="max-w-xs">
     <p className="text-xs">Średnia różnica wynagrodzenia kobiet vs mężczyzn...</p>
-    <p className="text-xs text-slate-300 mt-2">
+    <p className="text-xs text-text-secondary mt-2">
       Źródło: Art. 16 Dyrektywy 2023/970
     </p>
   </TooltipContent>
@@ -293,8 +293,8 @@ import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 
-<Alert className="border-blue-500 bg-blue-50/5">
-  <AlertCircle className="h-4 w-4 text-blue-500" />
+<Alert className="border-teal-primary bg-blue-50/5">
+  <AlertCircle className="h-4 w-4 text-teal-primary" />
   <AlertTitle>Konieczna akcja: Przygotuj Art. 7 Justification</AlertTitle>
   <AlertDescription>
     Twoja luka (12%) jest powyżej 5%. Art. 9 wymaga wyjaśnienia przyczyn.

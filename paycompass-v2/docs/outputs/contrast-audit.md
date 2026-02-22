@@ -74,7 +74,7 @@
 
 **Werdykt:** ✅ **≥ 4.5:1** – spełnia WCAG AA.
 
-**Poprawka:** Nie wymagana. Komponent używa `text-[var(--text-primary)]` (#f1f5f9) na `bg-card` (~#1e293b), ratio pozostaje > 4.5:1.
+**Poprawka:** Nie wymagana. Komponent używa `text-[var(--text-primary)]` (#f1f5f9) na `bg-forest-card` (~#1e293b), ratio pozostaje > 4.5:1.
 
 ---
 

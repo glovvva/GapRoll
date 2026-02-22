@@ -450,7 +450,7 @@ def apply_n3_mask(df: pd.DataFrame, group_cols: List[str], metric_col: str) -> p
 
 ```tsx
 {count < 3 ? (
-  <span className="text-slate-400 italic">
+  <span className="text-text-secondary italic">
     Dane wygaszone (N&lt;3, ochrona RODO)
   </span>
 ) : (

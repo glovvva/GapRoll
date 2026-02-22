@@ -21,7 +21,7 @@ interface CitationBadgeProps {
 ### Kolory użyte
 
 - **Brak zmiennych z 05_FRONTEND_STANDARDS** — używane klasy Tailwind:
-  - `border-slate-600`, `bg-slate-800/80`, `text-slate-200` (default)
+  - `border-slate-600`, `bg-forest-card/80`, `text-text-primary` (default)
   - `border-amber-600/60`, `bg-amber-900/30`, `text-amber-200` (warning)
   - `border-red-600/60`, `bg-red-900/30`, `text-red-200` (critical)
 - Odpowiedniki w standardzie: amber → --accent-amber (#f59e0b), red → --accent-red (#ef4444). Tekst używa slate-200, nie --text-primary/--text-secondary.
@@ -34,7 +34,7 @@ interface CitationBadgeProps {
 
 ### Accessibility (contrast)
 
-- default: `text-slate-200` (#e2e8f0) na `bg-slate-800/80` — kontrast na ciemnym tle zwykle ≥ 4.5:1.
+- default: `text-text-primary` (#e2e8f0) na `bg-forest-card/80` — kontrast na ciemnym tle zwykle ≥ 4.5:1.
 - warning: `text-amber-200` na `bg-amber-900/30` — możliwy niższy kontrast na przezroczystym tle (zależnie od tła pod spodem).
 - critical: `text-red-200` na `bg-red-900/30` — j.w.
 - **Rekomendacja:** Zweryfikować kontrast dla variantów warning/critical na rzeczywistym tle (np. card).
@@ -67,7 +67,7 @@ interface ExplainableMetricProps {
 
 - **Brak zmiennych CSS** — klasy Tailwind:
   - `text-emerald-400` (good), `text-amber-400` (warning), `text-red-400` (critical)
-  - `border-border`, `bg-card`, `text-foreground`, `text-muted-foreground`
+  - `border-teal-primary/15`, `bg-forest-card`, `text-text-primary`, `text-text-secondary`
 - Standard: Success = green-500 (#22c55e); Warning = amber (#f59e0b); Error = red (#ef4444). "Good" używa emerald zamiast teal/green — dopuszczalne semantycznie, ale inny odcień niż w dokumencie.
 
 ### Typography
@@ -77,8 +77,8 @@ interface ExplainableMetricProps {
 
 ### Accessibility (contrast)
 
-- `text-emerald-400` / `text-amber-400` / `text-red-400` na `bg-card` (ciemne tło): zwykle ≥ 4.5:1.
-- `text-foreground` i `text-muted-foreground` na card — zależne od theme; przy slate-100/slate-400 na slate-800 dokument potwierdza dobre kontrasty.
+- `text-emerald-400` / `text-amber-400` / `text-red-400` na `bg-forest-card` (ciemne tło): zwykle ≥ 4.5:1.
+- `text-text-primary` i `text-text-secondary` na card — zależne od theme; przy slate-100/slate-400 na slate-800 dokument potwierdza dobre kontrasty.
 
 ### Issues
 
@@ -99,7 +99,7 @@ interface InfoTooltipProps {
 
 ### Kolory użyte
 
-- `text-muted-foreground` na ikonie (HelpCircle).
+- `text-text-secondary` na ikonie (HelpCircle).
 - TooltipContent: dziedziczy `bg-popover`, `text-popover-foreground` z UI (Shadcn) — nie bezpośrednie użycie --accent-* ani --text-primary/secondary w tym pliku.
 
 ### Typography
@@ -108,13 +108,13 @@ interface InfoTooltipProps {
 
 ### Accessibility (contrast)
 
-- `text-muted-foreground` na tle strony — zależne od theme; przy standardzie (slate-400 na slate-900) dokument ostrzega: "slate-400 on slate-800: 2.9:1 ❌". Na pełnym tle slate-900 może być lepiej; **zalecana weryfikacja**.
+- `text-text-secondary` na tle strony — zależne od theme; przy standardzie (slate-400 na slate-900) dokument ostrzega: "slate-400 on slate-800: 2.9:1 ❌". Na pełnym tle slate-900 może być lepiej; **zalecana weryfikacja**.
 - Trigger to ikona bez tekstu — brak `aria-label` (dla accessibility zalecane `aria-label` na triggerze, np. "Informacja" / "Pomoc").
 
 ### Issues
 
 - Dodać `aria-label` do TooltipTrigger (np. "Pomoc" / "Informacja") dla screen readerów.
-- Upewnić się, że kontrast `text-muted-foreground` na faktycznym tle ≥ 4.5:1.
+- Upewnić się, że kontrast `text-text-secondary` na faktycznym tle ≥ 4.5:1.
 
 ---
 
@@ -139,10 +139,10 @@ interface ComplianceAlertProps {
 ### Kolory użyte
 
 - **Brak zmiennych CSS** — klasy Tailwind:
-  - info: `border-blue-500/50`, `bg-blue-500/10`, `[&_svg]:text-blue-500`
+  - info: `border-teal-primary/50`, `bg-teal-primary/10`, `[&_svg]:text-teal-primary`
   - warning: `border-amber-500/50`, `bg-amber-500/10`, `[&_svg]:text-amber-500`
   - critical: `border-red-500/50`, `bg-red-500/10`, `[&_svg]:text-red-500`
-- Tekst: `text-foreground`, `text-muted-foreground`.
+- Tekst: `text-text-primary`, `text-text-secondary`.
 - Odpowiedniki w standardzie: blue-500 = Info (#3b82f6), amber-500 = Warning (#f59e0b), red-500 = Error (#ef4444) — **zgodne semantycznie**, ale bez użycia zmiennych --accent-blue/amber/red.
 
 ### Typography
@@ -184,7 +184,7 @@ interface EVGScoreCardProps {
 
 ### Kolory użyte
 
-- **Tailwind:** `text-foreground`, `text-muted-foreground`, `bg-secondary`, `border-border`, `bg-card`.
+- **Tailwind:** `text-text-primary`, `text-text-secondary`, `bg-secondary`, `border-teal-primary/15`, `bg-forest-card`.
 - **Hardcoded hex:**
   - Pasek osi: `backgroundColor: "#3b82f6"` — odpowiada --accent-blue / Info (#3b82f6) ✅.
   - Tooltip (AxisBar): `backgroundColor: "#0f172a"`, `color: "#f1f5f9"` — tło slate-900, tekst slate-100; dokument: 17.3:1 ✅.
@@ -193,8 +193,8 @@ interface EVGScoreCardProps {
 ### Typography
 
 - **Wartości liczbowe:** `font-mono` użyte dla:
-  - `{score}/100` (główny wynik): `text-2xl font-bold font-mono text-foreground` ✅
-  - `{value}/{max}` w AxisBar: `font-mono text-foreground` ✅
+  - `{score}/100` (główny wynik): `text-2xl font-bold font-mono text-text-primary` ✅
+  - `{value}/{max}` w AxisBar: `font-mono text-text-primary` ✅
 - W `globals.css`: `.font-mono { font-family: 'JetBrains Mono', ... }` — **zgodne z 05_FRONTEND_STANDARDS**.
 
 ### Accessibility (contrast)
