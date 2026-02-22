@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const NAV_LINKS = [
   { label: "Funkcje", id: "funkcje" },
@@ -11,20 +12,41 @@ const NAV_LINKS = [
   { label: "FAQ", id: "faq" },
 ] as const;
 
+const COLORS = {
+  navBg: "rgba(15,23,42,0.97)",
+  link: "#94A3B8",
+  linkHover: "#F1F5F9",
+  ctaBg: "#2A7BFF",
+  accent: "#FF4FA3",
+  border: "rgba(148,163,184,0.2)",
+} as const;
+
 function scrollToSection(id: string) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: "smooth" });
 }
 
+const MD_BREAK = 768;
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [ctaHovered, setCtaHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < MD_BREAK);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   const handleNavClick = (id: string) => {
@@ -38,27 +60,76 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 h-[72px] bg-forest-deep/80 backdrop-blur-md px-6 transition-[box-shadow,border-color] duration-300 ${
-        scrolled ? "border-b border-teal-primary/20 shadow-glow-teal" : ""
-      }`}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        height: "72px",
+        background: scrolled ? COLORS.navBg : "transparent",
+        backdropFilter: scrolled ? "blur(16px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
+        borderBottom: scrolled ? `1px solid ${COLORS.border}` : "1px solid transparent",
+        transition: "background 0.3s, backdrop-filter 0.3s, border-color 0.3s",
+        paddingLeft: "24px",
+        paddingRight: "24px",
+      }}
     >
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
+      <div
+        style={{
+          maxWidth: "1280px",
+          margin: "0 auto",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         {/* Logo */}
         <Link
           href="/"
-          className="font-heading text-2xl font-semibold text-teal-primary outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary rounded"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            outline: "none",
+          }}
         >
-          GapRoll
+          <Image
+            src="/logo.png"
+            alt="GapRoll"
+            width={140}
+            height={36}
+            style={{ height: "40px", width: "auto" }}
+            priority
+          />
         </Link>
 
         {/* Desktop: center links */}
-        <div className="hidden md:flex md:items-center md:gap-8">
+        <div
+          style={{
+            display: isMobile ? "none" : "flex",
+            alignItems: "center",
+            gap: "32px",
+          }}
+        >
           {NAV_LINKS.map(({ label, id }) => (
             <button
               key={id}
               type="button"
               onClick={() => scrollToSection(id)}
-              className="text-text-secondary transition-colors hover:text-teal-primary outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary rounded"
+              onMouseEnter={() => setHoveredLink(id)}
+              onMouseLeave={() => setHoveredLink(null)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: hoveredLink === id ? COLORS.linkHover : COLORS.link,
+                transition: "color 0.15s",
+              }}
             >
               {label}
             </button>
@@ -66,10 +137,28 @@ export default function Navbar() {
         </div>
 
         {/* Desktop: CTA */}
-        <div className="hidden md:block">
+        <div
+          style={{
+            display: isMobile ? "none" : "block",
+          }}
+        >
           <Link
             href="/register"
-            className="inline-flex items-center justify-center rounded-lg bg-teal-primary px-5 py-2.5 text-sm font-semibold text-forest-deep transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary"
+            onMouseEnter={() => setCtaHovered(true)}
+            onMouseLeave={() => setCtaHovered(false)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "8px",
+              background: ctaHovered ? "rgba(42,123,255,0.85)" : COLORS.ctaBg,
+              color: "#fff",
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: 600,
+              transition: "background 0.15s",
+              textDecoration: "none",
+            }}
           >
             Rozpocznij trial
           </Link>
@@ -82,9 +171,21 @@ export default function Navbar() {
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
           id="mobile-menu-button"
-          className="flex h-[72px] w-10 items-center justify-center rounded text-text-primary outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary md:hidden"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "40px",
+            height: "72px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: COLORS.linkHover,
+            padding: 0,
+            display: isMobile ? "flex" : "none",
+          }}
         >
-          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
@@ -98,15 +199,45 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden border-t border-forest-surface md:hidden"
+            style={{
+              overflow: "hidden",
+              borderTop: `1px solid ${COLORS.border}`,
+              display: isMobile ? "block" : "none",
+            }}
           >
-            <div className="flex flex-col gap-1 bg-forest-deep/95 px-6 py-4 backdrop-blur-md">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+                background: COLORS.navBg,
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                padding: "16px 24px",
+              }}
+            >
               {NAV_LINKS.map(({ label, id }) => (
                 <button
                   key={id}
                   type="button"
                   onClick={() => handleNavClick(id)}
-                  className="py-3 text-left text-text-secondary transition-colors hover:text-teal-primary outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary rounded px-2"
+                  style={{
+                    padding: "12px 8px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: COLORS.link,
+                    transition: "color 0.15s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = COLORS.linkHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = COLORS.link;
+                  }}
                 >
                   {label}
                 </button>
@@ -114,7 +245,26 @@ export default function Navbar() {
               <Link
                 href="/register"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 inline-flex items-center justify-center rounded-lg bg-teal-primary px-5 py-3 text-sm font-semibold text-forest-deep transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-primary"
+                style={{
+                  marginTop: "8px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                  background: COLORS.ctaBg,
+                  color: "#fff",
+                  padding: "12px 20px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  transition: "opacity 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.9";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                }}
               >
                 Rozpocznij trial
               </Link>
