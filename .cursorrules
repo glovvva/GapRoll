@@ -1,0 +1,40 @@
+# GapRoll — Agent Rules (Single Source of Truth)
+# This file is symlinked to CLAUDE.md — edit only .cursorrules
+
+## Stack
+- Frontend: Next.js 15 (App Router), TypeScript, Tailwind CSS, Shadcn/UI
+- Backend: FastAPI (Python 3.12), Supabase (PostgreSQL + RLS)
+- Agents: LangGraph (deterministic, HITL breakpoints)
+- Hosting: Hetzner + Coolify
+
+## Hard Rules
+- ALWAYS use Tailwind CSS for styling. NEVER use .module.css or external CSS libraries.
+- API endpoints in Next.js: ALWAYS use app/api/ Route Handlers (route.ts)
+- Database: ALWAYS use Supabase client from @supabase/ssr for server-side auth
+- Payments: Fakturownia.pl + Przelewy24 (NEVER Stripe)
+- State management: Zustand (NEVER Redux)
+
+## Currency Formatting
+- ALWAYS use Intl.NumberFormat for PLN: new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value)
+- NEVER concatenate 'zł' or 'PLN' as strings
+- Database: store amounts in GROSZE (integer), convert to PLN only in UI layer
+
+## Banned Technologies
+- AWS, Azure, GCP → Hetzner
+- CrewAI, AutoGen → LangGraph
+- MongoDB, Firebase → Supabase PostgreSQL
+- Material UI, Chakra → Shadcn/UI
+- Stripe → Fakturownia.pl + Przelewy24
+- Vercel → Hetzner + Coolify
+
+## Persona (Grażyna Test)
+- Target: Polish HR manager, 45-55, conservative
+- Language: Formal Polish, NO English jargon in UI
+- Use: "Luka płacowa", "Wartościowanie stanowisk", "Raport zgodności"
+- NEVER use: "Dashboard insights", "AI Agent", "Churn"
+
+## Compliance
+- EU Directive 2023/970 (Pay Transparency)
+- Every metric must have legal citation (Art. X)
+- RODO/GDPR: PII protection, audit logs, Row Level Security
+- EU AI Act Art. 14: HITL approval for all high-risk decisions

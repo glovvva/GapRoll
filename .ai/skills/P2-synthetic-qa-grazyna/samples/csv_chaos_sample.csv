@@ -1,0 +1,17 @@
+imię;nazwisko;pesel;płeć;wynagrodzenie_brutto;data_zatrudnienia;uwagi
+"Anna";Kowalska;44010101234;K;8500,50;01.01.2020;"OK"
+"Jan ""Janek"" Nowak";Wiśniewski;79020305678;M;12000;15.03.2019;Linia
+z
+łamaniem
+"Żółć";Łódź;90050512345;K;błąd - tekst zamiast liczby;2024-02-01;corrupted salary
+Marek;Kamiński;55060709876;M;9500;07.06.2018;DD.MM.YYYY
+Ewa;Lewandowska;;F;7200;12/31/2022;brak PESEL, MM/DD/YYYY
+Tomasz;Zieliński;88080901234;M;11 500,00;2023-05-15;spacja w kwocie
+Alicja;Szymańska;92010104567;K;nie dotyczy;01.01.2021;text in salary
+Piotr;Woźniak;77030307890,M,10200,03.03.2020,mixed delimiter (comma)
+Katarzyna;Dąbrowska;86040502345;K;8800;05.04.2024;ąęśćź
+"Michał
+Nowak";Kowalczyk;91011103456;M;13500;11.11.2022;line break in name
+Joanna;Mazur;83021306789;;9900;13.02.2019;brak płci
+Robert;Król;94031501234;M;44010101234;15.03.2023;duplicate PESEL (Anna)
+Magdalena;Kaczmarek;72051709012;K;11400;17.05.2021;OK

@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "skills": [
+    {
+      "id": "P1-dashboard-architect",
+      "name": "GapRoll Dashboard Architect",
+      "category": "Asset Creation",
+      "triggers": ["dashboard", "wykres", "chart", "UI"],
+      "priority": 1,
+      "status": "active"
+    },
+    {
+      "id": "P1-compliance-legal",
+      "name": "EU Compliance Legal Engine",
+      "category": "Domain Intelligence",
+      "triggers": ["artykuł", "directive", "przepis", "legal"],
+      "priority": 1,
+      "status": "active"
+    },
+    {
+      "id": "P2-seo-content-machine",
+      "name": "SEO Content Machine",
+      "category": "Marketing Automation",
+      "triggers": ["SEO", "blog", "content", "keyword"],
+      "priority": 2,
+      "status": "active"
+    },
+    {
+      "id": "P1a-synthetic-qa-grazyna",
+      "name": "Synthetic QA Test Data Generator",
+      "category": "Quality Assurance",
+      "triggers": ["test data", "generate broken file", "QA scenarios"],
+      "priority": 1,
+      "status": "active"
+    },
+    {
+      "id": "P1b-ruthless-mvp-prioritizer",
+      "name": "Ruthless MVP Prioritizer",
+      "category": "Product Management",
+      "triggers": ["should we add", "new feature", "feature request"],
+      "priority": 1,
+      "status": "active"
+    }
+  ]
+}

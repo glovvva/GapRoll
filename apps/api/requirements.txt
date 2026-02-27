@@ -1,0 +1,19 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+# New Supabase keys (sbp_...) require supabase >= 2.3.0
+supabase==2.11.0
+python-dotenv==1.0.1
+python-multipart==0.0.20
+pydantic[email]>=2.0.0
+pandas==2.2.0
+chardet==5.2.0
+numpy>=1.24.0
+scikit-learn>=1.5.0
+openai>=1.0.0
+PyJWT>=2.8.0
+cryptography>=42.0.0
+# Optional: for P1a Synthetic QA test data scripts (.ai/skills/P1a-synthetic-qa-grazyna/)
+openpyxl>=3.1.0
+Faker>=22.0.0
+# PDF export (Art. 16 report) — ReportLab works on Windows without GTK
+reportlab>=4.0.0

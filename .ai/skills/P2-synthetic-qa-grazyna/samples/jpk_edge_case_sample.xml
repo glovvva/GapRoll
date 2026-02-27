@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Small JPK-style edge case: diacritics, one unclosed tag, encoding stress -->
+<JPK xmlns="http://jpk.mf.gov.pl/schema">
+  <Naglowek>
+    <DataOd>2024-01-01</DataOd>
+    <DataDo>2024-01-31</DataDo>
+  </Naglowek>
+  <Pracownicy>
+    <Pracownik>
+      <Imie>Anna</Imie>
+      <Nazwisko>Kowalska</Nazwisko>
+      <PESEL>44010101234</PESEL>
+      <Wynagrodzenie>8500.50</Wynagrodzenie>
+    </Pracownik>
+    <Pracownik>
+      <Imie>Żółć</Imie>
+      <Nazwisko>Łódź</Nazwisko>
+      <PESEL>90050512345</PESEL>
+      <Wynagrodzenie>9200</Wynagrodzenie>
+    </Pracownik>
+    <Pracownik>
+      <Imie>Ćwikła</Imie>
+      <Nazwisko>Świątek</Nazwisko>
+      <PESEL>88080901234</PESEL>
+      <Wynagrodzenie>11500</Wynagrodzenie>
+    </Pracownik>
+    <!-- Malformed: unclosed tag to test error recovery -->
+    <Pracownik>
+      <Imie>Błąd</Imie>
+      <Nazwisko>Niekompletny
+    </Pracownik>
+    <Pracownik>
+      <Imie>Ąęśćź</Imie>
+      <Nazwisko>Źółć</Nazwisko>
+      <PESEL>92010104567</PESEL>
+      <Wynagrodzenie>7800</Wynagrodzenie>
+    </Pracownik>
+  </Pracownicy>
+</JPK>

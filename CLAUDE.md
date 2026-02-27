@@ -1,0 +1,1 @@
+/home/bartek/gaproll/.cursorrules
