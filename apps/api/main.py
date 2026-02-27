@@ -16,7 +16,7 @@ from slowapi.errors import RateLimitExceeded
 from starlette.requests import Request
 
 from limiter import limiter
-from routers import analysis, evg_override, health, partner, reports, root_cause, upload
+from routers import analysis, data_preview, evg_override, health, partner, reports, root_cause, upload
 
 app = FastAPI(
     title="GapRoll API",
@@ -59,6 +59,7 @@ app.include_router(evg_override.router)
 app.include_router(partner.router)
 app.include_router(root_cause.router)
 app.include_router(reports.router)
+app.include_router(data_preview.router)
 
 
 @app.get("/")

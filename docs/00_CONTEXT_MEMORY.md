@@ -1,7 +1,7 @@
 # GapRoll — Context Memory
 ## Distilled Wisdom & Operational State
 
-**Last Updated:** 2026-02-25  
+**Last Updated:** 2026-02-27  
 **Rule:** Update this file at the END of every working session.
 
 ---
@@ -100,6 +100,18 @@ Tabele zmodyfikowane:
 
 Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller' | 'common'
 
+### ✅ DATA TABLE VIEW (Feb 27)
+- **Route:** /dashboard/dane — Podgląd załadowanych danych
+- Paginated employee records (50/page, server-side)
+- Column headers: "Polska nazwa (original_csv_column)"
+- Null cell highlighting (amber) + tooltips "Uzupełnij aby odblokować [funkcja]"
+- RODO masking: "— (RODO)" przy N<3 w grupie evg_group+gender
+- Strategia columns locked (performance_rating, job_level, hire_date, manager_id, employment_type)
+- Inline edit z field validation (enum→Select, numeric→onKeyDown) + audit log
+- Period selector + trend indicator (tylko N≥3, multi-period)
+- Backend: GET /api/data/records + PATCH /api/data/records/{id}
+- Supabase: reporting_period w payroll_data + data_corrections_audit z RLS
+
 ---
 
 ## 4. What Is NOT Built Yet
@@ -170,6 +182,14 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 |---|------|
 | 24 | Batch DB inserts (500–1000 records per call) |
 | 25 | Cache EVG scores w `job_valuations` (cache hit = brak wywołania GPT-4o) |
+
+### 📦 SUPABASE / DATA INTEGRITY RULES
+
+| # | Rule | Why |
+|---|------|-----|
+| 26 | Supabase `REFERENCES organizations(id)` może nie istnieć — sprawdź rzeczywistą nazwę tabeli (`companies` w GapRoll) przed każdą migracją | 42P01 na migration. |
+| 27 | RLS policies używają `profiles`, NIE `users` — `SELECT company_id FROM profiles WHERE id = auth.uid()` | 42P01 przy tworzeniu policy. |
+| 28 | Enum fields w inline edit = Shadcn Select, NIE free-text Input — free-text korumpuje dane downstream (pay gap, EVG) | Data integrity. |
 
 ---
 
@@ -381,7 +401,11 @@ npm run dev
 
 **Next Update:** Po następnej sesji (Article 16 PDF + Invoice Automation)
 
-**Critical Updates This Version (Feb 21, 2026):**
+**Critical Updates This Version (Feb 27, 2026):**
+- ✅ Data Table View (/dashboard/dane) — podgląd danych, inline edit, field validation
+- ✅ Hard-Won Rules #26–#28 (Supabase schema, RLS profiles, enum→Select)
+
+**Critical Updates (Feb 21, 2026):**
 - ✅ Session H: Partner Portal v1 + EVG Override + Explainability — DONE
 - ✅ Hard-Won Rules zaktualizowane (reguły 1-25 nowe/przepisane)
 - ✅ Lessons 36-40 dodane
@@ -568,4 +592,26 @@ Critical Updates This Version (Feb 25, 2026):
 
 ### Bandit scan: 0 HIGH, 0 MEDIUM (19x LOW — try/except pass, celowo pominięte)
 
-### Następna sesja: powrót do Milestone 1 — Partner Portal  
+### Następna sesja: powrót do Milestone 1 — Partner Portal
+
+---
+
+### Session I: Data Table View (2026-02-27)
+
+**Duration:** ~3h  
+**Focus:** Feature #38 — Podgląd załadowanych danych
+
+**Completed:**
+1. ✅ Supabase migration: reporting_period + data_corrections_audit
+2. ✅ FastAPI router: data_preview.py (GET paginacja + RODO masking, PATCH + audit)
+3. ✅ Frontend: /dashboard/dane, DataTableView, PeriodSelector
+4. ✅ Field validation: enum→Select, numeric→onKeyDown, backend 422 safety net
+5. ✅ 09_FEATURE_BACKLOG.md zaktualizowany (#38 dodany)
+
+**Lessons Learned:**
+- LESSON 45: Supabase tabela users = auth.users — własna tabela profili to `profiles` lub `companies` (sprawdź schemat przed migracją)
+- LESSON 46: Enum pola w tabelach danych ZAWSZE renderuj jako Select w UI — free-text input korumpuje kalkulacje downstream
+
+**Next Session:**
+- Invoice Automation (Fakturownia.pl) — P0, Mar 2-8
+- Article 16 PDF Export — P0, Mar 15  

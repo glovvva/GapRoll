@@ -1,7 +1,7 @@
 # GapRoll — Feature Backlog
 ## Prioritized Roadmap with Impact × Effort Analysis
 
-**Last Updated:** 2026-02-14  
+**Last Updated:** 2026-02-27  
 **Owner:** CPTO  
 **Status:** Living document (updated after each milestone)
 
@@ -56,6 +56,7 @@ Priority Tiers:
 | 17 | **Partner Portal v1** | Mar 15 | 1 | P1 (29) | 9 | 7 |
 | 18 | Rebrand (PayCompass→GapRoll) | Mar 1 | 1 | P0 (30) | 8 | 3 |
 | 18b | **PESEL→Gender Auto-Detection** | Mar 1 | 1 | P1 (26) | 6 | 1 |
+| 18c | **Data Table View (Podgląd Załadowanych Danych)** | Mar 15 | 1 | **P0 (32)** | 9 | 8 |
 
 ### 2.3 QUEUED (Agents & Strategia Features — Mar-Jun)
 
@@ -454,6 +455,68 @@ so that I can offer GapRoll as a value-added service and earn recurring revenue.
 
 ---
 
+### Feature #18c: Data Table View (Podgląd Załadowanych Danych) — P0 (Priority 32)
+
+**Why P0:**
+- **Trust foundation:** Blocks user trust in all other features — Grażyna must see and verify loaded data before trusting luka płacowa, raporty, or EVG.
+- **Upsell trigger:** Missing Strategia columns shown as locked with CTA (strategic bonus for tier conversion).
+- **Compliance:** Inline edit + audit log support RODO and Art. 7 traceability.
+
+**User Story:**
+```
+As Grażyna, I need to see all loaded employee records in a clear table
+so that I can verify mapping, fill gaps, and trust the numbers used in raporty and wartościowanie.
+```
+
+**Location in app:** `/dashboard/dane` (new route) OR as tab in existing upload flow.
+
+**Requirements:**
+
+1. **Table:** All loaded employee records, paginated (50 per page).
+2. **Column headers:** Show mapped name + original CSV column name (e.g. "Płeć (gender)").
+3. **Empty/null cells:** Highlighted in yellow with tooltip: "Uzupełnij aby odblokować [funkcja]".
+4. **Missing Strategia columns:** Shown as locked columns with upsell CTA (e.g. "Data zatrudnienia — dostępne w pakiecie Strategia").
+5. **Inline edit:** Click cell → edit → save, with audit log entry (user, timestamp, field, old value, new value).
+6. **Period selector:** Show data from previous uploads by `reporting_period` (dropdown or tabs).
+7. **Trend indicator:** Per employee when multiple periods are loaded (e.g. ↑/↓ vs previous period).
+
+**Acceptance Criteria:**
+- [x] Route `/dashboard/dane` renders paginated table (50/page, server-side).
+- [x] Column headers: "Polska Nazwa (original_csv_column)" format.
+- [x] Null/empty cells highlighted amber + tooltip "Uzupełnij aby odblokować [funkcja]".
+- [x] RODO-masked cells show "— (RODO)" with tooltip, no salary value.
+- [x] Strategia columns locked with LockIcon + upsell CTA (teal button).
+- [x] Inline edit → justification dialog (min 20 chars) → audit log entry → toast.
+- [x] Forbidden edits rejected: employee_id, evg_group, evg_score.
+- [x] Period selector (Shadcn/UI Select, populated from DB).
+- [x] Trend indicator per employee when N≥3, multi-period mode only (RODO safe).
+- [x] data_corrections_audit table with RLS.
+
+**Dependencies:** Upload + column mapping (existing); `reporting_period` on uploads; audit log table/schema.
+
+**Effort:** 8h  
+**Impact:** 9/10 (trust foundation for all other features)  
+**Strategic bonus:** 3 (upsell trigger for Strategia tier)
+
+**Effort Breakdown (suggested):**
+- Table component (paginated, headers, sorting): 2h
+- Empty-cell highlighting + tooltips: 1h
+- Locked Strategia columns + CTA: 1h
+- Inline edit + save + audit log: 2h
+- Period selector + trend indicator: 1.5h
+- Testing + edge cases: 0.5h
+
+**7. PREREQUISITES BEFORE STARTING**
+
+1. Backend running: `cd apps/api && python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000`
+2. Frontend running: `cd apps/web && pnpm dev`
+3. `reporting_period` column in `payroll_data` via migration (20260227100000_data_preview.sql). Verify: `SELECT column_name FROM information_schema.columns WHERE table_name = 'payroll_data' AND column_name = 'reporting_period';` → Must return 1 row. If 0 rows: STOP and inform user.
+4. `data_corrections_audit` table exists (create via same migration in Supabase SQL Editor if missing).
+
+**Timeline:** Target Mar 15 (Milestone 1)
+
+---
+
 ## 4. Dependency Graph
 
 ```
@@ -461,6 +524,7 @@ Milestone 1 (Mar 15)
 ├── EVG Manual Override (#12) → no dependencies
 ├── Invoice Automation (#13) → no dependencies
 ├── Explainability Layer (#14) → no dependencies
+├── Data Table View (#18c) → depends on reporting_period migration + data_corrections_audit
 ├── Partner Portal v1 (#17) → depends on Invoice Automation (#13)
 └── Rebrand (#18) → no dependencies
 
@@ -527,6 +591,9 @@ Agents (Mar-May)
 - ✅ Dependency graph mapped
 - ✅ Effort breakdowns for top features
 - ✅ Success metrics defined
+
+**Key Additions (Feb 27, 2026):**
+- ✅ Data Table View / Podgląd Załadowanych Danych (#18c) — P0, trust foundation + Strategia upsell
 
 
 ## Agent Skills Roadmap

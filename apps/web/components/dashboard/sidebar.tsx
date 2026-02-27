@@ -8,6 +8,7 @@ import {
   FileText,
   Home,
   Scale,
+  Table2,
   TrendingUp,
   Upload,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const navItems: {
 }[] = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/dashboard/data", label: "Data Upload", icon: Upload },
+  { href: "/dashboard/dane", label: "Podgląd danych", icon: Table2 },
   { href: "/dashboard/paygap", label: "Pay Gap", icon: TrendingUp },
   { href: "/dashboard/evg", label: "EVG Scoring", icon: Scale },
   {
