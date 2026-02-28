@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, TrendingDown, DollarSign } from "lucide-react";
+import { AlertTriangle, Loader2, TrendingDown, DollarSign } from "lucide-react";
 import { fetchWithAuthCached } from "@/lib/api-client";
 import {
   ScatterChart,
@@ -44,6 +44,8 @@ interface PayGapData {
   median_female: number;
   count_male: number;
   count_female: number;
+  evg_available?: boolean;
+  evg_session_approved?: boolean;
   gap_by_position: Array<{
     position: string;
     gap_percent: number | null;
@@ -422,6 +424,25 @@ export default function PayGapPage() {
         </CardContent>
       </Card>
 
+      {/* EVG not approved warning */}
+      {data.evg_available === true &&
+        data.evg_session_approved === false && (
+          <Alert className="mb-4 border-amber-500/50 bg-amber-500/10">
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <div className="font-semibold text-amber-400">
+              Wartościowanie stanowisk nie zostało zatwierdzone
+            </div>
+            <AlertDescription className="text-amber-300/80">
+              Wykres luki płacowej działa poprawnie po zatwierdzeniu wyników EVG.
+              Przejdź do{" "}
+              <a href="/dashboard/evg" className="underline text-teal-400">
+                Wartościowania stanowisk
+              </a>{" "}
+              i zatwierdź sesję, aby zobaczyć pełną analizę.
+            </AlertDescription>
+          </Alert>
+        )}
+
       {/* Scatter Plot */}
       {(() => {
         const scatterData = data.data_points;
@@ -432,13 +453,13 @@ export default function PayGapPage() {
           .filter((s): s is number => s != null);
         const minEVG = evgScores.length > 0 ? Math.min(...evgScores) : 0;
         const maxEVG = evgScores.length > 0 ? Math.max(...evgScores) : 100;
-        const fairPayLineData = rawLinePoints.filter(
-          (p) =>
-            p.salary >= 0 &&
-            (!useEvg ||
-              (p.evg_score != null &&
-                p.evg_score >= minEVG &&
-                p.evg_score <= maxEVG))
+        const fairPayLineData = rawLinePoints.filter((p) =>
+          useEvg
+            ? p.salary >= 0 &&
+              p.evg_score != null &&
+              p.evg_score >= minEVG &&
+              p.evg_score <= maxEVG
+            : true
         );
         const xDomain = useEvg
           ? [Math.floor(minEVG * 0.95), Math.ceil(maxEVG * 1.05)]
@@ -516,14 +537,14 @@ export default function PayGapPage() {
                 {/* Male data points */}
                 <Scatter
                   name="Mężczyźni"
-                  data={data.data_points.filter((d) => d.gender === "Male")}
+                  data={data.data_points.filter((d) => d.gender === "male")}
                   fill={CHART_COLORS.men}
                 />
 
                 {/* Female data points */}
                 <Scatter
                   name="Kobiety"
-                  data={data.data_points.filter((d) => d.gender === "Female")}
+                  data={data.data_points.filter((d) => d.gender === "female")}
                   fill={CHART_COLORS.women}
                 />
 

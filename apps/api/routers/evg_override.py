@@ -3,11 +3,16 @@ EVG Manual Override — HITL (Human-in-the-Loop) per EU AI Act Art. 14.
 POST /evg/override: zapis ręcznej korekty oceny z uzasadnieniem i audit trail.
 """
 
+import logging
 import uuid
 from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
+
+logger = logging.getLogger(__name__)
+
+SENTINEL_UUID = "00000000-0000-0000-0000-000000000000"
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from starlette.requests import Request
 
@@ -269,6 +274,14 @@ async def approve_evg_session(
     Zapis zatwierdzenia całej sesji wartościowania EVG (EU AI Act Art. 14 — HITL).
     Zapisuje wpis w evg_audit_log jako checkpoint przed raportem Art. 16.
     """
+    logger.error("approve-session: user_id=%s, type=%s", user_id, type(user_id).__name__)
+
+    if user_id == SENTINEL_UUID:
+        raise HTTPException(
+            status_code=401,
+            detail="Brak autoryzacji — zaloguj się ponownie",
+        )
+
     if not settings.is_supabase_configured():
         raise HTTPException(
             status_code=503,

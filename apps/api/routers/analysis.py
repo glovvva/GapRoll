@@ -255,10 +255,10 @@ async def get_pay_gap_analysis(
 
             if gender in ["mężczyzna", "male", "m", "męzczyzna"]:
                 male_salaries.append(salary)
-                gender_normalized = "Male"
+                gender_normalized = "male"
             elif gender in ["kobieta", "female", "f", "k"]:
                 female_salaries.append(salary)
-                gender_normalized = "Female"
+                gender_normalized = "female"
             else:
                 continue
 
@@ -286,6 +286,22 @@ async def get_pay_gap_analysis(
 
         fair_pay_line = calculate_fair_pay_line(data_points)
 
+        evg_available = bool(evg_scores)
+        evg_session_approved = False
+        try:
+            r = (
+                supabase.table("evg_audit_log")
+                .select("changed_at")
+                .eq("position_id", "__session__")
+                .eq("changed_by", user_id)
+                .order("changed_at", desc=True)
+                .limit(1)
+                .execute()
+            )
+            evg_session_approved = bool(r.data and len(r.data) > 0)
+        except Exception:
+            pass
+
         logger.debug("timing /analysis/paygap: %.3fs", time.time() - t0)
         return {
             "overall_gap_percent": round(overall_gap_percent, 2),
@@ -296,6 +312,8 @@ async def get_pay_gap_analysis(
             "gap_by_position": gap_by_position,
             "data_points": data_points,
             "fair_pay_line": fair_pay_line,
+            "evg_available": evg_available,
+            "evg_session_approved": evg_session_approved,
         }
 
     except HTTPException:

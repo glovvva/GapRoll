@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -54,6 +55,7 @@ interface EVGScore {
 type ToastMessage = { type: "success"; text: string } | { type: "error"; text: string } | null;
 
 export default function EVGPage() {
+  const router = useRouter();
   const [scores, setScores] = useState<EVGScore[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -205,7 +207,19 @@ export default function EVGPage() {
       const res = await fetchWithAuth("/api/evg/approve-session", {
         method: "POST",
       });
-      if (!res.ok) throw new Error("Nie udało się zatwierdzić sesji");
+      if (!res.ok) {
+        const body = await res.text();
+        console.error("Approve session error:", res.status, body);
+        if (res.status === 401) {
+          setToast({
+            type: "error",
+            text: "Sesja wygasła. Zaloguj się ponownie i spróbuj jeszcze raz.",
+          });
+          router.push("/login");
+          return;
+        }
+        throw new Error(`Nie udało się zatwierdzić sesji: ${res.status}`);
+      }
       setSessionApproved(true);
       setApprovedPositions(new Set(scores.map((s) => s.position)));
     } catch (e) {
