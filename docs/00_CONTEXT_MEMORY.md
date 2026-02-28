@@ -12,7 +12,7 @@
 |-----------|--------|
 | **Current Phase** | Phase 1 — Platform Development (Feb 21 - Mar 15) |
 | **Sprint Focus** | Milestone 1: Platform Baseline (Mar 15, 2026) |
-| **Blocking Risk** | Brak — główne funkcje Milestone 1 są gotowe |
+| **Blocking Risk** | Must-have features DONE. Wiszą: kosmetyka, invoice automation, onboarding n8n |
 | **Next Milestone** | Milestone 1: Platform Baseline (Mar 15, 2026) — Product-Ready for paying customers |
 | **Critical Path** | ✅ Spółka (Feb 15) → ✅ Bank (Feb 16) → ✅ Domains (Feb 18) → Invoice setup (Mar 2-8) → Sales materials (Mar 8) → ✅ Partner Portal (Mar 15) |
 
@@ -33,8 +33,12 @@
 - gaproll.com (international expansion future) ✅
 
 **Satellite Domains:**
-- **paygapmonitor.pl:** SEO shield (blog, case studies, organic traffic)
+- **paygapnews.pl/eu:** SEO shield (blog, case studies, organic traffic)
 - **nopaygap.com:** Micro-tool strategy (pay gap calculator — Phase 3+)
+
+**Landing page Next.js na gaproll.eu** — prawie gotowa, do publikacji.
+
+**Domain warming:** START od 1 marca przez Instantly.ai
 
 **Email:** Google Workspace — bartek@gaproll.eu ✅
 
@@ -100,8 +104,9 @@ Tabele zmodyfikowane:
 
 Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller' | 'common'
 
-### ✅ DATA TABLE VIEW (Feb 27)
+### ✅ DATA TABLE VIEW (done Feb 2026)
 - **Route:** /dashboard/dane — Podgląd załadowanych danych
+- Paginated table, inline editing, field validation, RODO masking, audit log corrections
 - Paginated employee records (50/page, server-side)
 - Column headers: "Polska nazwa (original_csv_column)"
 - Null cell highlighting (amber) + tooltips "Uzupełnij aby odblokować [funkcja]"
@@ -112,14 +117,18 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 - Backend: GET /api/data/records + PATCH /api/data/records/{id}
 - Supabase: reporting_period w payroll_data + data_corrections_audit z RLS
 
+### ✅ ROOT CAUSE ANALYSIS (done Feb 2026)
+- Why-gap-exists breakdown, department/seniority/tenure drill-down
+
+### ✅ SOLIO SOLVER v1 (done Feb 2026)
+- Greedy budget optimization, 6 constraints, interactive modeling
+
 ---
 
 ## 4. What Is NOT Built Yet
 
 ❌ **Invoice Automation** (Fakturownia.pl — Week 5-8, Mar 2-29) — PRIORITY P0  
-❌ **Root Cause Analysis** (Strategia tier — Apr 13-19)  
 ❌ **Collaborative Review** (Strategia tier — Apr 27 - May 3)  
-❌ **Solio Solver** (budget modeling — Mar 29 v1)  
 ❌ **Retention ROI Calculator** (Apr 12 v1)  
 ❌ **Benchmark Engine** (Mar 22 v1 PDF parsing)  
 ❌ **Agent Hunter** (LangGraph discovery Mar 29, outreach Jun 8)  
@@ -217,6 +226,7 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 | 38 | user_id=zeroes = brak Authorization header w fetch | Sentinel UUID gdy brak tokenu. |
 | 39 | ReportLab zamiast WeasyPrint na Windows (brak GTK) | PDF export. |
 | 40 | Wykres Recharts: domain={[0,'auto']} na YAxis gdy dane zawsze >= 0 | Unikaj ujemnych wartości na osi (np. wynagrodzenia). |
+| 45 | Po restarcie serwerów zawsze sprawdź cookies (DevTools → Application → Cookies → localhost:3000). Brak sb-* cookies = wygasła sesja = sentinel UUID we wszystkich endpointach. | Fix: wyloguj + zaloguj ponownie. |
 
 ---
 
@@ -348,6 +358,15 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 4. **Usunąć debug printy z partner.py** (pozostały DEBUG get_current_partner)
 5. **Przywrócić role='admin'** na koncie Bartka w Supabase
 
+#### Next Actions
+- **P0:** Hetzner VPS setup + Coolify deploy landinga gaproll.eu
+- **P0:** Google Search Console — zarejestruj gaproll.eu
+- **P0:** Instantly.ai signup → aktywuj domain warming bartek@gaproll.eu
+- **P1:** Claude Cowork 4 pluginy setup (Productivity/Marketing/Legal/Sales)
+- **P1:** paygapnews.pl Ghost setup + 3 artykuły bazowe
+- **P1:** Fakturownia.pl + Przelewy24 integration (invoice automation)
+- **P2:** Hunter agent — start budowania (LangGraph discovery flow)
+
 ---
 
 ## 9. Current Risks
@@ -366,7 +385,7 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 
 | Item | Severity | Deadline | Status |
 |------|----------|----------|--------|
-| PayCompass → GapRoll global find-replace | CRITICAL | Mar 1 | ❌ TODO |
+| PayCompass → GapRoll global find-replace | CRITICAL | Mar 1 | ✅ DONE (done Feb 2026) |
 | Streamlit sunset (migration complete) | CRITICAL | Mar 15 | 🔄 IN PROGRESS |
 | Debug printy w partner.py | LOW | Next session | ❌ TODO |
 | role='admin' przywrócić Bartkowi | MEDIUM | ASAP | ❌ TODO — SQL: `UPDATE profiles SET role='admin' WHERE id='b450de23-f438-4978-a2c4-db43c5ff02e9'` |

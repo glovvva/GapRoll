@@ -43,30 +43,31 @@ Priority Tiers:
 | 9 | Multi-tenancy | ✅ PROD | Supabase RLS (org→project→user) |
 | 10 | Authentication | ✅ PROD | Supabase Auth (email/password) |
 | 11 | AI Job Scoring (basic) | ✅ PROD | GPT-4o, 1-100 scale |
+| 12 | EVG Manual Override UI | ✅ PROD | done Feb 2026 |
+| 14 | Explainability Layer (tooltips, legal citations, WCAG) | ✅ PROD | done Feb 2026 |
+| 17 | Partner Portal v1 | ✅ PROD | done Feb 2026 |
+| 18 | Rebrand PayCompass → GapRoll (codebase) | ✅ PROD | done Feb 2026 |
+| 18c | Data Table View (/dashboard/dane, inline editing, audit log) | ✅ PROD | done Feb 2026 |
+| 20 | Root Cause Analysis (why-gap-exists breakdown) | ✅ PROD | done Feb 2026 |
+| 23 | Solio Solver v1 (budget optimization, greedy algorithm) | ✅ PROD | done Feb 2026 |
 
 ### 2.2 IN PROGRESS (Milestone 1 — Mar 15)
 
 | # | Feature | Target | Phase | Priority | Impact | Effort |
 |---|---------|--------|-------|----------|--------|--------|
-| 12 | **EVG Manual Override UI** | Mar 8 | 1 | **P0 (35)** | 10 | 5 |
 | 13 | **Invoice Automation** | Mar 29 | 1 | **P0 (33)** | 10 | 7 |
-| 14 | Explainability Layer | Mar 15 | 1 | P0 (30) | 9 | 6 |
 | 15 | Onboarding Automation (n8n) | Mar 15 | 1 | P1 (28) | 8 | 5 |
 | 16 | Sales Materials | Mar 8 | 1 | P1 (27) | 8 | 4 |
-| 17 | **Partner Portal v1** | Mar 15 | 1 | P1 (29) | 9 | 7 |
-| 18 | Rebrand (PayCompass→GapRoll) | Mar 1 | 1 | P0 (30) | 8 | 3 |
 | 18b | **PESEL→Gender Auto-Detection** | Mar 1 | 1 | P1 (26) | 6 | 1 |
-| 18c | **Data Table View (Podgląd Załadowanych Danych)** | Mar 15 | 1 | **P0 (32)** | 9 | 8 |
+| 18d | **Claude Cowork setup** (4 pluginy: Productivity/Marketing/Legal/Sales) | Mar 1-3 | 1 | P1 (27) | 6 | 1 |
 
 ### 2.3 QUEUED (Agents & Strategia Features — Mar-Jun)
 
 | # | Feature | Target | Phase | Priority | Impact | Effort |
 |---|---------|--------|-------|----------|--------|--------|
-| 19 | Hunter Agent (Discovery) | Mar 29 | 2 | P0 (32) | 9 | 8 |
-| 20 | **Root Cause Analysis** | Apr 19 | 2 | **P1 (30)** | 10 | 6 |
+| 19 | Hunter Agent (Discovery) — Start building: Mar 9-15 | Mar 29 | 2 | **P0 (32)** | 9 | 8 |
 | 21 | **Collaborative Review** | May 3 | 3 | **P1 (28)** | 9 | 7 |
 | 22 | Retention ROI Calculator | Apr 12 | 2 | P1 (26) | 8 | 4 |
-| 23 | Solio Solver v1 | Mar 29 | 2 | P1 (27) | 8 | 6 |
 | 24 | Benchmark Engine v1 (PDF) | Mar 22 | 2 | P2 (24) | 9 | 7 |
 | 25 | Guardian Agent (Legal RAG) | Apr 12 | 2 | P1 (28) | 9 | 9 |
 | 26 | HITL Approval Queue | Apr 26 | 2 | P1 (27) | 8 | 5 |
@@ -93,7 +94,7 @@ Priority Tiers:
 
 ## 3. Detailed Feature Specs
 
-### Feature #12: EVG Manual Override UI — CRITICAL (Priority 35)
+### Feature #12: EVG Manual Override UI — ✅ DONE (done Feb 2026)
 
 **Why P0:**
 - **Legal:** EU AI Act Art. 14 requires HITL for high-risk AI
@@ -183,7 +184,7 @@ so that I can pay immediately without waiting for manual invoice.
 
 ---
 
-### Feature #20: Root Cause Analysis — STRATEGIA TIER (Priority 30)
+### Feature #20: Root Cause Analysis — ✅ DONE (done Feb 2026)
 
 **Why P1:**
 - **Regulatory:** Art. 9 requires gap explanation if >5%
@@ -329,7 +330,9 @@ so that I can approve/override all in one dashboard (no Excel email ping-pong).
 
 ---
 
-### Feature #19: Hunter Agent (Discovery) — CRITICAL (Priority 32)
+### Feature #19: Hunter Agent (Discovery) — CRITICAL (P0, Priority 32)
+
+**Start building:** Mar 9-15
 
 **Why P0:**
 - **Revenue:** Enables scaling beyond manual outreach (50 → 500 customers)
@@ -409,7 +412,7 @@ def parse_gender_from_pesel(pesel: str) -> str | None:
 **Timeline:** Week 4 (Feb 23 - Mar 1, rebrand sprint)
 ---
 
-### Feature #17: Partner Portal v1 — CRITICAL (Priority 29)
+### Feature #17: Partner Portal v1 — ✅ DONE (done Feb 2026)
 
 **Why P1:**
 - **Revenue multiplier:** 5 partners × 50 clients = 250 customers (vs 50 direct)
@@ -455,7 +458,7 @@ so that I can offer GapRoll as a value-added service and earn recurring revenue.
 
 ---
 
-### Feature #18c: Data Table View (Podgląd Załadowanych Danych) — P0 (Priority 32)
+### Feature #18c: Data Table View (Podgląd Załadowanych Danych) — ✅ DONE (done Feb 2026)
 
 **Why P0:**
 - **Trust foundation:** Blocks user trust in all other features — Grażyna must see and verify loaded data before trusting luka płacowa, raporty, or EVG.
@@ -553,6 +556,44 @@ Agents (Mar-May)
 | Cryptocurrency payroll | Niche, regulatory nightmare | Focus on PLN/EUR |
 
 ---
+
+### Knowledge Architecture Evolution (Guardian)
+
+**Phase 1 (Week 10, Apr 6-12): Flat RAG**
+- Implementation: Weaviate vector DB
+- Structure: Individual markdown files (not one PDF)
+- Metadata: `{article: "Art. 7", related: ["Art. 9"]}`
+- Expected accuracy: 80%
+- Effort: 8h
+- Status: PLANNED
+
+**Phase 2 (Week 20, Jun 1-7): Hybrid RAG + Graph Hints**
+- Trigger: After 100+ Guardian queries analyzed
+- Implementation: Keep Weaviate + add metadata-based link following
+- When RAG returns Art. 7 → also retrieve Art. 9 (from `related` field)
+- Expected accuracy: 90%
+- Effort: 8h
+- Status: CONDITIONAL (only if Phase 1 <85% accuracy)
+
+**Phase 3 (Week 24, Jul 1-7): Full Skill Graph**
+- Trigger: Phase 2 accuracy <85% OR Czech expansion OR 100+ customers
+- Implementation: Full graph structure with wikilinks
+  - `00_INDEX.md` for each legal domain
+  - Graph traversal BEFORE vector search
+  - Progressive disclosure pattern
+- Expected accuracy: 95%+
+- Effort: 40h
+- Reference: `/skill-graph-pilot/` (proof-of-concept created Feb 15)
+- Status: DEFERRED (evaluate Jun 2026)
+
+**Rationale:**
+- Heinrich (@arscontexta) concept validates structured knowledge for complex domains
+- Legal knowledge = hierarchical (Dyrektywa → Artykuły → Paragrafy → Orzeczenia)
+- Flat RAG loses logical structure → wikilinks preserve it
+- BUT: Premature without usage data → defer until Jul 2026
+
+---
+
 ### 5.1 Deferred Features (Validated Strategy, Not Yet Prioritized)
 
 | Feature | Source | Trigger to Activate | Est. Effort |
@@ -563,6 +604,41 @@ Agents (Mar-May)
 | **CEE Expansion (Helios/NextUp)** | Gemini ERP Report (Feb 2026) | €1M ARR + Symfonia partnership active | 200h+ |
 
 **Note:** Full technical blueprints (Python/FastAPI code, auth flows, schema maps) archived in `docs/erp-integration-blueprints.md`. Source: Gemini Deep Research, Feb 17, 2026.
+
+---
+
+## Agent Orchestration (Q3-Q4 2026)
+
+### Multi-Agent Coordination Framework
+
+**Problem Identified (Feb 15, 2026):**
+- Current architecture: Bartek is "message bus" between agents
+- Hunter discovers lead → Bartek copies to Guardian → Guardian checks compliance → Bartek copies back to Hunter
+- This doesn't scale beyond 50 customers (Bartek becomes bottleneck)
+
+**Solution Research: Agent Relay SDK**
+- **What it is:** Open-source SDK for deterministic multi-agent systems
+- **Key features:**
+  - Real-time push communication between agents
+  - Cross-provider support (Claude ↔ OpenAI ↔ Anthropic)
+  - Peer-to-peer conversations (not just hierarchical sub-agents)
+  - Channel-based messaging (like Slack for agents)
+- **Example use case:** Hunter finds lead with compliance question → sends to Guardian channel → Guardian answers → Hunter incorporates into email → no human in loop
+- **Repository:** https://github.com/AgentWorkforce/relay
+- **Language:** TypeScript (Node.js server)
+
+**Status: DEFERRED to Q3 2026**
+- **Why:** We have 0 agents in production (Guardian Alpha = Apr 12)
+- **Trigger:** When we have 2+ stable agents AND >50 customers AND Bartek is bottleneck
+- **Effort estimate:** 2-3 weeks (TypeScript server + agent integration)
+- **Alternative for MVP:** Bartek manually coordinates (acceptable for 10-50 customers)
+
+**Decision rationale:**
+- Tool is excellent for future state (multi-agent newsroom, autonomous compliance checking)
+- Premature for Apr-Jun 2026 (focus on single-agent MVPs first)
+- Revisit in Jul-Aug 2026 when Hunter + Guardian + Analyst all working
+
+**Reference:** Will Washburn (@willwashburn) "Introducing Agent Relay" (Feb 9, 2026)
 
 ---
 

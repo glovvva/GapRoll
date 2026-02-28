@@ -369,20 +369,24 @@ ROI: 45k annually / 180k = 25% yearly return"
 | Feb 20 | MS Founders Hub + Scaleway applications | Bartek | ⏳ TODO |
 | Feb 22 | Domain warming START (SPF/DKIM/DMARC) | Bartek | ⏳ TODO |
 
+### Satellite Domains
+- **paygapnews.pl:** Blog SEO — Ghost CMS, target: 1 artykuł/tydzień od marca 2026
+- **nopaygap.com:** Kalkulator luki płacowej — faza 3+ (maj-czerwiec 2026)
+
 ### Phase 1: Platform Baseline + Rebrand (Feb 23 - Mar 15)
 
 | Week | Dates | Focus | Deliverables |
 |------|-------|-------|--------------|
 | 4 | Feb 23 - Mar 1 | **Rebrand Sprint** | Landing page copy update, Next.js codebase rebrand, email templates, social media assets |
-| 5 | Mar 2-8 | **Critical Features** | EVG Override UI (HITL workflow), **Invoice Automation Setup** (Fakturownia + Przelewy24), Sales Materials (deck, one-pager, demo video), Onboarding Automation (n8n workflows) |
+| 5 | Mar 2-8 | **Critical Features** | EVG Override UI (HITL workflow), **Invoice Automation Setup** (Fakturownia + Przelewy24), Sales Materials (deck, one-pager, demo video), Onboarding Automation (n8n workflows), **Hetzner VPS setup + Coolify deploy Next.js landing**, **paygapnews.pl Ghost setup**, **Instantly.ai domain warming aktywny** |
 | 6 | Mar 9-15 | **MILESTONE 1** | Product-Ready: Streamlit sunset, Next.js production, Partner Portal live, Explainability complete, **Invoice automation integrated** |
 
 ### Phase 2: Strategia Features + Agents (Mar 16 - Apr 26)
 
 | Week | Dates | Focus | Deliverables |
 |------|-------|-------|--------------|
-| 7 | Mar 16-22 | **Benchmark v1 + Marketing** | PDF parser (YOU provide GUS/PARP reports), LinkedIn content (3 posts/week), SEO strategy |
-| 8 | Mar 23-29 | **Solio v1 + Blog** | Interactive budget modeling (6 constraints), paygapmonitor.pl blog (1 article/week), **Invoice automation PRODUCTION READY** |
+| 7 | Mar 16-22 | **Benchmark v1 + Marketing** | PDF parser (YOU provide GUS/PARP reports), LinkedIn content (3 posts/week), SEO strategy, paygapnews.pl blog (1 artykuł/tydzień) |
+| 8 | Mar 23-29 | **Solio v1 + Blog** | Interactive budget modeling (6 constraints), paygapnews.pl blog (1 artykuł/tydzień), **Invoice automation PRODUCTION READY** |
 | 9 | Mar 30 - Apr 5 | **Hunter Discovery + Webinar** | LangGraph discovery flow, Webinar #1: "EU Pay Transparency - Co musisz wiedzieć do 7 czerwca?" |
 | 10 | Apr 6-12 | **Retention ROI + Guardian** | Calculator (simplified v1), Legal RAG ingestion (Kodeks Pracy → Weaviate), Accounting firm partnerships outreach |
 | 11 | Apr 13-19 | **Root Cause Analysis** | Why-gap-exists breakdown, saves 1 week/year, Art. 9 compliance |
@@ -404,6 +408,28 @@ ROI: 45k annually / 180k = 25% yearly return"
 |------|-------|-------|--------------|
 | 18 | Jun 1-7 | **Solio v2 + Final Prep** | AI-powered remediation, Guardian justification integration, EU AI Act compliance audit |
 | 19 | **Jun 8-14** | **🚀 V1.0 LAUNCH** | Hunter automation (cold email 100/day), **EU Directive deadline: Jun 7** (market urgency trigger) |
+
+### Week 24 (Jul 1-7): Guardian Knowledge Evolution Decision Point
+
+**Objective:** Evaluate Guardian performance data and decide on knowledge architecture upgrade.
+
+**Decision Criteria:**
+- If Phase 2 (Hybrid RAG) accuracy ≥85% → STOP, no further investment needed
+- If Phase 2 accuracy <85% → Implement Phase 3 (Full Skill Graph)
+- If Czech expansion confirmed → Implement Phase 3 (new legal graph for Czech law)
+
+**Phase 3 Implementation (if triggered):**
+- Migrate markdown files to full Skill Graph structure
+- Add `00_INDEX.md` for each legal domain (Dyrektywa, Kodeks Pracy, RODO)
+- Implement graph traversal in Guardian (read INDEX → follow wikilinks → retrieve exact files)
+- Expected improvement: 90% → 95%+ accuracy
+- Effort: 40h (1 week full-time)
+
+**Deliverables:**
+- Performance report: Guardian accuracy metrics (Apr-Jun data)
+- Cost analysis: Token usage Phase 1 vs Phase 2
+- Decision: GO/NO-GO on Phase 3
+- If GO: Updated knowledge base structure + graph traversal code
 
 ### Key Dates Summary:
 
@@ -627,10 +653,14 @@ contract_type,employment_type,performance_rating,job_level
 
 ### Milestone 1 (Mar 15, 2026):
 
-- [ ] Product-ready: Streamlit sunset, Next.js production
-- [ ] Partner Portal live (API functional, RLS configured)
-- [ ] EVG Override UI complete (HITL workflow validated)
-- [ ] Explainability complete (tooltips, citations, Help Center)
+- [x] Product-ready: Streamlit sunset, Next.js production (done Feb 2026)
+- [x] Partner Portal live (API functional, RLS configured) (done Feb 2026)
+- [x] EVG Override UI complete (HITL workflow validated) (done Feb 2026)
+- [x] Explainability complete (tooltips, citations, WCAG) (done Feb 2026)
+- [x] Rebrand PayCompass → GapRoll (codebase) (done Feb 2026)
+- [x] Data Table View (/dashboard/dane, inline editing, audit log) (done Feb 2026)
+- [x] Root Cause Analysis (why-gap-exists breakdown) (done Feb 2026)
+- [x] Solio Solver v1 (budget optimization, greedy algorithm) (done Feb 2026)
 - [ ] Sales materials ready (deck, one-pager, templates, demo video)
 - [ ] Onboarding automation live (n8n workflows functional)
 - [ ] **Invoice automation integrated** (Fakturownia + Przelewy24 tested)
