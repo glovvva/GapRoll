@@ -1,8 +1,8 @@
 # GapRoll — Strategic Bible
 ## Vision, Roadmap & Product Requirements (Single Source of Truth)
 
-**Last Updated:** 2026-02-14  
-**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-1599 PLN, Invoice Automation, Realistic Targets  
+**Last Updated:** 2026-02-28  
+**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-1599 PLN, Invoice Automation, Realistic Targets, API-First Architecture, MCP Server Readiness  
 **Previous Name:** PayCompass (sunset Feb 14, 2026)  
 **Rule:** EVERY feature proposal must be checked against this file first.
 
@@ -10,7 +10,7 @@
 
 ## 1. One-Line Vision
 
-> GapRoll transforms EU pay transparency compliance from a 3-week Excel nightmare into a 15-minute wizard, powered by a System of Agents (Hunter, Guardian, Analyst) orchestrated by LangGraph.
+> GapRoll transforms EU pay transparency compliance from a 3-week Excel nightmare into a 15-minute wizard — an API-first platform powered by internal Agents (Hunter, Guardian, Analyst) and open for external agent integration via MCP protocol.
 
 ---
 
@@ -24,6 +24,7 @@
 | **Lean Stack** | Next.js 15 + Python (FastAPI) + Supabase + Hetzner | See 04_TECH_CONSTRAINTS |
 | **Compliance-First AI** | LangGraph (deterministic), HITL for high-risk, no black boxes | EU AI Act Art. 14 compliance |
 | **Data Moat Strategy** | 99 PLN entry = viral adoption → largest Polish wage dataset → defensibility | Benchmark Engine critical |
+| **API-First Platform** | Every feature is an API endpoint first, UI second. Agent-ready architecture for enterprise MCP integration | See 12_API_FIRST_ARCHITECTURE.md |
 
 ---
 
@@ -390,7 +391,7 @@ ROI: 45k annually / 180k = 25% yearly return"
 | 9 | Mar 30 - Apr 5 | **Hunter Discovery + Webinar** | LangGraph discovery flow, Webinar #1: "EU Pay Transparency - Co musisz wiedzieć do 7 czerwca?" |
 | 10 | Apr 6-12 | **Retention ROI + Guardian** | Calculator (simplified v1), Legal RAG ingestion (Kodeks Pracy → Weaviate), Accounting firm partnerships outreach |
 | 11 | Apr 13-19 | **Root Cause Analysis** | Why-gap-exists breakdown, saves 1 week/year, Art. 9 compliance |
-| 12 | Apr 20-26 | **MILESTONE 2: Alpha** | Agents integrated in UI, Root Cause live, Hunter drafts (human reviews & sends) |
+| 12 | Apr 20-26 | **MILESTONE 2: Alpha** | Agents integrated in UI, Root Cause live, Hunter drafts (human reviews & sends), **API v1 endpoints migrated to APIResponse envelope** (see 12_API_FIRST_ARCHITECTURE.md) |
 
 ### Phase 3: Collaborative + Beta (Apr 27 - May 31)
 
@@ -398,7 +399,7 @@ ROI: 45k annually / 180k = 25% yearly return"
 |------|-------|-------|--------------|
 | 13 | Apr 27 - May 3 | **Collaborative Review** | Multi-manager workflow, WebSocket real-time budget tracking, saves 10 days/year |
 | 14 | May 4-10 | **Analyst + Domain Warming** | DSPy optimization, Domain reputation >95% validated |
-| 15 | May 11-17 | **MILESTONE 3: Beta** | Pilot customers, Strategia tier compelling (40%+ conversion target) |
+| 15 | May 11-17 | **MILESTONE 3: Beta** | Pilot customers, Strategia tier compelling (40%+ conversion target), **MCP Server v1 live** (5-7 intent-based tools for enterprise agents) |
 | 16 | May 18-24 | **Benchmark v2** | Web scraping (Pracuj.pl, NoFluffJobs), ~500 PLN/month operational cost |
 | 17 | May 25-31 | **Stabilization** | Bug fixes, performance optimization, HITL workflow refinement |
 
@@ -456,6 +457,7 @@ ROI: 45k annually / 180k = 25% yearly return"
 | **Collaborative Review** | ❌ | ✅ | ✅ | ⚠️ Partial | ❌ |
 | **Benchmark Engine** | ❌ | ✅ (v1: Mar 22) | ✅ | ✅ | ✅ |
 | **Partner Channel** | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **API / MCP Access** | ❌ | ✅ (agent-ready) | ❌ | ❌ | ❌ |
 | **Price (Small firm)** | **99 PLN/mies** (~€22) | **199 PLN/mies** (~€44) | ~€1,100/mies | ~€800/mies | ~€1,250/mies |
 | **Annual Cost** | 1,188 PLN (~€265) | 2,388 PLN (~€530) | ~€13,000 | ~€10,000 | ~€15,000 |
 | **Savings vs Competitors** | **98% cheaper** | **96% cheaper** | - | - | - |
@@ -466,6 +468,7 @@ ROI: 45k annually / 180k = 25% yearly return"
 3. **Partner Channel:** Biura rachunkowe distribution (5 partners × 50 clients = 250 customers, competitors = direct sales only)
 4. **Invoice Automation:** Built-in from day 1 (Fakturownia.pl integration)
 5. **Data Moat:** Benchmark Engine (will have largest Polish wage dataset by Q4 2026)
+6. **API-First + MCP Ready:** Enterprise agents (Claude, Copilot, custom AI) can query GapRoll programmatically. No competitor offers agent-to-platform integration in RegTech compliance.
 
 ---
 
@@ -517,7 +520,7 @@ ROI: 45k annually / 180k = 25% yearly return"
 | **Support & Access** | | |
 | Email support (48h) | ✅ | ✅ |
 | Priority support (4h) | ❌ | ✅ |
-| API Access | ❌ | ✅ |
+| API Access (REST + MCP ready) | ❌ | ✅ (scoped keys, rate-limited) |
 | WebSocket real-time | ❌ | ✅ |
 
 **Data Requirements:**
@@ -564,9 +567,10 @@ contract_type,employment_type,performance_rating,job_level
 
 #### Tier 3: White-Label Enterprise (for office networks)
 
-- **4,999 PLN/mies** — full white-label + API access + dedicated support
-- **Target:** Sieci biur (KPBR members, franchises with 100+ combined clients)
-- **Features:** Custom branding, API integration with their systems, SLA guarantees
+- **4,999 PLN/mies** — full white-label + API access + MCP Server + dedicated support
+- **Target:** Sieci biur (KPBR members, franchises with 100+ combined clients) + enterprise z własnymi agentami AI
+- **Features:** Custom branding, REST API with scoped keys, MCP Server integration (agent-to-GapRoll), SLA guarantees
+- **API-First details:** See 12_API_FIRST_ARCHITECTURE.md
 
 **Why Hybrid Works:**
 - **Small offices (5-30):** Choose per-client (low risk, pay 245-1470 PLN/mies)
@@ -670,6 +674,8 @@ contract_type,employment_type,performance_rating,job_level
 
 **Thesis:** GapRoll's primary exit vector is acquisition by a Polish/CEE ERP vendor seeking to plug the Pay Transparency compliance gap in their product suite. Compliance tools are "sticky" (low churn) and defensible (regulatory moat).
 
+**Valuation Multiplier:** API-first SaaS platforms command 8-12x ARR (vs 3-5x for tool-only SaaS). MCP Server capability demonstrates platform-level architecture, making GapRoll attractive as an embeddable compliance engine within ERP ecosystems. See 12_API_FIRST_ARCHITECTURE.md for technical architecture.
+
 **Primary Target: Symfonia (Accel-KKR / MidEuropa)**
 - **Why:** Most aggressive acquirer in CEE. Recent buys: HRTec, Reset2, Cloud Planet, NextUp (Romania). Building "total employee lifecycle" ecosystem.
 - **Market share:** ~25% of 50-500 segment (premium, compliance-conscious clients)
@@ -713,13 +719,24 @@ contract_type,employment_type,performance_rating,job_level
 10. **Realistic Targets:** Jun 8 = 10-20 customers (not 50!), Sep = 50 customers (aggressive but achievable)
 11. **ERP Integration = Exit Signal, Not MVP Feature:** Strategically critical for acquisition (Symfonia/Comarch/Asseco) but operacyjnie przedwczesna before PMF. CSV-first → API-second. Validate demand with survey at 50 customers. (Source: Gemini ERP Report, Feb 2026)
 12. **PESEL = Free Gender Detection:** 10th digit parity determines gender (Even=K, Odd=M). Implement in CSV parser — saves Grażyna one column of manual work. Zero cost, high UX impact.
+13. **API-First = Zero Extra Cost, Massive Exit Value:** Designing endpoints as tools (not pages) costs nothing extra during development, but delivers 2-5x valuation multiplier. Every new endpoint uses APIResponse envelope with ComplianceContext. (Source: API-First Architecture Session, Feb 2026)
+14. **Intent-Based Tool Grouping for MCP:** External agents should see 5-7 tools grouped by intent (analyze_pay_gap, score_positions, generate_report, simulate_budget, query_benchmark, ask_human, get_company_context), NOT 15+ raw endpoints. Based on Anthropic's Claude Code learnings. (Source: "Lessons from Building Claude Code" article analysis, Feb 2026)
+15. **Progressive Disclosure in API Responses:** Return summary + available_drilldowns. Let the agent decide what to explore deeper. Don't dump everything in one response. (Source: Claude Code article, Feb 2026)
+
 ---
 
 **END OF 01_STRATEGY.md**
 
 **Next Review:** March 1, 2026 (after Milestone 1)
 
-**Critical Changes This Version (Feb 14, 2026):**
+**Critical Changes This Version (Feb 28, 2026):**
+- ✅ API-First Platform added as 7th Strategic Pillar
+- ✅ MCP Server readiness added to timeline (Milestone 3)
+- ✅ New file: 12_API_FIRST_ARCHITECTURE.md (response envelope, scopes, MCP tools, checklist)
+- ✅ Exit strategy updated with API-First valuation multiplier (8-12x ARR)
+- ✅ 3 new Strategic Lessons (13-15): API-First, Intent-Based Tools, Progressive Disclosure
+
+**Critical Changes (Feb 14, 2026):**
 - ✅ Rebrand PayCompass → GapRoll
 - ✅ Pricing €49-199 → 99-1599 PLN (Compliance/Strategia)
 - ✅ **EVG moved to Compliance tier** (was Strategia) — BIGGEST CHANGE

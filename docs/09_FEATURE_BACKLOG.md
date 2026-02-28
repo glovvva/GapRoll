@@ -86,10 +86,12 @@ Priority Tiers:
 | 34 | Justification Agent (Art. 7) | 3 | P2 (23) | 8 | 6 |
 | 35 | Partner Portal v2 (White-label) | 3 | P2 (24) | 8 | 7 |
 | 36 | SSO / SAML / Azure AD | 3 | P2 (21) | 7 | 8 |
-| 37 | API Access (for integrations) | 4 | P3 (19) | 6 | 7 |
+| 37 | **API-First Platform + MCP Server** | 2-3 | **P1 (29)** | 9 | 6 |
 | 38 | **ERP Integration Layer** | 5+ | P3 (17) | 9 | 10 |
 | 39 | **PESEL Normalization Utils** | 4 | P3 (19) | 6 | 2 |
 | 40 | **NormalizedEmployee Schema** | 3 | P2 (22) | 7 | 3 |
+| 41 | **Agent-Ready Endpoint Migration** (existing endpoints → APIResponse envelope) | 2 | P1 (27) | 8 | 5 |
+| 42 | **MCP Server v1** (5-7 intent-based tools, thin wrapper over REST API) | 3 | P2 (25) | 9 | 6 |
 ---
 
 ## 3. Detailed Feature Specs
@@ -517,6 +519,58 @@ so that I can verify mapping, fill gaps, and trust the numbers used in raporty a
 4. `data_corrections_audit` table exists (create via same migration in Supabase SQL Editor if missing).
 
 **Timeline:** Target Mar 15 (Milestone 1)
+
+---
+
+### Feature #37: API-First Platform + MCP Server — UPGRADED (was P3, now P1)
+
+**Why P1 (upgraded from P3):**
+- **Exit value:** API-first = 8-12x ARR multiplier (vs 3-5x tool-only)
+- **Enterprise blocker:** Companies with AI teams won't buy tool-only SaaS
+- **Zero marginal cost:** APIResponse envelope + ComplianceContext costs nothing extra per endpoint
+- **MCP readiness:** Enables client agents (Claude, Copilot) to query GapRoll programmatically
+
+**What changed:** This is NOT a separate feature to build later. It's a **design standard applied to every new endpoint from now on.** See 12_API_FIRST_ARCHITECTURE.md for Agent-Ready Checklist.
+
+**Deliverables:**
+1. **Milestone 2 (Apr 26):** All endpoints use APIResponse[T] envelope with ComplianceContext
+2. **Milestone 3 (May 17):** MCP Server v1 live (5-7 intent-based tools)
+3. **Post-PMF:** API key management UI, scope configuration, rate limit dashboard
+
+**Dependencies:** 12_API_FIRST_ARCHITECTURE.md (base models, checklist, patterns)
+
+---
+
+### Feature #41: Agent-Ready Endpoint Migration
+
+**Purpose:** Migrate existing endpoints to APIResponse envelope standard.
+
+**Scope:**
+| Endpoint | Current | Target | Priority |
+|----------|---------|--------|----------|
+| `GET /analysis/dashboard-metrics` | No envelope | `GET /api/v1/gap/dashboard` | P1 |
+| `POST /evg/override` | Direct Supabase | `POST /api/v1/evg/override` | P1 |
+| `GET /partner/clients` | No versioning | `GET /api/v1/partner/clients` | P2 |
+| `POST /evg/score` | No envelope | `POST /api/v1/evg/score` | P2 |
+
+**Strategy:** Add /api/v1/ alongside existing endpoints. UI migrates gradually. Old endpoints deprecated after migration.
+
+**Effort:** 5h (base models already defined in 12_API_FIRST_ARCHITECTURE.md Section 8)
+**Timeline:** Milestone 2 (Apr 20-26)
+
+---
+
+### Feature #42: MCP Server v1
+
+**Purpose:** Thin wrapper over REST API exposing 5-7 intent-based tools for external agents.
+
+**Tools:** analyze_pay_gap, score_positions, generate_report, simulate_budget, query_benchmark, ask_human, get_company_context
+
+**Architecture:** See 06_AGENT_BLUEPRINTS.md Section 6 + 12_API_FIRST_ARCHITECTURE.md Section 5
+
+**Effort:** 6h (thin wrapper, no new logic)
+**Timeline:** Milestone 3 (May 11-17)
+**Prerequisite:** Feature #41 (endpoints migrated to APIResponse envelope)
 
 ---
 

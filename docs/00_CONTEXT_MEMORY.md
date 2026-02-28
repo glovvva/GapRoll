@@ -228,6 +228,15 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 | 40 | Wykres Recharts: domain={[0,'auto']} na YAxis gdy dane zawsze >= 0 | Unikaj ujemnych wartości na osi (np. wynagrodzenia). |
 | 45 | Po restarcie serwerów zawsze sprawdź cookies (DevTools → Application → Cookies → localhost:3000). Brak sb-* cookies = wygasła sesja = sentinel UUID we wszystkich endpointach. | Fix: wyloguj + zaloguj ponownie. |
 
+### 🔌 API-First / MCP RULES (Feb 2026)
+
+| # | Rule | Why |
+|---|------|-----|
+| 34 | Każdy nowy endpoint musi przejść Agent-Ready Checklist (16 punktów) z 12_API_FIRST_ARCHITECTURE.md | Koszt: 0. Wartość: 2-5x exit multiplier. |
+| 35 | MCP tools = 5-7 intent-based grup, NIE 1:1 mapping endpoint→tool | Źródło: Anthropic Claude Code team. Mniej narzędzi = lepszy agent. |
+| 36 | API responses: summary + available_drilldowns (progressive disclosure) | Agent sam decyduje co drążyć. Nie zalewaj danymi. |
+| 37 | `ask_human` = osobny dedykowany tool z blocking semantiką | EU AI Act Art. 14 + lepszy UX. Nie parametr innego toola. |
+
 ---
 
 ## 7. Key Metrics (Targets)
@@ -633,4 +642,64 @@ Critical Updates This Version (Feb 25, 2026):
 
 **Next Session:**
 - Invoice Automation (Fakturownia.pl) — P0, Mar 2-8
-- Article 16 PDF Export — P0, Mar 15  
+- Article 16 PDF Export — P0, Mar 15
+
+---
+
+### Session: 2026-02-27/28 — API-First Architecture & Agent-Ready Strategy
+
+**Duration:** ~3h (across 2 days)
+**Sprint:** Week 3/16 — Strategic Architecture Planning
+**Phase:** Milestone 1 — Platform Baseline (target: Mar 15, 2026)
+
+#### Completed Tasks
+
+**1. API-First Architecture Document Created**
+- New file: 12_API_FIRST_ARCHITECTURE.md
+- 3 deployment models defined (Remote MCP Server, SDK/CLI, Hybrid)
+- Response envelope standard (APIResponse[T] + ComplianceContext)
+- Permission scope model (gap:read, evg:score, solio:simulate, etc.)
+- API key format: gaproll_live_sk_xxx / gaproll_test_sk_xxx
+- Rate limiting per tier (Compliance 30/min, Strategia 60/min, Enterprise 300/min)
+- Agent-Ready Checklist (16 items, every new endpoint must pass)
+- Pydantic base models copy-paste ready (apps/api/schemas/base.py)
+- Migration path for 6 existing endpoints
+
+**2. Claude Code Article Analysis ("Lessons from Building Claude Code")**
+- Intent-based tool grouping: 5-7 MCP tools (not 15+ raw endpoints)
+- Progressive disclosure: summary + available_drilldowns in responses
+- `ask_human` as dedicated MCP tool with blocking semantics
+- Tools age — keep MCP layer thin and swappable over REST API
+
+**3. MCP Action Space Defined**
+- 7 tools: analyze_pay_gap, score_positions, generate_report, simulate_budget, query_benchmark, ask_human, get_company_context
+- Each tool maps to 2-3 REST endpoints internally
+- External agents never access Guardian/Hunter/Analyst directly
+
+#### Decisions Made
+- [x] API-First added as 7th Strategic Pillar
+- [x] MCP Server v1 target: Milestone 3 (May 17)
+- [x] Endpoint migration to APIResponse: Milestone 2 (Apr 26)
+- [x] Model A (Remote MCP) first, Model B (SDK) post-PMF
+- [x] Intent-based tool grouping over 1:1 endpoint mapping
+- [x] MacBook Pro migration in ~2 weeks (WSL2 checklist unnecessary)
+
+#### Files Created
+- 12_API_FIRST_ARCHITECTURE.md (new)
+
+#### Files That Need Update (this session identified gaps)
+- 01_STRATEGY.md (API-First pillar, competitive matrix, exit valuation, timeline, lessons)
+- 06_AGENT_BLUEPRINTS.md (external agent section, MCP tool definitions)
+- 09_FEATURE_BACKLOG.md (Feature #37 upgrade P3→P1, new #41 #42)
+- 04_TECH_CONSTRAINTS.md (API design standards section)
+
+#### Lessons Learned
+- LESSON 34: API-First costs zero extra during development but delivers 2-5x exit valuation multiplier. Design endpoints as tools, not pages.
+- LESSON 35: MCP tools should be 5-7 intent-based groups, not 1:1 endpoint mappings. Fewer tools = better agent performance (source: Anthropic Claude Code team).
+- LESSON 36: Progressive disclosure in API responses — return summary + drilldowns. Agent decides what to explore. Don't dump everything in one response.
+- LESSON 37: `ask_human` must be a dedicated, blocking tool — not a parameter on other tools. EU AI Act Art. 14 compliance + better UX.
+
+#### Next Session Goals
+- [ ] Apply all file updates (Cursor Composer batch)
+- [ ] Claude Code setup on current machine (pre-MacBook migration)
+- [ ] Continue Milestone 1 deliverables (invoice automation, sales materials)

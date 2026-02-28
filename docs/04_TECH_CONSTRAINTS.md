@@ -1,7 +1,7 @@
 # GapRoll — Tech Constraints
 ## Lean Stack Enforcement & Architecture Rules
 
-**Last Updated:** 2026-02-14  
+**Last Updated:** 2026-02-28  
 **Previous Name:** PayCompass (sunset Feb 14, 2026)  
 **Rule:** Reject ANY suggestion that violates this stack. No exceptions.
 
@@ -561,6 +561,55 @@ def log_audit_trail(
 1. User suggests banned tech: "Should we use AWS?"
 2. Assistant responds: "❌ AWS is on our BANNED list (04_TECH_CONSTRAINTS). Reason: Complex pricing, US-centric. Approved alternative: Hetzner (EU data residency, €12.90/month)."
 3. No debate, no exceptions.
+
+---
+
+## 9. API Design Standards (NEW — Feb 2026)
+
+**Rule:** Every new FastAPI endpoint MUST follow these standards. See 12_API_FIRST_ARCHITECTURE.md for full details.
+
+### 9.1 Response Envelope
+
+ALL endpoints return `APIResponse[T]` with `data`, `meta` (request_id, timestamp, processing_time_ms), and `compliance` (directive_articles, rodo_applied, ai_generated, human_override, audit_id).
+
+Base models defined in: `apps/api/schemas/base.py` (see 12_API_FIRST_ARCHITECTURE.md Section 8)
+
+### 9.2 Endpoint Naming
+
+Path pattern: `/api/v1/{domain}/{action}`
+- Domain = noun: `gap`, `evg`, `report`, `solio`, `benchmark`, `compliance`, `partner`, `upload`
+- Action = verb: `calculate`, `score`, `override`, `simulate`, `compare`, `export`
+
+**BANNED:**
+- ❌ `/api/dashboard-data` (not tool-friendly)
+- ❌ `/api/get-info` (generic)
+- ❌ `/api/process` (ambiguous)
+
+### 9.3 Idempotency
+
+- GET = always safe to retry
+- POST/PUT = MUST accept `Idempotency-Key` header (prevents duplicate writes on agent retry)
+
+### 9.4 Error Format
+
+ALL errors return `APIError` with: `error` (machine code like `gap.insufficient_data`), `message` (Polish human-readable), `details` (dict), `article` (legal reference), `retry_after` (seconds, for rate limits).
+
+### 9.5 API Versioning
+
+- Version in URL path: `/api/v1/...`
+- Breaking changes = new version (`/api/v2/...`)
+- Old version supported 12 months after deprecation
+
+### 9.6 MCP Protocol
+
+**Approved:**
+- ✅ MCP (Model Context Protocol) — Anthropic standard for agent-to-tool communication
+- MCP Server endpoint: `/mcp/v1/sse` (future, post-Milestone 3)
+- Tool definitions auto-generated from OpenAPI spec
+
+**BANNED:**
+- ❌ Custom agent protocols (use MCP standard)
+- ❌ GraphQL for external API (REST + MCP is sufficient, GraphQL adds complexity)
 
 ---
 

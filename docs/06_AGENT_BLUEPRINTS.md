@@ -1,7 +1,7 @@
 # GapRoll — Agent Blueprints
 ## LangGraph Architecture for Hunter, Guardian & Analyst
 
-**Last Updated:** 2026-02-18  
+**Last Updated:** 2026-02-28  
 **Previous Name:** PayCompass (sunset Feb 14, 2026)  
 **Framework:** LangGraph (deterministic orchestration with HITL breakpoints)
 
@@ -9,11 +9,23 @@
 
 ## 1. Agent System Overview
 
+### Internal Agents (GapRoll-owned, LangGraph orchestrated)
+
 | Agent | Role | Risk Level | Timeline |
 |-------|------|------------|----------|
 | **Hunter** | Lead discovery + cold outreach | Medium | Discovery: Mar 29, Outreach: Jun 8 |
 | **Guardian** | Legal/HR compliance assistant | HIGH (EU AI Act) | Apr 12 (Alpha), May 17 (Beta) |
 | **Analyst** | Self-improvement optimizer | Low | May 10 (Alpha), Jun 8 (Production) |
+
+### External Agent Access (Customer-owned agents connect to GapRoll)
+
+| Model | Data Flow | Target | Timeline |
+|-------|-----------|--------|----------|
+| **A: Remote MCP Server** | Client agent → GapRoll API → structured response | Enterprise cloud-first | Post-Milestone 2 (Apr 2026) |
+| **B: GapRoll SDK/CLI** | Client installs package locally, data never leaves their infra | Regulated (banks, insurance) | Post-PMF (Q3 2026, 50+ customers) |
+| **C: Hybrid** | Anonymized data → GapRoll API → result. PII stays local | Compliance-cautious mid-market | With Model A |
+
+**Architecture details:** See 12_API_FIRST_ARCHITECTURE.md
 
 ---
 
@@ -1009,6 +1021,86 @@ Every harness modification must be logged:
 | Infinite iteration budget | Agents burn tokens on doom loops | Hard cap at 3 + SimilarityLoopDetection |
 | Same model for everything | Wastes compute on simple tasks | Use ReasoningBudgetMiddleware routing |
 | No trace logging | Can't improve what you can't measure | Every call logged in LangSmith |
+
+---
+
+## 6. External Agent Interface — MCP Action Space
+
+### 6.1 Design Philosophy
+
+Based on Anthropic's "Lessons from Building Claude Code" (Feb 2026):
+- **Fewer tools = better agent performance.** Claude Code has ~20 tools and constantly questions if all are needed.
+- **Intent-based grouping:** Group multiple endpoints into single tools by user intent.
+- **Progressive disclosure:** Return summaries with drilldown options, not full data dumps.
+- **`ask_human` is a dedicated tool**, not a parameter — blocks agent loop until human responds.
+- **Tools age:** What helped GPT-4 may constrain GPT-5. Keep MCP layer thin and swappable.
+
+### 6.2 GapRoll MCP Tool Definitions (5-7 tools)
+
+| MCP Tool | Intent | Maps to REST Endpoints | Required Scope |
+|----------|--------|----------------------|----------------|
+| `analyze_pay_gap` | "Jaka jest luka płacowa?" | `/gap/calculate`, `/gap/root-causes`, `/compliance/status` | `gap:read` |
+| `score_positions` | "Oceń stanowiska EVG" | `/evg/score`, `/evg/override`, `/evg/compare` | `evg:read`, `evg:score` |
+| `generate_report` | "Wygeneruj raport Art. 16" | `/report/article-16`, `/report/export` | `gap:export`, `report:generate` |
+| `simulate_budget` | "Ile kosztuje zamknięcie luki?" | `/solio/simulate`, `/solio/compare` | `solio:simulate` |
+| `query_benchmark` | "Jak wypadamy vs rynek?" | `/benchmark/compare`, `/benchmark/percentile` | `benchmark:read` |
+| `ask_human` | HITL breakpoint — block until human responds | N/A (internal) | N/A |
+| `get_company_context` | "Metadane firmy, historia" | `/company/info`, `/upload/history` | `gap:read` |
+
+### 6.3 Progressive Disclosure Pattern
+
+Tools return **summary + available_drilldowns**, not everything at once:
+```json
+{
+    "data": {
+        "overall_gap_percent": 11.2,
+        "threshold_status": "warning",
+        "summary": "Luka 11.2% (próg ostrzegawczy). Główne ryzyko: Senior Developer (8.3%).",
+        "available_drilldowns": [
+            {"tool": "analyze_pay_gap", "params": {"group": "Senior Developer", "detail": "full"}},
+            {"tool": "analyze_pay_gap", "params": {"include_root_causes": true}},
+            {"tool": "generate_report", "params": {"type": "article-16"}}
+        ]
+    },
+    "compliance": {
+        "directive_articles": ["Art. 9 ust. 1"],
+        "rodo_applied": false,
+        "ai_generated": false
+    }
+}
+```
+
+### 6.4 `ask_human` Tool Specification
+
+Dedicated HITL tool — blocks agent loop. Required by EU AI Act Art. 14 for high-risk decisions.
+```json
+{
+    "tool": "ask_human",
+    "input": {
+        "question": "EVG score 'Senior Developer': AI sugeruje zmianę 78→72. Zatwierdzasz?",
+        "options": ["Zatwierdź", "Odrzuć", "Zmodyfikuj ręcznie"],
+        "context": {"position": "Senior Developer", "current_score": 78, "proposed_score": 72},
+        "blocking": true,
+        "legal_basis": "Art. 14 EU AI Act"
+    }
+}
+```
+
+**Rules:**
+- Agent CANNOT skip `ask_human` for EVG overrides, report approvals, or budget applications
+- Response timeout: 24h (after which agent pauses, notifies admin)
+- All `ask_human` interactions logged in audit trail
+
+### 6.5 Relationship to Internal Agents
+
+Internal agents (Hunter, Guardian, Analyst) and external agent access are SEPARATE systems:
+
+- **Internal agents** run on our LangGraph infra, use our token budget, have full DB access
+- **External agents** connect via MCP protocol, use customer's token budget, access scoped by API key
+- **Guardian** may be called internally by MCP tools (e.g., `analyze_pay_gap` triggers Guardian for legal context), but external agents never call Guardian directly
+- **ask_human** works for BOTH: internal HITL breakpoints AND external agent HITL
+
+**Full API architecture:** 12_API_FIRST_ARCHITECTURE.md
 
 ---
 
