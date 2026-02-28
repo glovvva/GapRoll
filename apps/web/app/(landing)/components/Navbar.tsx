@@ -96,11 +96,15 @@ export default function Navbar() {
           }}
         >
           <Image
-            src="/logo.png"
+            src="/logo_canva.PNG"
             alt="GapRoll"
-            width={140}
+            width={120}
             height={36}
-            style={{ height: "40px", width: "auto" }}
+            style={{
+              objectFit: "contain",
+              mixBlendMode: "lighten",
+              filter: "brightness(1.1)",
+            }}
             priority
           />
         </Link>

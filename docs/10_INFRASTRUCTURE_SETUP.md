@@ -120,6 +120,29 @@ Rollback if health check fails
 | Bad deployment | MEDIUM | 5 min | One-click rollback via Coolify |
 | Domain DNS issue | HIGH | 1 hour | Update DNS records, 15-60 min propagation |
 
+---
+
+### 1.5 Hetzner + Coolify — Landing Page Deploy
+
+**Status:** TODO (mar 1-3, 2026)
+
+**Kroki:**
+1. Hetzner Cloud → stwórz VPS CPX21 (€7.49/mc, 3 vCPU, 4GB RAM)
+2. Zainstaluj Coolify (panel deploy): `curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash`
+3. Coolify → dodaj projekt gaproll-landing (Next.js)
+4. Połącz z GitHub repo
+5. Cloudflare → gaproll.eu → DNS → Add record:
+   - Type: A | Name: @ | Content: [Hetzner VPS IP] | Proxy: Proxied
+   - Type: CNAME | Name: www | Content: gaproll.eu | Proxy: Proxied
+6. Coolify → ustaw domenę: gaproll.eu
+7. SSL: Cloudflare full (strict) mode
+
+**Po deployu:**
+- Google Search Console → dodaj gaproll.eu → zweryfikuj → "Request indexing"
+- sitemap.xml (Next.js generuje automatycznie pod /sitemap.xml)
+
+---
+
 **Monitoring Alerts (Slack integration):**
 - API response time >2s for 5 min → alert
 - Error rate >5% → alert
@@ -441,6 +464,34 @@ TXT record: v=DMARC1; p=none; rua=mailto:bartek@gaproll.eu
 - Bounce rate >3% → **PAUSE Hunter agent**
 - Spam complaints >0.5% → **Manual review required**
 - Deliverability <90% → **Domain audit**
+
+---
+
+### 4.5 Domain Warming Tool
+
+**Narzędzie:** Instantly.ai ($37/mc)  
+**Start:** 1 marca 2026  
+**Konto:** bartek@gaproll.eu
+
+**Dlaczego Instantly (nie Mailreach):**
+- Warming + cold outreach w jednym narzędziu
+- Własna sieć warm-up pool (tysiące kont)
+- Integracja z Hunter agentem w fazie 2
+
+**Harmonogram warmingu:**
+
+| Tydzień | Dzienna liczba | Action |
+|---------|----------------|--------|
+| 1-2 (mar 1-14) | 5-10 | Automatically warmed emails w sieci Instantly |
+| 3-4 (mar 15-28) | 10-30 | Warm intros + manualne outreachy |
+| 5-6 (mar 29 - apr 11) | 30-50 | Pierwsze manualne kampanie |
+| 7+ (apr 14+) | 50-100 | Hunter agent może startować |
+
+**SPF update gdy Instantly aktywny:**  
+W Cloudflare → gaproll.eu → DNS → edytuj rekord SPF:
+```
+v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
+```
 
 ---
 

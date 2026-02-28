@@ -204,7 +204,7 @@ const plans = {
       { text: 'Przegląd Wynagrodzeń — workflow 5 menedżerów', cite: 'Art. 10 ust. 3' },
       { text: 'Kalkulator ROI retencji pracowników', cite: '' },
       { text: 'Optymalizator Budżetowy — scenariusze budżetowe', cite: '' }, // FIX #3: Solio → Optymalizator
-      { text: 'Benchmark rynkowy stanowisk (GUS/PARP)', cite: '' },
+      { text: 'Benchmark rynkowy stanowisk', cite: '' },
     ],
     // FIX #7: Wyróżniony przycisk dla Strategia — gradient pink
     cta: 'Zacznij z Strategia',
@@ -282,7 +282,7 @@ const features = [
 ]
 
 const securityItems = [
-  { img: '/icons/shield_mioffice.webp', icon: <Server size={20} />, title: 'Serwery UE — Frankfurt, Niemcy', desc: 'Hetzner Cloud DE. Dane pracownicze nigdy nie opuszczają EOG. Gwarancja suwerenności danych zgodna z RODO Art. 44 i ISO 27001.' },
+  { img: '/icons/shield_mioffice.webp', icon: <Server size={20} />, title: 'Wewnętrzne serwery w UE', desc: 'Dane pracownicze nigdy nie opuszczają EOG. Gwarancja suwerenności danych zgodna z RODO Art. 44 i ISO 27001.' },
   { img: '/icons/data_privacy_mioffice.webp', icon: <Lock size={20} />, title: 'Szyfrowanie end-to-end', desc: 'Dane w spoczynku: AES-256-GCM. Dane w transmisji: TLS 1.3. Szyfrowanie end-to-end — od Twojego CSV do raportu PDF.' },
   { img: '/icons/shield_mioffice.webp', icon: <Eye size={20} />, title: 'Zero Data Retention (AI)', desc: 'OpenAI Zero Data Retention Policy: dane AI nie są przechowywane ani używane do trenowania modeli. PESEL i imię nigdy nie trafiają do silnika AI.' },
   { img: '/icons/data_privacy_mioffice.webp', icon: <Database size={20} />, title: 'Izolacja danych (RLS)', desc: 'Row-Level Security (Supabase). Każda organizacja widzi wyłącznie swoje dane. Partner widzi klientów, klient widzi tylko swoje dane.' },
@@ -295,7 +295,7 @@ const faqData = [
   { q: 'Co musi zawierać Raport Art. 16?', a: 'Raport (na podstawie Art. 9 Dyrektywy) zawiera: (a) lukę płacową ze względu na płeć, (b) lukę w składnikach zmiennych, (c) medianą luki, (d) medianą luki w składnikach zmiennych, (e) odsetek pracowników danej płci w składnikach zmiennych, (f) odsetek pracowników każdej płci w każdym kwartylu, (g) lukę w podziale na kategorie pracowników. GapRoll generuje ten raport w PDF z cytacjami prawnymi w mniej niż 15 minut.' },
   { q: 'Na czym polega jawność wynagrodzeń (Art. 7)?', a: 'Art. 7 przyznaje każdemu pracownikowi prawo do informacji o wynagrodzeniu pracowników wykonujących pracę o równej wartości (w podziale na płeć). Pracodawca musi odpowiedzieć w ciągu 2 miesięcy (Art. 7 ust. 4). Art. 5 nakłada obowiązek podawania przedziału wynagrodzenia w ogłoszeniach. Pracownicy nie mogą być objęci klauzulami poufności wynagrodzenia (Art. 7 ust. 5). GapRoll automatyzuje odpowiedzi na wnioski Art. 7.' },
   { q: 'Czym jest Wartościowanie Stanowisk EVG i dlaczego jest obowiązkowe?', a: 'EVG (Equal Value of Work) to metodologia wymagana przez Art. 4 Dyrektywy. 4 wymiary oceny: Umiejętności i kwalifikacje, Wysiłek (fizyczny i umysłowy), Odpowiedzialność, Warunki pracy. Bez EVG nie możesz odpowiedzieć na wniosek Art. 7 — to naruszenie Dyrektywy. GapRoll: AI scoring + obowiązkowa korekta ręczna (EU AI Act Art. 14: Human-In-The-Loop).' },
-  { q: 'Czy dane pracowników są bezpieczne i zgodne z RODO?', a: 'Tak. Dane przetwarzane wyłącznie na serwerach Hetzner Cloud w Niemczech (Frankfurt). Podstawa prawna: Art. 6 ust. 1 lit. c RODO (obowiązek prawny). Automatyczne maskowanie danych przy N<3. PESEL i imię nigdy nie trafiają do AI (Zero Data Retention). Retencja 3 lata. DPA dostępna na żądanie. Zgodność z ISO 27001.' },
+  { q: 'Czy dane pracowników są bezpieczne i zgodne z RODO?', a: 'Tak. Dane przetwarzane wyłącznie na wewnętrznych serwerach w UE. Podstawa prawna: Art. 6 ust. 1 lit. c RODO (obowiązek prawny). Automatyczne maskowanie danych przy N<3. PESEL i imię nigdy nie trafiają do AI (Zero Data Retention). Retencja 3 lata. DPA dostępna na żądanie. Zgodność z ISO 27001.' },
   { q: 'Jakie sankcje grożą za brak raportu?', a: 'Według projektu ustawy implementacyjnej: grzywny do 30 000 PLN za każdy miesiąc opóźnienia. PIP otrzymuje nowe uprawnienia kontrolne. Domniemanie dyskryminacji w postępowaniach sądowych — ciężar dowodu przeniesiony na pracodawcę (Art. 18). Zbiorowe dochodzenie roszczeń przez pracowników (Art. 19). Termin implementacji: 7 czerwca 2026.' },
   { q: 'Jak GapRoll obsługuje umowy B2B?', a: 'B2B Equalizer: automatyczna normalizacja UoP↔B2B ze składkami ZUS 2026, kosztami uzyskania przychodu (KUP) i różnicą brutto/netto. Dyrektywa 2023/970 obejmuje pracowników i "osoby pracujące" — zdefiniowane szerzej niż tylko umowa o pracę (Art. 2 ust. 1 lit. c).' },
 ]
@@ -363,35 +363,52 @@ export default function LandingPage() {
                 🇪🇺 Dyrektywa UE 2023/970 · Termin: 7 czerwca 2026
               </span>
             </div>
-            <h1 className="reveal" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(34px,4.2vw,48px)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-0.03em', color: C.t1, marginBottom: '22px' }}>
-              Zamknij lukę płacową{' '}
-              <span style={{ background: 'linear-gradient(90deg,#FF4FA3 0%,#9B7FEA 50%,#2A7BFF 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>raz na zawsze.</span>
+            {/* H1 */}
+            <h1 className="reveal" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 800, lineHeight: 1.15, color: '#ffffff', marginBottom: '1.5rem' }}>
+              Bądź gotowy na dyrektywę<br />
+              o transparentności płac{' '}
+              <span style={{ color: '#FF4FA3' }}>z GapRoll</span>
             </h1>
-            <p className="reveal delay-1" style={{ fontSize: '18px', lineHeight: 1.65, color: C.t2, marginBottom: '12px', maxWidth: '500px' }}>
-              Pełna zgodność z Dyrektywą UE 2023/970 za <strong style={{ color: C.t1 }}>99 PLN/mies</strong>. Raport Art.&nbsp;16 gotowy w 15 minut. Dane wyłącznie na serwerach UE.
+
+            {/* Subheadline */}
+            <p className="reveal delay-1" style={{ fontSize: '1.125rem', color: '#CBD5E1', lineHeight: 1.7, marginBottom: '1.75rem', maxWidth: '540px' }}>
+              Automatyzuj raportowanie luki płacowej, mapuj stanowiska i buduj sprawiedliwą strukturę
+              wynagrodzeń zgodnie z dyrektywą UE 2023/970. Wszystko w jednym miejscu, prosto i bezpiecznie.
             </p>
-            <div className="reveal delay-1" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '36px' }}>
+
+            {/* Bullet points */}
+            <ul className="reveal delay-1" style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { text: '98% taniej niż zachodnie alternatywy (€1 100/mies vs 99 PLN/mies)', color: C.pink },
-                { text: 'Szyfrowanie AES-256 · serwery Hetzner Frankfurt · Zero Data Retention AI', color: C.blue },
-                // FIX #13: amber → pink for warning bullet
-                { text: 'Kary do 30 000 PLN/mies za brak raportu — termin: 7 czerwca 2026', color: C.pinkLight },
+                { color: '#FF4FA3', text: 'Kary finansowe: Do 750 000 PLN za brak rzetelnej sprawozdawczości.' },
+                { color: '#2A7BFF', text: 'Lojalność pracowników: 80% kandydatów wybiera firmy z jawnymi widełkami.' },
+                { color: '#9B7FEA', text: 'Prawo do informacji: Każdy pracownik zyska prawo do wglądu w średnie płace na swoim stanowisku.' },
               ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <span style={{ flexShrink: 0, marginTop: '2px', color: item.color }}><CheckCircle2 size={16} /></span>
-                  <span style={{ fontSize: '14px', color: C.t2, lineHeight: 1.5 }}>{item.text}</span>
-                </div>
+                <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', fontSize: '0.95rem', color: '#E2E8F0' }}>
+                  <span style={{ color: item.color, fontSize: '1.25rem', lineHeight: 1, flexShrink: 0 }}>●</span>
+                  <span>{item.text}</span>
+                </li>
               ))}
-            </div>
-            <div className="reveal delay-2" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <a href="#cennik" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 30px', borderRadius: '8px', background: 'linear-gradient(135deg,#2A7BFF,#9B7FEA)', color: '#fff', fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-body)', boxShadow: '0 4px 16px rgba(42,123,255,0.28)', transition: 'all 150ms' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(42,123,255,0.42)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(42,123,255,0.28)' }}
-              >Sprawdź dysproporcje płac <ArrowRight size={15} /></a>
-              <a href="#jak-dziala" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '13px 24px', borderRadius: '8px', border: `1px solid ${C.border}`, color: C.t2, fontSize: '15px', fontWeight: 500, transition: 'all 150ms' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = C.blue; e.currentTarget.style.color = C.t1 }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.t2 }}
-              >Jak to działa?</a>
+            </ul>
+
+            {/* CTA buttons */}
+            <div className="reveal delay-2" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <a href="/signup" style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                background: 'linear-gradient(135deg, #FF4FA3, #2A7BFF)',
+                color: '#fff', fontWeight: 700, fontSize: '1rem',
+                padding: '0.875rem 2rem', borderRadius: '12px',
+                textDecoration: 'none', boxShadow: '0 8px 32px rgba(255,79,163,0.35)'
+              }}>
+                Rozpocznij darmowy audyt →
+              </a>
+              <a href="/demo" style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                background: 'transparent', color: '#fff', fontWeight: 600, fontSize: '1rem',
+                padding: '0.875rem 2rem', borderRadius: '12px',
+                textDecoration: 'none', border: '1.5px solid rgba(255,255,255,0.25)'
+              }}>
+                Umów bezpłatne demo
+              </a>
             </div>
 
             {/* FIX #12: KPI numbers — pink/blue only, no green/amber */}
@@ -413,82 +430,17 @@ export default function LandingPage() {
           {/* Right — dashboard */}
           <div className="reveal delay-1" style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', inset: '-20px', background: `radial-gradient(ellipse, ${C.blueDim} 0%, transparent 70%)`, borderRadius: '24px', pointerEvents: 'none' }} />
-            <div style={{ position: 'relative', borderRadius: '14px', overflow: 'hidden', border: `1px solid ${C.border}`, boxShadow: '0 24px 72px rgba(0,0,0,0.5)' }}>
-              {/* Inline dashboard mockup — no external image dependency */}
-              <div style={{ background: '#F0F4FF', fontFamily: 'var(--font-body)' }}>
-                {/* Top bar */}
-                <div style={{ padding: '11px 16px', background: '#fff', borderBottom: '1px solid #E8EDF8', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Image src="/logo.png" alt="GapRoll" width={110} height={28} style={{ height: '20px', width: 'auto' }} />
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    {['Wszystkie działy ▾', 'Ostatnie 180 dni ▾'].map(t => (
-                      <div key={t} style={{ padding: '3px 8px', borderRadius: '5px', background: '#F0F4FF', fontSize: '10px', color: '#2A7BFF', fontWeight: 500 }}>{t}</div>
-                    ))}
-                  </div>
-                </div>
-                {/* Body */}
-                <div style={{ display: 'flex' }}>
-                  {/* Sidebar */}
-                  <div style={{ width: '100px', background: '#fff', borderRight: '1px solid #E8EDF8', padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                    {[
-                      { l: 'Pulpit', a: true },
-                      { l: 'Analiza', a: false },
-                      { l: 'EVG', a: false },
-                      { l: 'Raporty', a: false },
-                    ].map(item => (
-                      <div key={item.l} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 7px', borderRadius: '6px', background: item.a ? 'rgba(255,79,163,0.08)' : 'transparent' }}>
-                        <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: item.a ? '#FF4FA3' : '#CBD5E1', flexShrink: 0 }} />
-                        <span style={{ fontSize: '9px', fontWeight: item.a ? 700 : 400, color: item.a ? '#1A2B5F' : '#94A3B8' }}>{item.l}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Main content */}
-                  <div style={{ flex: 1, padding: '14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    {/* GPG card */}
-                    <div style={{ background: '#fff', borderRadius: '10px', padding: '14px', border: '1px solid #E8EDF8' }}>
-                      <p style={{ fontSize: '9px', color: '#8B9EC7', marginBottom: '4px', fontWeight: 500 }}>Luka płacowa GPG</p>
-                      <p style={{ fontSize: '22px', fontWeight: 800, color: '#1A2B5F', letterSpacing: '-0.03em' }}>+5,5%</p>
-                      <div style={{ marginTop: '8px', height: '8px', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
-                        <div style={{ flex: 43, background: '#FF4FA3' }} />
-                        <div style={{ flex: 57, background: '#2A7BFF' }} />
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', fontSize: '9px' }}>
-                        <span style={{ color: '#FF4FA3', fontWeight: 600 }}>● K 43%</span>
-                        <span style={{ color: '#2A7BFF', fontWeight: 600 }}>M 57% ●</span>
-                      </div>
-                    </div>
-                    {/* Donut */}
-                    <div style={{ background: '#fff', borderRadius: '10px', padding: '14px', border: '1px solid #E8EDF8', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <p style={{ fontSize: '9px', color: '#8B9EC7', marginBottom: '6px', fontWeight: 500, alignSelf: 'flex-start' }}>Rozkład płac</p>
-                      <svg width="64" height="64" viewBox="0 0 80 80">
-                        <circle cx="40" cy="40" r="30" fill="none" stroke="#E8EDF8" strokeWidth="14"/>
-                        <circle cx="40" cy="40" r="30" fill="none" stroke="#FF4FA3" strokeWidth="14"
-                          strokeDasharray={`${0.43 * 2 * Math.PI * 30} ${2 * Math.PI * 30}`}
-                          strokeDashoffset={2 * Math.PI * 30 * 0.25} strokeLinecap="round"/>
-                        <circle cx="40" cy="40" r="30" fill="none" stroke="#2A7BFF" strokeWidth="14"
-                          strokeDasharray={`${0.37 * 2 * Math.PI * 30} ${2 * Math.PI * 30}`}
-                          strokeDashoffset={-2 * Math.PI * 30 * 0.18} strokeLinecap="round"/>
-                        <text x="40" y="44" textAnchor="middle" fontSize="13" fontWeight="800" fill="#1A2B5F">60%</text>
-                      </svg>
-                    </div>
-                    {/* Bar chart */}
-                    <div style={{ gridColumn: '1/-1', background: '#fff', borderRadius: '10px', padding: '12px 14px', border: '1px solid #E8EDF8' }}>
-                      <p style={{ fontSize: '9px', color: '#8B9EC7', marginBottom: '8px', fontWeight: 500 }}>Rozkład wg kwartyli Art. 9</p>
-                      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '44px' }}>
-                        {[{ h: 28, c: '#C7D4F5' }, { h: 40, c: '#A0B8F5' }, { h: 34, c: '#2A7BFF' }, { h: 44, c: '#FF4FA3' }, { h: 24, c: '#C7D4F5' }, { h: 36, c: '#9B7FEA' }]
-                          .map((b, i) => <div key={i} style={{ flex: 1, background: b.c, borderRadius: '3px 3px 0 0', height: `${b.h}px` }} />)}
-                      </div>
-                    </div>
-                    {/* Status */}
-                    <div style={{ gridColumn: '1/-1', background: 'rgba(42,123,255,0.07)', borderRadius: '8px', padding: '9px 12px', border: '1px solid rgba(42,123,255,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2A7BFF', flexShrink: 0 }} />
-                      <span style={{ fontSize: '10px', fontWeight: 600, color: '#2A7BFF' }}>Zgodność Art. 9 — raport gotowy do złożenia</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div style={{ position: 'relative' }}>
+              <Image
+                src="/dashboard_landing.png"
+                alt="GapRoll dashboard — analiza luki płacowej"
+                width={680}
+                height={480}
+                style={{ borderRadius: '16px', boxShadow: '0 32px 64px rgba(0,0,0,0.4)' }}
+                priority
+              />
             </div>
             <div style={{ position: 'absolute', bottom: '-14px', left: '20px', padding: '10px 16px', borderRadius: '10px', background: C.surface, border: `1px solid ${C.border}`, boxShadow: '0 8px 28px rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {/* FIX #13: dot pink instead of green */}
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.pink, flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: '12px', fontWeight: 600, color: C.t1 }}>Raport Art. 16 — zgodny</div>
@@ -497,7 +449,7 @@ export default function LandingPage() {
             </div>
             <div style={{ position: 'absolute', top: '-14px', right: '20px', padding: '8px 14px', borderRadius: '10px', background: C.surface, border: `1px solid ${C.border}`, boxShadow: '0 8px 28px rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <ShieldCheck size={14} color={C.blue} />
-              <span style={{ fontSize: '12px', fontWeight: 500, color: C.t2 }}>Dane na serwerach UE</span>
+              <span style={{ fontSize: '12px', fontWeight: 500, color: C.t2 }}>Dane na serwerach w UE</span>
             </div>
           </div>
         </div>
@@ -750,7 +702,7 @@ export default function LandingPage() {
           <div className="reveal" style={{ padding: '28px 32px', borderRadius: '12px', background: C.blueDim, border: `1px solid rgba(42,123,255,0.2)`, borderLeft: `4px solid ${C.blue}`, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '24px' }}>
             {[
               { label: 'Podstawa prawna', val: 'Art. 6 ust. 1 lit. c RODO', sub: 'Obowiązek prawny' },
-              { label: 'Lokalizacja danych', val: 'Frankfurt, Niemcy', sub: 'Hetzner Cloud DE' },
+              { label: 'Lokalizacja danych', val: 'Wewnętrzne serwery w UE', sub: 'Dane na serwerach w UE' },
               { label: 'Szyfrowanie', val: 'AES-256 + TLS 1.3', sub: 'End-to-end' },
               { label: 'Standard', val: 'ISO 27001 + RODO', sub: 'Retencja: 3 lata' },
             ].map((item, i) => (
