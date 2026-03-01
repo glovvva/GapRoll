@@ -34,6 +34,10 @@ export default function Navbar() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [ctaHovered, setCtaHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [contact, setContact] = useState('');
+  const [consents, setConsents] = useState({ marketing: false, rodo: false });
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -55,6 +59,7 @@ export default function Navbar() {
   };
 
   return (
+    <>
     <motion.nav
       aria-label="Main navigation"
       initial={{ y: -100, opacity: 0 }}
@@ -96,14 +101,15 @@ export default function Navbar() {
           }}
         >
           <Image
-            src="/logo_canva.PNG"
+            src="/logo.png"
             alt="GapRoll"
             width={120}
-            height={36}
+            height={28}
             style={{
               objectFit: "contain",
-              mixBlendMode: "lighten",
-              filter: "brightness(1.1)",
+              height: "28px",
+              width: "auto",
+              mixBlendMode: "screen",
             }}
             priority
           />
@@ -143,9 +149,26 @@ export default function Navbar() {
         {/* Desktop: CTA */}
         <div
           style={{
-            display: isMobile ? "none" : "block",
+            display: isMobile ? "none" : "flex",
+            alignItems: "center",
           }}
         >
+          <button
+            onClick={() => setShowModal(true)}
+            style={{
+              background: 'transparent',
+              border: '1.5px solid rgba(255,255,255,0.25)',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              padding: '0.5rem 1.25rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              marginRight: '0.75rem'
+            }}
+          >
+            Zapytaj o szczegóły
+          </button>
           <Link
             href="/register"
             onMouseEnter={() => setCtaHovered(true)}
@@ -277,5 +300,111 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </motion.nav>
+
+    {showModal ? (
+      <div
+        onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '1rem'
+        }}
+      >
+        <div style={{
+          background: '#1E293B',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '20px',
+          padding: '2.5rem',
+          maxWidth: '480px',
+          width: '100%',
+          position: 'relative'
+        }}>
+          <button
+            onClick={() => setShowModal(false)}
+            style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', color: '#64748B', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}
+          >×</button>
+
+          {!submitted ? (
+            <>
+              <h3 style={{ color: '#fff', fontWeight: 800, fontSize: '1.4rem', marginBottom: '0.5rem' }}>
+                Zapytaj o szczegóły
+              </h3>
+              <p style={{ color: '#94A3B8', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1.75rem' }}>
+                Odezwiemy się w ciągu 24 godzin roboczych.
+              </p>
+
+              <label style={{ display: 'block', color: '#CBD5E1', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Służbowy adres e-mail lub numer telefonu
+              </label>
+              <input
+                type="text"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                placeholder="np. anna.kowalska@firma.pl lub +48 600 000 000"
+                style={{
+                  width: '100%', padding: '0.75rem 1rem',
+                  background: '#0F172A', border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '10px', color: '#fff', fontSize: '0.95rem',
+                  outline: 'none', boxSizing: 'border-box', marginBottom: '1.5rem'
+                }}
+              />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginBottom: '1.75rem' }}>
+                {[
+                  {
+                    key: 'marketing' as const,
+                    text: 'Wyrażam zgodę na kontakt w celach handlowych i marketingowych dotyczących usług GapRoll (e-mail, telefon). Zgodę można wycofać w każdej chwili.'
+                  },
+                  {
+                    key: 'rodo' as const,
+                    text: 'Zapoznałem/am się z Polityką Prywatności GapRoll i wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania (RODO Art. 6 ust. 1 lit. a).'
+                  }
+                ].map(({ key, text }) => (
+                  <label key={key} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={consents[key]}
+                      onChange={(e) => setConsents(prev => ({ ...prev, [key]: e.target.checked }))}
+                      style={{ marginTop: '3px', accentColor: '#FF4FA3', flexShrink: 0, width: '16px', height: '16px' }}
+                    />
+                    <span style={{ color: '#94A3B8', fontSize: '0.8rem', lineHeight: 1.5 }}>{text}</span>
+                  </label>
+                ))}
+              </div>
+
+              <button
+                onClick={() => {
+                  if (contact && consents.marketing && consents.rodo) {
+                    setSubmitted(true);
+                  }
+                }}
+                disabled={!contact || !consents.marketing || !consents.rodo}
+                style={{
+                  width: '100%', padding: '0.875rem',
+                  background: (!contact || !consents.marketing || !consents.rodo)
+                    ? '#334155'
+                    : 'linear-gradient(135deg, #FF4FA3, #2A7BFF)',
+                  color: '#fff', fontWeight: 700, fontSize: '1rem',
+                  border: 'none', borderRadius: '12px', cursor: (!contact || !consents.marketing || !consents.rodo) ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Wyślij zapytanie
+              </button>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+              <h3 style={{ color: '#fff', fontWeight: 800, fontSize: '1.3rem', marginBottom: '0.5rem' }}>Dziękujemy!</h3>
+              <p style={{ color: '#94A3B8', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Odezwiemy się na podany kontakt w ciągu 24 godzin roboczych.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    ) : null}
+    </>
   );
 }

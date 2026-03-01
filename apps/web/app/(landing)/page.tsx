@@ -244,8 +244,19 @@ const sizes = [
 
 const features = [
   {
-    iconComp: <IconChart />,
-    title: 'Raport Art. 16',
+    iconComp: (
+      <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: 'linear-gradient(135deg,rgba(42,123,255,0.15),rgba(42,123,255,0.05))', border: '1px solid rgba(42,123,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginBottom: '20px' }}>
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect x="8" y="4" width="24" height="32" rx="3" stroke="#2A7BFF" strokeWidth="2"/>
+          <line x1="13" y1="13" x2="27" y2="13" stroke="#2A7BFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="13" y1="19" x2="27" y2="19" stroke="#2A7BFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="13" y1="25" x2="21" y2="25" stroke="#2A7BFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="30" cy="30" r="7" fill="#0F172A" stroke="#2A7BFF" strokeWidth="1.5"/>
+          <path d="M27 30 L29 32 L33 28" stroke="#2A7BFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+    ),
+    title: 'Pełen raport zgodny z Art. 16',
     desc: 'Pełna analiza kwartylowa luki płacowej: mediana kobiet i mężczyzn, luka składnikowa (podstawowe + zmienne), rozkład w 4 kwartylach. PDF gotowy dla PIP.',
     cite: 'Art. 9 ust. 1 lit. a–g',
   },
@@ -282,12 +293,12 @@ const features = [
 ]
 
 const securityItems = [
-  { img: '/icons/shield_mioffice.webp', icon: <Server size={20} />, title: 'Wewnętrzne serwery w UE', desc: 'Dane pracownicze nigdy nie opuszczają EOG. Gwarancja suwerenności danych zgodna z RODO Art. 44 i ISO 27001.' },
-  { img: '/icons/data_privacy_mioffice.webp', icon: <Lock size={20} />, title: 'Szyfrowanie end-to-end', desc: 'Dane w spoczynku: AES-256-GCM. Dane w transmisji: TLS 1.3. Szyfrowanie end-to-end — od Twojego CSV do raportu PDF.' },
-  { img: '/icons/shield_mioffice.webp', icon: <Eye size={20} />, title: 'Zero Data Retention (AI)', desc: 'OpenAI Zero Data Retention Policy: dane AI nie są przechowywane ani używane do trenowania modeli. PESEL i imię nigdy nie trafiają do silnika AI.' },
-  { img: '/icons/data_privacy_mioffice.webp', icon: <Database size={20} />, title: 'Izolacja danych (RLS)', desc: 'Row-Level Security (Supabase). Każda organizacja widzi wyłącznie swoje dane. Partner widzi klientów, klient widzi tylko swoje dane.' },
-  { img: '/icons/shield_mioffice.webp', icon: <ClipboardList size={20} />, title: 'Retencja 3 lata + ISO 27001', desc: 'Dane przechowywane 3 lata (wymóg audytu PIP). Zgodność z ISO 27001 i RODO. Automatyczne usuwanie po upływie okresu retencji.' },
-  { img: '/icons/data_privacy_mioffice.webp', icon: <ShieldCheck size={20} />, title: 'DPA na żądanie', desc: 'Data Processing Agreement (umowa powierzenia danych) dostępna na żądanie. Jesteśmy procesorem danych — RODO Art. 28.' },
+  { title: 'Wewnętrzne serwery w UE', desc: 'Dane pracownicze nigdy nie opuszczają EOG. Gwarancja suwerenności danych zgodna z RODO Art. 44 i ISO 27001.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 4 L34 10 L34 22 C34 30 20 36 20 36 C20 36 6 30 6 22 L6 10 Z" stroke="#2A7BFF" strokeWidth="2" fill="rgba(42,123,255,0.1)"/><circle cx="20" cy="6" r="1.5" fill="#2A7BFF"/><path d="M14 20 L18 24 L26 16" stroke="#2A7BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+  { title: 'Szyfrowanie end-to-end', desc: 'Dane w spoczynku: AES-256-GCM. Dane w transmisji: TLS 1.3. Od Twojego CSV do raportu PDF.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="10" y="18" width="20" height="16" rx="3" stroke="#9B7FEA" strokeWidth="2" fill="rgba(155,127,234,0.1)"/><path d="M14 18 L14 13 C14 9.13 17.13 6 21 6 C24.87 6 28 9.13 28 13 L28 18" stroke="#9B7FEA" strokeWidth="2" strokeLinecap="round"/><circle cx="20" cy="26" r="3" fill="#9B7FEA"/></svg> },
+  { title: 'Zero Data Retention (AI)', desc: 'OpenAI Zero Data Retention Policy: dane AI nie są przechowywane ani używane do trenowania modeli.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#FF4FA3" strokeWidth="2" fill="rgba(255,79,163,0.1)"/><path d="M13 13 L27 27" stroke="#FF4FA3" strokeWidth="2.5" strokeLinecap="round"/><circle cx="20" cy="20" r="5" stroke="#FF4FA3" strokeWidth="1.5" fill="none"/></svg> },
+  { title: 'Izolacja danych (RLS)', desc: 'Row-Level Security. Każda organizacja widzi wyłącznie swoje dane. Partner widzi klientów, klient widzi tylko swoje dane.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="4" y="8" width="32" height="8" rx="2" stroke="#10B981" strokeWidth="1.5" fill="rgba(16,185,129,0.1)"/><rect x="4" y="20" width="32" height="8" rx="2" stroke="#10B981" strokeWidth="1.5" fill="rgba(16,185,129,0.05)" strokeDasharray="3 2"/><rect x="4" y="32" width="32" height="4" rx="2" stroke="#10B981" strokeWidth="1" fill="none" strokeDasharray="3 2" strokeOpacity="0.4"/><circle cx="10" cy="12" r="2" fill="#10B981"/></svg> },
+  { title: 'Retencja 3 lata + ISO 27001', desc: 'Dane przechowywane 3 lata (wymóg audytu PIP). Zgodność z ISO 27001 i RODO. Automatyczne usuwanie po upływie okresu.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#F59E0B" strokeWidth="2" fill="rgba(245,158,11,0.1)"/><path d="M20 10 L20 20 L28 20" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="20" cy="20" r="2" fill="#F59E0B"/></svg> },
+  { title: 'DPA na żądanie', desc: 'Data Processing Agreement dostępna na żądanie. Jesteśmy procesorem danych — RODO Art. 28.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="8" y="4" width="18" height="24" rx="3" stroke="#94A3B8" strokeWidth="1.5" fill="rgba(148,163,184,0.1)"/><path d="M26 4 L32 10 L32 28 L26 28" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/><line x1="12" y1="12" x2="22" y2="12" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/><line x1="12" y1="17" x2="22" y2="17" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/><path d="M12 23 L16 27 L22 21" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
 ]
 
 const faqData = [
@@ -325,6 +336,13 @@ export default function LandingPage() {
   const [activeSize, setActiveSize] = useState<'small' | 'medium' | 'large'>('small')
   const [navScrolled, setNavScrolled] = useState(false)
 
+  const prices = {
+    compliance: { small: 199, medium: 399, large: 799 },
+    strategia:  { small: 399, medium: 799, large: 1599 },
+  }
+
+  const [displayPrice, setDisplayPrice] = useState(prices[activePlan][activeSize])
+
   // FIX #2: Hydration fix — useEffect only, no SSR mismatch
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
@@ -334,8 +352,24 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
+  useEffect(() => {
+    const target = prices[activePlan][activeSize]
+    const start = displayPrice
+    const duration = 600
+    const startTime = performance.now()
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplayPrice(Math.round(start + (target - start) * eased))
+      if (progress < 1) requestAnimationFrame(animate)
+    }
+
+    requestAnimationFrame(animate)
+  }, [activePlan, activeSize])
+
   const plan = plans[activePlan]
-  const price = plan.prices[activeSize]
 
   // FIX #5: CTA "Umów bezpłatne demo" in navbar
   // FIX #12: KPI stats in pink/blue only
@@ -364,10 +398,9 @@ export default function LandingPage() {
               </span>
             </div>
             {/* H1 */}
-            <h1 className="reveal" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 800, lineHeight: 1.15, color: '#ffffff', marginBottom: '1.5rem' }}>
-              Bądź gotowy na dyrektywę<br />
-              o transparentności płac{' '}
-              <span style={{ color: '#FF4FA3' }}>z GapRoll</span>
+            <h1 className="reveal" style={{ fontSize: 'clamp(1.75rem, 3vw, 2.75rem)', fontWeight: 800, lineHeight: 1.2, color: '#ffffff', marginBottom: '1.25rem', maxWidth: '520px' }}>
+              Pierwsza platforma zgodności płacowej{' '}
+              <span style={{ color: '#FF4FA3' }}>dedykowana na polski rynek.</span>
             </h1>
 
             {/* Subheadline */}
@@ -379,9 +412,10 @@ export default function LandingPage() {
             {/* Bullet points */}
             <ul className="reveal delay-1" style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { color: '#FF4FA3', text: 'Kary finansowe: Do 750 000 PLN za brak rzetelnej sprawozdawczości.' },
-                { color: '#2A7BFF', text: 'Lojalność pracowników: 80% kandydatów wybiera firmy z jawnymi widełkami.' },
-                { color: '#9B7FEA', text: 'Prawo do informacji: Każdy pracownik zyska prawo do wglądu w średnie płace na swoim stanowisku.' },
+                { color: '#FF4FA3', text: 'Zgodność w 15 minut. Nie trzy miesiące projektu.' },
+                { color: '#2A7BFF', text: 'Od 99 zł miesięcznie. Bez dodatkowych kosztów.' },
+                { color: '#9B7FEA', text: 'Start bez angażowania IT i konsultantów.' },
+                { color: '#10B981', text: 'RODO pod Twoją kontrolą. Dane przetwarzane wyłącznie w UE.' },
               ].map((item, i) => (
                 <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', fontSize: '0.95rem', color: '#E2E8F0' }}>
                   <span style={{ color: item.color, fontSize: '1.25rem', lineHeight: 1, flexShrink: 0 }}>●</span>
@@ -415,9 +449,9 @@ export default function LandingPage() {
             <div className="reveal delay-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '20px', marginTop: '36px', paddingTop: '28px', borderTop: `1px solid ${C.border}` }}>
               {[
                 { val: '7 cze 2026', label: 'Termin implementacji', color: C.pinkLight },
-                { val: '95%', label: 'firm nie spełnia wymogów', color: C.pink },
+                { val: '15 sek', label: 'wartościowanie stanowisk', color: C.pink },
                 { val: '15 min', label: 'Raport Art. 16 w GapRoll', color: C.blueLight },
-                { val: '98%', label: 'taniej niż zachodnie SaaS', color: C.blue },
+                { val: '1 min', label: 'odpowiedź na wniosek pracownika', color: C.blue },
               ].map(({ val, label, color }) => (
                 <div key={val}>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 900, color, letterSpacing: '-0.02em', lineHeight: 1.2 }}>{val}</div>
@@ -430,13 +464,13 @@ export default function LandingPage() {
           {/* Right — dashboard */}
           <div className="reveal delay-1" style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', inset: '-20px', background: `radial-gradient(ellipse, ${C.blueDim} 0%, transparent 70%)`, borderRadius: '24px', pointerEvents: 'none' }} />
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', background: '#f8fafc', borderRadius: '16px', overflow: 'hidden', padding: '20px 20px 0 20px' }}>
               <Image
                 src="/dashboard_landing.png"
                 alt="GapRoll dashboard — analiza luki płacowej"
                 width={680}
                 height={480}
-                style={{ borderRadius: '16px', boxShadow: '0 32px 64px rgba(0,0,0,0.4)' }}
+                style={{ borderRadius: '16px', boxShadow: '0 32px 64px rgba(0,0,0,0.4)', backgroundColor: '#f8fafc' }}
                 priority
               />
             </div>
@@ -455,46 +489,37 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══ JAK DZIAŁA — 3 kroki ══ */}
-      <section id="jak-dziala" style={{ padding: '96px 32px', background: C.surface }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div className="reveal" style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: C.blue, marginBottom: '14px' }}>Przejrzystość to decyzja strategiczna.</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 900, letterSpacing: '-0.025em', color: C.t1 }}>Raport Art. 16 w trzech krokach</h2>
-            <p style={{ fontSize: '16px', color: C.t2, marginTop: '14px', maxWidth: '520px', margin: '14px auto 0', lineHeight: 1.65 }}>Od pliku CSV do raportu gotowego dla Państwowej Inspekcji Pracy — w mniej niż kwadrans.</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '28px' }}>
+      <section style={{ padding: '5rem 2rem', background: '#0F1E38', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.25rem)', fontWeight: 800, color: '#fff', marginBottom: '1rem' }}>
+            Dyrektywa UE 2023/970.<br />
+            <span style={{ color: '#2A7BFF' }}>Nowe obowiązki dla pracodawców.</span>
+          </h2>
+          <p style={{ color: '#94A3B8', fontSize: '1rem', lineHeight: 1.75, marginBottom: '1rem' }}>
+            Dyrektywa (UE) 2023/970 wprowadza jednolite zasady przejrzystości wynagrodzeń oraz mechanizmy raportowania luki płacowej kobiet i mężczyzn.
+          </p>
+          <p style={{ color: '#94A3B8', fontSize: '1rem', lineHeight: 1.75, marginBottom: '2rem' }}>
+            Polskie firmy będą zobowiązane do systematycznego monitorowania, analizowania i – w określonych przypadkach – raportowania danych dotyczących wynagrodzeń.
+          </p>
+          <p style={{ color: '#CBD5E1', fontWeight: 600, fontSize: '1rem', marginBottom: '1rem' }}>Co to oznacza w praktyce?</p>
+          <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
             {[
-              { iconComp: <IconUpload />, color: C.blue, colorDim: C.blueDim,
-                num: '01', title: 'Wgraj dane CSV',
-                desc: 'Importujesz plik CSV z danymi płacowymi. Obsługujemy separator `;` (polski standard). Kreator mapowania kolumn prowadzi krok po kroku — bez wiedzy technicznej.',
-                note: 'Min. 4 kolumny: ID, wynagrodzenie, płeć, okres', cite: 'Art. 9 ust. 1' },
-              { iconComp: <IconAnalysis />, color: '#9B7FEA', colorDim: 'rgba(155,127,234,0.12)',
-                num: '02', title: 'Automatyczna analiza EVG',
-                desc: 'Silnik AI wartościuje stanowiska w 4 wymiarach (Art. 4), oblicza lukę płacową mediany, analizuje kwartyle (Art. 16). Każdy wynik możesz edytować ręcznie — Ty jesteś ekspertem, AI to propozycja.',
-                note: 'Wyniki w mniej niż 15 minut', cite: 'Art. 4 + Art. 16' },
-              { iconComp: <IconReportReady />, color: C.pink, colorDim: C.pinkDim,
-                num: '03', title: 'Raport gotowy do PIP',
-                desc: 'Generujesz Raport Art. 16 w formacie PDF z pełnymi cytacjami prawnymi. Jeden klik — archiwum audytowe zapisane automatycznie. Gotowe do złożenia w Państwowej Inspekcji Pracy.',
-                note: 'Eksport PDF + ślad audytowy', cite: 'Art. 9 ust. 2' },
-            ].map((step, i) => (
-              <div key={i} className={`reveal delay-${i}`} style={{ ...cardBase, background: C.navy, position: 'relative', overflow: 'hidden' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = step.color; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = C.border; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)' }}
-              >
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '56px', fontWeight: 900, color: step.color, opacity: 0.22, position: 'absolute', top: '10px', right: '16px', lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none' }}>{step.num}</div>
-                {step.iconComp}
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', fontWeight: 700, color: C.t1, marginBottom: '10px', letterSpacing: '-0.01em' }}>{step.title}</h3>
-                <p style={{ fontSize: '14px', color: C.t2, lineHeight: 1.7, marginBottom: '16px' }}>{step.desc}</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '20px', background: step.colorDim, color: step.color, fontSize: '12px', fontWeight: 500 }}>
-                    <CheckCircle2 size={12} /> {step.note}
-                  </span>
-                  <span className="citation">{step.cite}</span>
-                </div>
-              </div>
+              'Obowiązek raportowania luki płacowej (gender pay gap) dla firm objętych progiem zatrudnienia',
+              'Analiza średnich i median wynagrodzeń w podziale na płeć',
+              'Transparentne, obiektywne kryteria ustalania poziomów wynagrodzeń',
+              'Obowiązek wyjaśnienia różnic przekraczających 5%, jeśli nie są uzasadnione obiektywnymi czynnikami',
+              'Wspólna ocena wynagrodzeń z przedstawicielami pracowników w przypadku istotnej i nieuzasadnionej luki',
+              'Prawo pracowników do informacji o poziomie wynagrodzeń oraz kryteriach ich ustalania',
+            ].map((item, i) => (
+              <li key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', color: '#CBD5E1', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                <span style={{ color: '#2A7BFF', fontSize: '1rem', flexShrink: 0, marginTop: '2px' }}>▸</span>
+                <span>{item}</span>
+              </li>
             ))}
-          </div>
+          </ul>
+          <p style={{ color: '#E2E8F0', fontWeight: 600, fontSize: '1rem', borderLeft: '3px solid #FF4FA3', paddingLeft: '1rem', lineHeight: 1.6 }}>
+            To nie tylko obowiązek sprawozdawczy. To realna weryfikacja struktury wynagrodzeń w organizacji.
+          </p>
         </div>
       </section>
 
@@ -550,6 +575,78 @@ export default function LandingPage() {
           <div className="reveal" style={{ marginTop: '28px', padding: '24px 28px', borderRadius: '12px', background: C.blueDim, border: `1px solid rgba(42,123,255,0.15)` }}>
             <p style={{ fontSize: '14px', color: C.t2, lineHeight: 1.75, fontStyle: 'italic' }}>„Transparentność wynagrodzeń zwiększa retencję talentów o 30% i zmniejsza lukę płacową w ciągu 3 lat o średnio 8 punktów procentowych."</p>
             <p style={{ fontSize: '12px', color: C.tm, marginTop: '8px' }}>Harvard Business Review, 2024 · Pay Transparency and Its Effects on Gender Equity</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Section: Intelligent Finance */}
+      <section style={{ padding: '5rem 2rem', background: 'linear-gradient(180deg, #0F172A 0%, #0D1B2E 100%)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <p style={{ textAlign: 'center', color: '#2A7BFF', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+            PAKIET ROZSZERZONY
+          </p>
+          <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 800, color: '#fff', marginBottom: '1rem' }}>
+            Więcej niż ustawa: Inteligencja finansowa<br />dla Twojej firmy
+          </h2>
+          <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '1.05rem', maxWidth: '640px', margin: '0 auto 3.5rem', lineHeight: 1.7 }}>
+            Raportowanie to dopiero początek. Pakiet rozszerzony GapRoll dostarcza twardych danych, dzięki którym zlikwidujesz lukę płacową najniższym możliwym kosztem, nie tracąc przy tym kluczowych pracowników.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+            {[
+              { title: 'Audyt Przyczyn Źródłowych', desc: 'Przestań zgadywać. Algorytm precyzyjnie wskaże, co dokładnie napędza lukę w Twojej firmie — wiek, staż pracy, nieproporcjonalne premie w jednym dziale.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#FF4FA3" strokeWidth="2"/><circle cx="20" cy="20" r="6" fill="#FF4FA3" fillOpacity="0.2" stroke="#FF4FA3" strokeWidth="1.5"/><line x1="20" y1="2" x2="20" y2="10" stroke="#FF4FA3" strokeWidth="2" strokeLinecap="round"/><line x1="20" y1="30" x2="20" y2="38" stroke="#FF4FA3" strokeWidth="2" strokeLinecap="round"/><line x1="2" y1="20" x2="10" y2="20" stroke="#FF4FA3" strokeWidth="2" strokeLinecap="round"/><line x1="30" y1="20" x2="38" y2="20" stroke="#FF4FA3" strokeWidth="2" strokeLinecap="round"/></svg> },
+              { title: 'Optymalizator Budżetowy', desc: 'Symulator przeliczy 10 różnych scenariuszy i podpowie, jak sprawiedliwie rozdzielić budżet podwyżkowy, aby spełnić wymogi dyrektywy przy minimalnym obciążeniu P&L.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="4" y="24" width="6" height="12" rx="2" fill="#2A7BFF" fillOpacity="0.3" stroke="#2A7BFF" strokeWidth="1.5"/><rect x="14" y="16" width="6" height="20" rx="2" fill="#2A7BFF" fillOpacity="0.3" stroke="#2A7BFF" strokeWidth="1.5"/><rect x="24" y="8" width="6" height="28" rx="2" fill="#2A7BFF" fillOpacity="0.5" stroke="#2A7BFF" strokeWidth="1.5"/><rect x="34" y="4" width="6" height="32" rx="2" fill="#2A7BFF" stroke="#2A7BFF" strokeWidth="1.5"/><polyline points="7,24 17,16 27,8 37,4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="3 2"/></svg> },
+              { title: 'Benchmark Rynkowy', desc: 'Zestaw swoje siatki płac z twardymi danymi rynkowymi. Dowiedz się, czy przepłacasz, czy ryzykujesz utratą talentów.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="#9B7FEA" strokeWidth="2" strokeDasharray="4 2"/><path d="M20 4 L20 20 L32 28" stroke="#9B7FEA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="20" cy="20" r="3" fill="#9B7FEA"/><line x1="4" y1="20" x2="36" y2="20" stroke="#9B7FEA" strokeWidth="1" strokeOpacity="0.3"/></svg> },
+              { title: 'Kalkulator ROI z Retencji', desc: 'Zobacz czarno na białym, o ile tańsze jest wyrównanie pensji specjalisty, niż koszty rekrutacji, onboardingu i utraconej produktywności po jego odejściu.', svg: <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="6" y="6" width="28" height="28" rx="4" stroke="#10B981" strokeWidth="2"/><line x1="6" y1="14" x2="34" y2="14" stroke="#10B981" strokeWidth="1" strokeOpacity="0.4"/><text x="10" y="26" fontSize="11" fill="#10B981" fontFamily="monospace">ROI</text><path d="M24 22 L28 18 L32 22" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+            ].map((item, i) => (
+              <div key={i} style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ width: '56px', height: '56px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.svg}</div>
+                <h3 style={{ color: '#fff', fontWeight: 700, fontSize: '1rem', margin: 0 }}>{item.title}</h3>
+                <p style={{ color: '#94A3B8', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ JAK DZIAŁA — 3 kroki ══ */}
+      <section id="jak-dziala" style={{ padding: '96px 32px', background: C.surface }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="reveal" style={{ textAlign: 'center', marginBottom: '64px' }}>
+            <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: C.blue, marginBottom: '14px' }}>Przejrzystość to decyzja strategiczna.</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 900, letterSpacing: '-0.025em', color: C.t1 }}>Raport Art. 16 w trzech krokach</h2>
+            <p style={{ fontSize: '16px', color: C.t2, marginTop: '14px', maxWidth: '520px', margin: '14px auto 0', lineHeight: 1.65 }}>Gotowy raport Art. 16 w kilku kliknięciach. Przejrzyście, precyzyjnie i zgodnie z wymogami prawa. Od pliku CSV do raportu gotowego dla Państwowej Inspekcji Pracy — w mniej niż kwadrans.</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '28px' }}>
+            {[
+              { iconComp: <IconUpload />, color: C.blue, colorDim: C.blueDim,
+                num: '01', title: 'Wgraj dane CSV',
+                desc: 'Importujesz plik CSV z danymi płacowymi. Obsługujemy separator `;` (polski standard). Kreator mapowania kolumn prowadzi krok po kroku — bez wiedzy technicznej.',
+                note: 'Min. 4 kolumny: ID, wynagrodzenie, płeć, okres', cite: 'Art. 9 ust. 1' },
+              { iconComp: <IconAnalysis />, color: '#9B7FEA', colorDim: 'rgba(155,127,234,0.12)',
+                num: '02', title: 'Automatyczna analiza EVG',
+                desc: 'Silnik AI wartościuje stanowiska w 4 wymiarach (Art. 4), oblicza lukę płacową mediany, analizuje kwartyle (Art. 16). Każdy wynik możesz edytować ręcznie — Ty jesteś ekspertem, AI to propozycja.',
+                note: 'Wyniki w mniej niż 15 minut', cite: 'Art. 4 + Art. 16' },
+              { iconComp: <IconReportReady />, color: C.pink, colorDim: C.pinkDim,
+                num: '03', title: 'Raport gotowy do PIP',
+                desc: 'Generujesz Raport Art. 16 w formacie PDF z pełnymi cytacjami prawnymi. Jeden klik — archiwum audytowe zapisane automatycznie. Gotowe do złożenia w Państwowej Inspekcji Pracy.',
+                note: 'Eksport PDF + ślad audytowy', cite: 'Art. 9 ust. 2' },
+            ].map((step, i) => (
+              <div key={i} className={`reveal delay-${i}`} style={{ ...cardBase, background: C.navy, position: 'relative', overflow: 'hidden' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = step.color; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = C.border; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)' }}
+              >
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '56px', fontWeight: 900, color: step.color, opacity: 0.22, position: 'absolute', top: '10px', right: '16px', lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none' }}>{step.num}</div>
+                {step.iconComp}
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', fontWeight: 700, color: C.t1, marginBottom: '10px', letterSpacing: '-0.01em' }}>{step.title}</h3>
+                <p style={{ fontSize: '14px', color: C.t2, lineHeight: 1.7, marginBottom: '16px' }}>{step.desc}</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '20px', background: step.colorDim, color: step.color, fontSize: '12px', fontWeight: 500 }}>
+                    <CheckCircle2 size={12} /> {step.note}
+                  </span>
+                  <span className="citation">{step.cite}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -690,8 +787,8 @@ export default function LandingPage() {
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(42,123,255,0.4)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = C.border; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)' }}
               >
-                <div style={{ width: '48px', height: '48px', borderRadius: '10px', overflow: 'hidden', marginBottom: '14px' }}>
-                  <Image src={item.img} alt={item.title} width={48} height={48} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+                  {item.svg}
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 700, color: C.t1, letterSpacing: '-0.01em', marginBottom: '8px' }}>{item.title}</h3>
                 <p style={{ fontSize: '13px', color: C.t2, lineHeight: 1.7 }}>{item.desc}</p>
@@ -772,8 +869,8 @@ export default function LandingPage() {
                 </div>
                 <p style={{ fontSize: '14px', color: C.tm, marginBottom: '28px' }}>{plan.tagline}</p>
                 <div style={{ marginBottom: '28px' }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '52px', fontWeight: 900, letterSpacing: '-0.04em', color: C.t1 }}>{price}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', transition: 'all 0.3s ease' }}>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '52px', fontWeight: 900, letterSpacing: '-0.04em', color: C.t1, transition: 'all 0.3s ease' }}>{displayPrice}</span>
                     <span style={{ fontSize: '18px', color: C.tm, fontWeight: 600 }}>PLN</span>
                     <span style={{ fontSize: '14px', color: C.tm }}>/mies</span>
                   </div>

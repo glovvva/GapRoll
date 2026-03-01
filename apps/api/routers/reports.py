@@ -23,6 +23,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.platypus import (
+    Image,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -273,8 +274,11 @@ def _build_art16_pdf_reportlab(
     generated_date: str,
     last_evg_str: str,
     user_email_masked: str,
+    white_label: Optional[Dict[str, Any]] = None,
 ) -> bytes:
-    """Generuje PDF Raportu Art. 16 (5 sekcji) za pomocą ReportLab. Zwraca bytes."""
+    """Generuje PDF Raportu Art. 16 (5 sekcji) za pomocą ReportLab. Zwraca bytes.
+    white_label: optional dict with firm_name, primary_color_hex, legal_disclaimer, logo_bytes.
+    """
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -284,6 +288,12 @@ def _build_art16_pdf_reportlab(
         topMargin=2 * cm,
         bottomMargin=2.5 * cm,
     )
+    primary_hex = (white_label or {}).get("primary_color_hex") or "#003366"
+    try:
+        primary_color = colors.HexColor(primary_hex)
+    except Exception:
+        primary_color = colors.HexColor("#003366")
+
     styles = getSampleStyleSheet()
     h1_style = ParagraphStyle(
         "Art16H1",
@@ -300,8 +310,8 @@ def _build_art16_pdf_reportlab(
         spaceBefore=20,
         spaceAfter=8,
         borderPadding=0,
-        borderWidth=0,
-        borderColor=colors.black,
+        borderWidth=1,
+        borderColor=primary_color,
         leftIndent=0,
         borderPaddingBottom=4,
     )
@@ -321,6 +331,14 @@ def _build_art16_pdf_reportlab(
     )
 
     story: List[Any] = []
+
+    if white_label and white_label.get("logo_bytes"):
+        try:
+            logo_img = Image(io.BytesIO(white_label["logo_bytes"]), width=4 * cm, height=1.5 * cm)
+            story.append(logo_img)
+            story.append(Spacer(1, 8))
+        except Exception:
+            pass
 
     story.append(Paragraph("Raport Równości Wynagrodzeń", h1_style))
     story.append(Paragraph(
@@ -386,7 +404,8 @@ def _build_art16_pdf_reportlab(
             ])
     t = Table(table_data)
     t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eeeeee")),
+        ("BACKGROUND", (0, 0), (-1, 0), primary_color),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
         ("FONTNAME", (0, 0), (-1, -1), FONT_NORMAL),
         ("FONTSIZE", (0, 0), (-1, -1), 10),
@@ -427,8 +446,14 @@ def _build_art16_pdf_reportlab(
     story.append(Spacer(1, 12))
 
     story.append(Paragraph("Sekcja 5 — Podpis i oświadczenie", h2_style))
+    if white_label and white_label.get("firm_name"):
+        story.append(Paragraph(
+            f"Raport przygotowany przez {white_label['firm_name']}.",
+            normal_style,
+        ))
     story.append(Paragraph(
-        "Raport wygenerowany automatycznie przez GapRoll.",
+        "Raport wygenerowany przy użyciu platformy analitycznej GapRoll."
+        if white_label else "Raport wygenerowany automatycznie przez GapRoll.",
         normal_style,
     ))
     story.append(Paragraph(
@@ -442,16 +467,21 @@ def _build_art16_pdf_reportlab(
     ))
     story.append(Paragraph("Data: ________________", normal_style))
 
+    legal_disclaimer = (white_label or {}).get("legal_disclaimer") or ""
+
     def add_footer(canvas, _doc):
         page_num = canvas.getPageNumber()
         canvas.saveState()
         canvas.setFont(FONT_NORMAL, 9)
         canvas.setFillColor(colors.HexColor("#666666"))
-        canvas.drawCentredString(
-            A4[0] / 2,
-            1.5 * cm,
-            f"GapRoll — Zgodność z Dyrektywą UE 2023/970 | gaproll.eu | Strona {page_num}",
+        footer_text = (
+            "Raport wygenerowany przy użyciu platformy analitycznej GapRoll | gaproll.eu"
+            if white_label else "GapRoll — Zgodność z Dyrektywą UE 2023/970 | gaproll.eu"
         )
+        canvas.drawCentredString(A4[0] / 2, 1.5 * cm, f"{footer_text} | Strona {page_num}")
+        if legal_disclaimer and page_num == 1:
+            canvas.setFont(FONT_NORMAL, 8)
+            canvas.drawString(2 * cm, 1.2 * cm, legal_disclaimer[:200] + ("..." if len(legal_disclaimer) > 200 else ""))
         canvas.restoreState()
 
     doc.build(story, onFirstPage=add_footer, onLaterPages=add_footer)
@@ -568,6 +598,58 @@ def _build_art16_pdf_html(
 </html>"""
 
 
+def _fetch_white_label(supabase: Any, user_id: str) -> Optional[Dict[str, Any]]:
+    """If user is legal partner, fetch white_label_config and logo bytes. Returns dict for _build_art16_pdf_reportlab or None."""
+    try:
+        profile_r = (
+            supabase.table("profiles")
+            .select("role, partner_type")
+            .eq("id", user_id)
+            .execute()
+        )
+        if not profile_r.data or len(profile_r.data) == 0:
+            return None
+        row = profile_r.data[0]
+        if (row.get("role") or "").strip().lower() != "partner":
+            return None
+        if (row.get("partner_type") or "accounting").strip().lower() != "legal":
+            return None
+    except Exception:
+        return None
+
+    try:
+        wl_r = (
+            supabase.table("white_label_config")
+            .select("firm_name, primary_color_hex, legal_disclaimer, logo_url")
+            .eq("partner_id", user_id)
+            .execute()
+        )
+        if not wl_r.data or len(wl_r.data) == 0:
+            return None
+        wl = wl_r.data[0]
+        out = {
+            "firm_name": wl.get("firm_name") or "",
+            "primary_color_hex": wl.get("primary_color_hex") or "#003366",
+            "legal_disclaimer": (wl.get("legal_disclaimer") or "").strip() or None,
+            "logo_bytes": None,
+        }
+        logo_url = (wl.get("logo_url") or "").strip()
+        if logo_url:
+            if logo_url.startswith("partner-logos/"):
+                path = logo_url.replace("partner-logos/", "", 1)
+            else:
+                path = logo_url
+            try:
+                resp = supabase.storage.from_("partner-logos").download(path)
+                if resp and isinstance(resp, bytes):
+                    out["logo_bytes"] = resp
+            except Exception:
+                pass
+        return out
+    except Exception:
+        return None
+
+
 @router.post("/art16/export")
 @limiter.limit("60/minute")
 async def export_art16_pdf(
@@ -575,7 +657,7 @@ async def export_art16_pdf(
     body: Art16ExportBody,
     user_id: str = Depends(get_current_user),
 ):
-    """Generuje i zwraca plik PDF Raportu Art. 16."""
+    """Generuje i zwraca plik PDF Raportu Art. 16. Dla partnerów legal stosuje white-label."""
     if not settings.is_supabase_configured():
         raise HTTPException(status_code=503, detail="Supabase nie jest skonfigurowane.")
 
@@ -604,6 +686,8 @@ async def export_art16_pdf(
     last_evg_str = _format_pl_date(data.get("last_evg_modified"))
     user_email_masked = "użytkownik (zalogowany)"
 
+    white_label = _fetch_white_label(supabase, user_id)
+
     try:
         pdf_bytes = _build_art16_pdf_reportlab(
             company_name=body.company_name,
@@ -615,6 +699,7 @@ async def export_art16_pdf(
             generated_date=generated_date,
             last_evg_str=last_evg_str,
             user_email_masked=user_email_masked,
+            white_label=white_label,
         )
     except Exception as e:
         raise HTTPException(

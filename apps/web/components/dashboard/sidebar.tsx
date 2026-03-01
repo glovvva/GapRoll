@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,6 +14,7 @@ import {
   Upload,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems: {
   href: string;
@@ -44,6 +46,28 @@ function isLinkActive(pathname: string, href: string): boolean {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [isLegalPartner, setIsLegalPartner] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user?.id) {
+        setIsLegalPartner(false);
+        return;
+      }
+      supabase
+        .from("profiles")
+        .select("partner_type")
+        .eq("id", session.user.id)
+        .single()
+        .then(({ data }) => {
+          setIsLegalPartner((data?.partner_type ?? "").toString().toLowerCase() === "legal");
+        })
+        .catch(() => setIsLegalPartner(false));
+    });
+  }, []);
+
+  const legalPartnerActive = pathname === "/legal-partner" || pathname.startsWith("/legal-partner/");
 
   return (
     <aside
@@ -88,6 +112,21 @@ export function Sidebar() {
             </Link>
           );
         })}
+        {isLegalPartner && (
+          <Link
+            href="/legal-partner"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium",
+              "transition-all duration-150 ease-brand",
+              legalPartnerActive
+                ? "bg-emerald-600/15 text-emerald-400 border border-emerald-500/30 [&_svg]:text-emerald-400"
+                : "text-muted-foreground hover:bg-elevated hover:text-foreground [&_svg]:text-current"
+            )}
+          >
+            <Scale className="h-4 w-4 shrink-0" />
+            <span className="flex-1">Portal Kancelarii</span>
+          </Link>
+        )}
       </nav>
     </aside>
   );
