@@ -92,7 +92,7 @@ export default function Navbar() {
         }}
       >
         {/* Logo */}
-        <a href="/" style={{ textDecoration: 'none' }}>
+        <Link href="/" style={{ textDecoration: 'none' }}>
           <Image
             src="/logo.png"
             alt="GapRoll"
@@ -100,7 +100,7 @@ export default function Navbar() {
             height={36}
             style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
           />
-        </a>
+        </Link>
 
         {/* Desktop: center links */}
         <div
@@ -192,7 +192,6 @@ export default function Navbar() {
           aria-controls="mobile-menu"
           id="mobile-menu-button"
           style={{
-            display: "flex",
             alignItems: "center",
             justifyContent: "center",
             width: "40px",
