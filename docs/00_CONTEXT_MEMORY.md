@@ -425,13 +425,81 @@ npm run dev
 
 ---
 
+### Session: 2026-03-01 — Legal Partner Portal (Kancelarie Prawne)
+
+**Duration:** ~4h  
+**Sprint:** Week 3/16 — Partner Channel Expansion  
+**Phase:** Milestone 1 (target: Mar 15, 2026)  
+**Commit:** cdda63f + fix papaparse/turbopack (16 files, +2081/-79 lines)
+
+#### Completed Tasks
+
+**1. Supabase Schema Extension:**
+- ✅ `partner_type` enum (`accounting` | `legal`) + column on `profiles` (default: `accounting`)
+- ✅ `audit_tokens` table — pay-per-audit model (total_purchased, total_used, price_per_token_pln in grosz)
+- ✅ `audit_token_usage` table — log każdego zużytego tokena (partner_id, client_nip, audit_session_id)
+- ✅ `white_label_config` table — logo_url, primary_color_hex, legal_disclaimer per partner
+- ✅ Storage bucket `partner-logos` (public: false, 2MB limit, PNG/SVG/JPEG)
+- ✅ RLS policies na wszystkich nowych tabelach
+- Migration file: `apps/api/migrations/20260301_legal_partner_schema.sql`
+
+**2. FastAPI Router `/legal-partner/*`:**
+- ✅ `GET /legal-partner/token-balance` — saldo tokenów (total/used/available/price)
+- ✅ `GET /legal-partner/dashboard` — metryki + ostatnie audyty
+- ✅ `POST /legal-partner/use-token` — zużyj token (402 gdy brak), walidacja NIP checksum
+- ✅ `GET /legal-partner/white-label-config` — pobierz konfigurację brandingu
+- ✅ `PUT /legal-partner/white-label-config` — zapisz branding (firm_name, hex color, disclaimer)
+- ✅ `POST /legal-partner/upload-logo` — multipart upload do Supabase Storage, zwraca signed URL
+- ✅ Auth guard: `get_current_legal_partner` — wymaga `role='partner'` AND `partner_type='legal'`
+- File: `apps/api/routers/legal_partner.py`
+
+**3. Next.js Frontend:**
+- ✅ `/legal-partner` dashboard — RODO banner (Art. 9), 3 karty metryk, tabela ostatnich audytów
+- ✅ `NewAuditModal` — Step 1: NIP validation + token check; Step 2: CSV upload z client-side PapaParse PII anonymization
+- ✅ `/legal-partner/settings` — white-label config (logo upload, color picker, disclaimer textarea, preview)
+- ✅ `LegalPartnerSidebar` + layout z auth redirect
+- ✅ PDF white-label injection w `apps/api/routers/reports.py` (logo, kolor nagłówka, disclaimer w stopce)
+- ✅ Warunkowy link "Portal Kancelarii" w sidebar (tylko dla `partner_type='legal'`)
+
+**4. Fixes:**
+- ✅ `papaparse` + `@types/papaparse` zainstalowane (pnpm install --no-frozen-lockfile)
+- ✅ Turbopack root config w `next.config.ts` (błąd: "couldn't find next/package.json")
+- ✅ Navbar.tsx syntax error (linia 304 — `)}` → ternary `? ... : null`)
+
+#### Architecture Decision: Rozszerzenie vs. Osobny Portal
+**Decyzja:** Rozszerzenie istniejącego Partner Portal (nie osobny /legal-partner portal od zera)  
+**Powód:** Wspólna infrastruktura RLS, auth, layout. Różnice obsłużone przez `partner_type` enum + conditional rendering. Oszczędność ~13h vs budowanie od zera.
+
+#### Model Biznesowy Kancelarii
+- **Pay-per-audit tokens** (nie subskrypcja per-client jak biura rachunkowe)
+- Cena: 1500 PLN/token (przechowywana w groszach: 150000)
+- Arbitraż marżowy: kancelaria zarabia ~17 475 PLN netto vs 11 500 PLN bez GapRoll (na audycie 150-os. firmy)
+- White-label: kancelaria dostarcza raport pod własnym brandem
+
+#### Lessons Learned
+- **LESSON 47:** `partner_type` enum w Supabase — `ADD COLUMN IF NOT EXISTS` może wykonać się bez błędu ale enum nie powstaje jeśli kolejność w migracji jest zła. Zawsze weryfikuj: `SELECT column_name FROM information_schema.columns WHERE table_name='profiles' AND column_name='partner_type'` po migracji.
+- **LESSON 48:** `Invoke-RestMethod` to PowerShell — w bash/Ubuntu terminalu użyj `curl`. Nie mieszaj powłok.
+- **LESSON 49:** Supabase SSR trzyma sesję w **cookies**, nie localStorage. Do pobrania JWT w bash: napisz `test_get_token.py` z `requests` + Supabase Auth API `/auth/v1/token?grant_type=password`. Usuń po teście.
+- **LESSON 50:** Turbopack w monorepo (apps/web) wymaga `turbopack.root` w `next.config.ts` wskazującego na root repozytorium — bez tego fatal error przy `import` z outside `apps/web/app`.
+- **LESSON 51:** `pnpm install` w Claude Code wymaga `CI=true` flag w non-TTY środowisku (bez tego: `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`).
+
+#### Next Session Goals
+- [ ] Przetestować NewAuditModal end-to-end (upload CSV → PapaParse anonymization → submit)
+- [ ] Przetestować white-label PDF (zaloguj jako legal partner → generuj Art. 16 → sprawdź logo/kolor/disclaimer)
+- [ ] Invoice Automation (Fakturownia.pl) — P0, nadal niezrobione
+- [ ] Sales materials (deck, one-pager) — Milestone 1 blocker
+
+---
+
 **END OF 00_CONTEXT_MEMORY.md**
 
-**Next Update:** Po następnej sesji (Article 16 PDF + Invoice Automation)
-
-**Critical Updates This Version (Feb 27, 2026):**
-- ✅ Data Table View (/dashboard/dane) — podgląd danych, inline edit, field validation
-- ✅ Hard-Won Rules #26–#28 (Supabase schema, RLS profiles, enum→Select)
+**Last Updated:** 2026-03-01  
+**Next Update:** After Invoice Automation + Legal Partner e2e test  
+**Critical Updates This Version (Mar 1, 2026):**
+- ✅ Session: Legal Partner Portal — schema, API, frontend, white-label PDF
+- ✅ Hard-Won Rules #47–#51 dodane
+- ✅ Feature #43 dodana do backlogu (DONE)
+- ✅ Architecture decision: extend vs. separate portal (extend won)
 
 **Critical Updates (Feb 21, 2026):**
 - ✅ Session H: Partner Portal v1 + EVG Override + Explainability — DONE

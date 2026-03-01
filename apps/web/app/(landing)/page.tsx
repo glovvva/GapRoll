@@ -463,14 +463,14 @@ export default function LandingPage() {
 
           {/* Right — dashboard */}
           <div className="reveal delay-1" style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', inset: '-20px', background: `radial-gradient(ellipse, ${C.blueDim} 0%, transparent 70%)`, borderRadius: '24px', pointerEvents: 'none' }} />
-            <div style={{ position: 'relative', background: '#f8fafc', borderRadius: '16px', overflow: 'hidden', padding: '20px 20px 0 20px' }}>
+            <div style={{ position: 'absolute', inset: '-20px', background: `radial-gradient(ellipse, ${C.blueDim} 0%, #f8fafc 70%)`, borderRadius: '24px', pointerEvents: 'none' }} />
+            <div style={{ position: 'relative', background: '#f8fafc', padding: '0', display: 'block', boxShadow: '0 32px 64px rgba(0,0,0,0.4)' }}>
               <Image
-                src="/dashboard_landing.png"
+                src="/dashboardlanding.png"
                 alt="GapRoll dashboard — analiza luki płacowej"
                 width={680}
                 height={480}
-                style={{ borderRadius: '16px', boxShadow: '0 32px 64px rgba(0,0,0,0.4)', backgroundColor: '#f8fafc' }}
+                style={{ borderRadius: '16px', backgroundColor: '#f8fafc' }}
                 priority
               />
             </div>
@@ -489,7 +489,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section style={{ padding: '5rem 2rem', background: '#0F1E38', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <section id="dyrektywa" style={{ padding: '5rem 2rem', background: '#0F1E38', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.25rem)', fontWeight: 800, color: '#fff', marginBottom: '1rem' }}>
             Dyrektywa UE 2023/970.<br />

@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "Funkcje", id: "funkcje" },
@@ -92,57 +92,50 @@ export default function Navbar() {
         }}
       >
         {/* Logo */}
-        <Link
-          href="/"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            outline: "none",
-          }}
-        >
+        <a href="/" style={{ textDecoration: 'none' }}>
           <Image
             src="/logo.png"
             alt="GapRoll"
             width={120}
-            height={28}
-            style={{
-              objectFit: "contain",
-              height: "28px",
-              width: "auto",
-              mixBlendMode: "screen",
-            }}
-            priority
+            height={36}
+            style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
           />
-        </Link>
+        </a>
 
         {/* Desktop: center links */}
         <div
           style={{
             display: isMobile ? "none" : "flex",
             alignItems: "center",
-            gap: "32px",
+            gap: "20px",
           }}
         >
-          {NAV_LINKS.map(({ label, id }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => scrollToSection(id)}
-              onMouseEnter={() => setHoveredLink(id)}
-              onMouseLeave={() => setHoveredLink(null)}
+          {[
+            { label: 'Dyrektywa UE', href: '#dyrektywa' },
+            { label: 'Funkcje', href: '#funkcje' },
+            { label: 'Jak to działa', href: '#jak-dziala' },
+            { label: 'Bezpieczeństwo', href: '#bezpieczenstwo' },
+            { label: 'Cennik', href: '#cennik' },
+            { label: 'FAQ', href: '#faq' },
+            { label: 'Baza wiedzy', href: '/baza-wiedzy' },
+            { label: 'Kontakt', href: '#kontakt' },
+          ].map(link => (
+            <a
+              key={link.href}
+              href={link.href}
               style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                fontSize: "14px",
+                color: '#CBD5E1',
+                textDecoration: 'none',
+                fontSize: '0.875rem',
                 fontWeight: 500,
-                color: hoveredLink === id ? COLORS.linkHover : COLORS.link,
-                transition: "color 0.15s",
+                transition: 'color 0.2s',
+                whiteSpace: 'nowrap'
               }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#CBD5E1')}
             >
-              {label}
-            </button>
+              {link.label}
+            </a>
           ))}
         </div>
 

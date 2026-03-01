@@ -460,6 +460,32 @@ so that I can offer GapRoll as a value-added service and earn recurring revenue.
 
 ---
 
+### Feature #43: Legal Partner Portal — ✅ DONE (done Mar 1, 2026)
+
+**Why built now (ahead of schedule):**
+- LinkedIn signal: kancelarie prawne zaczynają głośno pisać o Dyrektywie 2023/970
+- Market opportunity: kancelarie = high-ticket channel (pay-per-audit 1500 PLN vs 49 PLN per-client)
+- Arbitraż marżowy: kancelaria zarabia 52% więcej na audycie używając GapRoll
+
+**Architecture:** Extended existing Partner Portal (partner_type enum) — NOT separate portal
+
+**What's built:**
+- Supabase: `partner_type` enum, `audit_tokens`, `audit_token_usage`, `white_label_config`, `partner-logos` bucket
+- FastAPI: 6 endpoints (`/legal-partner/*`), auth guard, NIP validation, token logic
+- Next.js: Dashboard, NewAuditModal (PapaParse PII anonymization), Settings (white-label config)
+- PDF: White-label injection (logo, primary color, legal disclaimer)
+
+**Pricing model:** Pay-per-audit tokens (1500 PLN/token) — not monthly subscription
+
+**What's NOT yet done:**
+- [ ] Token purchase flow (Przelewy24 payment) — defer until first kancelaria asks
+- [ ] End-to-end test: NewAuditModal CSV upload → anonymization → report generation
+- [ ] White-label PDF smoke test
+
+**Commit:** cdda63f
+
+---
+
 ### Feature #18c: Data Table View (Podgląd Załadowanych Danych) — ✅ DONE (done Feb 2026)
 
 **Why P0:**
