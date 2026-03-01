@@ -42,7 +42,7 @@ export function FileUpload({ onFileSelect, maxSizeMB = 10 }: FileUploadProps) {
     return true;
   }
 
-  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+  function handleDrop(e: React.DragEvent<HTMLElement>) {
     e.preventDefault();
     setIsDragging(false);
     setError(null);
@@ -61,13 +61,13 @@ export function FileUpload({ onFileSelect, maxSizeMB = 10 }: FileUploadProps) {
     onFileSelect(f);
   }
 
-  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+  function handleDragOver(e: React.DragEvent<HTMLElement>) {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
   }
 
-  function handleDragLeave(e: React.DragEvent<HTMLLabelElement>) {
+  function handleDragLeave(e: React.DragEvent<HTMLElement>) {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);

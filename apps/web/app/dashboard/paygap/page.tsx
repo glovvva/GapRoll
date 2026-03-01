@@ -177,7 +177,8 @@ export default function PayGapPage() {
     );
   }
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  type TooltipPayload = { name: string; position: string; salary: number; gender: string };
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: TooltipPayload }> }) => {
     if (!active || !payload || !payload.length) return null;
 
     const data = payload[0].payload;

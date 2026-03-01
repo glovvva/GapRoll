@@ -137,10 +137,9 @@ export default function MedianITPage() {
                   tick={{ fontSize: 12 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [
-                    `${value.toLocaleString("pl-PL")} PLN`,
-                    "Mediana",
-                  ]}
+                  formatter={(value: number | undefined) =>
+                    value !== undefined ? [`${value.toLocaleString("pl-PL")} PLN`, "Mediana"] : ["—", "Mediana"]
+                  }
                   contentStyle={{
                     backgroundColor: "#1e293b",
                     border: "1px solid #475569",

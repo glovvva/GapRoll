@@ -780,7 +780,9 @@ export default function SolioSolverPage() {
                                 <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
                                 <ChartTooltip
                                   contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #475569", borderRadius: "6px", color: "#f1f5f9" }}
-                                  formatter={(value: number, name: string) => [`${Math.round(value).toLocaleString("pl-PL")} PLN`, name]}
+                                  formatter={(value: number | undefined, name: string | undefined) =>
+                                    value !== undefined ? [`${Math.round(value).toLocaleString("pl-PL")} PLN`, name ?? ""] : ["—", name ?? ""]
+                                  }
                                 />
                                 <Legend wrapperStyle={{ color: "#9ca3af", fontSize: "12px" }} />
                                 <Bar dataKey="Kobiety (przed)" fill={CHART_COLORS.total} radius={[4, 4, 0, 0]} />
@@ -811,7 +813,9 @@ export default function SolioSolverPage() {
                                 <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
                                 <ChartTooltip
                                   contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #475569", borderRadius: "6px", color: "#f1f5f9" }}
-                                  formatter={(value: number) => [`${Math.round(value).toLocaleString("pl-PL")} PLN`, "Budżet"]}
+                                  formatter={(value: number | undefined) =>
+                                    value !== undefined ? [`${Math.round(value).toLocaleString("pl-PL")} PLN`, "Budżet"] : ["—", "Budżet"]
+                                  }
                                 />
                                 <Bar dataKey="budget" fill={CHART_COLORS.action} radius={[4, 4, 0, 0]} name="Budżet" />
                               </BarChart>

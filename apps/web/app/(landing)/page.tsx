@@ -343,10 +343,7 @@ export default function LandingPage() {
 
   const [displayPrice, setDisplayPrice] = useState(prices[activePlan][activeSize])
 
-  // FIX #2: Hydration fix — useEffect only, no SSR mismatch
-  const [mounted, setMounted] = useState(false)
   useEffect(() => {
-    setMounted(true)
     const handler = () => setNavScrolled(window.scrollY > 24)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
@@ -573,7 +570,7 @@ export default function LandingPage() {
 
           {/* Quote */}
           <div className="reveal" style={{ marginTop: '28px', padding: '24px 28px', borderRadius: '12px', background: C.blueDim, border: `1px solid rgba(42,123,255,0.15)` }}>
-            <p style={{ fontSize: '14px', color: C.t2, lineHeight: 1.75, fontStyle: 'italic' }}>„Transparentność wynagrodzeń zwiększa retencję talentów o 30% i zmniejsza lukę płacową w ciągu 3 lat o średnio 8 punktów procentowych."</p>
+            <p style={{ fontSize: '14px', color: C.t2, lineHeight: 1.75, fontStyle: 'italic' }}>„Transparentność wynagrodzeń zwiększa retencję talentów o 30% i zmniejsza lukę płacową w ciągu 3 lat o średnio 8 punktów procentowych.&quot;</p>
             <p style={{ fontSize: '12px', color: C.tm, marginTop: '8px' }}>Harvard Business Review, 2024 · Pay Transparency and Its Effects on Gender Equity</p>
           </div>
         </div>
@@ -694,7 +691,7 @@ export default function LandingPage() {
                   {/* FIX #13: amber → pink */}
                   <span style={{ marginLeft: 'auto', padding: '2px 8px', borderRadius: '20px', background: C.pinkDim, color: C.pinkLight, fontSize: '11px', fontWeight: 600 }}>Oczekuje odpowiedzi</span>
                 </div>
-                <p style={{ fontSize: '13px', color: C.t2, lineHeight: 1.65, marginBottom: '16px' }}>„Proszę o informację o średnim wynagrodzeniu pracowników na stanowisku Senior Developer (Dział IT) w podziale na płeć, za rok 2025."</p>
+                <p style={{ fontSize: '13px', color: C.t2, lineHeight: 1.65, marginBottom: '16px' }}>„Proszę o informację o średnim wynagrodzeniu pracowników na stanowisku Senior Developer (Dział IT) w podziale na płeć, za rok 2025.&quot;</p>
                 <div style={{ padding: '10px 14px', borderRadius: '8px', background: C.blueDim, border: `1px solid rgba(42,123,255,0.2)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: '12px', color: C.blueLight }}>Termin odpowiedzi: 12 kwi 2026</span>
                   {/* FIX #13: amber → pink */}
@@ -843,7 +840,7 @@ export default function LandingPage() {
           {/* Size selector */}
           <div className="reveal" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '40px' }}>
             {sizes.map(s => (
-              <button key={s.key} onClick={() => setActiveSize(s.key as any)} style={{
+              <button key={s.key} onClick={() => setActiveSize(s.key as 'small' | 'medium' | 'large')} style={{
                 padding: '6px 18px', borderRadius: '20px', cursor: 'pointer',
                 fontSize: '13px', fontWeight: 500, fontFamily: 'var(--font-body)',
                 background: activeSize === s.key ? C.blueDim : 'transparent',

@@ -102,15 +102,17 @@ export function NewAuditModal({
 
   useEffect(() => {
     if (open) {
-      loadBalance();
-      setStep(1);
-      setClientName("");
-      setClientNip("");
-      setError(null);
-      setAuditSessionId(null);
-      setCsvFile(null);
-      setRemovedColumns([]);
-      setAnonymizedRows(null);
+      queueMicrotask(() => {
+        loadBalance();
+        setStep(1);
+        setClientName("");
+        setClientNip("");
+        setError(null);
+        setAuditSessionId(null);
+        setCsvFile(null);
+        setRemovedColumns([]);
+        setAnonymizedRows(null);
+      });
     }
   }, [open, loadBalance]);
 

@@ -60,10 +60,12 @@ export function Sidebar() {
         .select("partner_type")
         .eq("id", session.user.id)
         .single()
-        .then(({ data }) => {
-          setIsLegalPartner((data?.partner_type ?? "").toString().toLowerCase() === "legal");
-        })
-        .catch(() => setIsLegalPartner(false));
+        .then(
+          ({ data }) => {
+            setIsLegalPartner((data?.partner_type ?? "").toString().toLowerCase() === "legal");
+          },
+          () => setIsLegalPartner(false)
+        );
     });
   }, []);
 

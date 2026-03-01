@@ -263,7 +263,9 @@ export default function RootCausePage() {
                     tick={{ fontSize: 12 }}
                   />
                   <Tooltip
-                    formatter={(value: number) => [`${value.toFixed(1)}%`, "Udział"]}
+                    formatter={(value: number | undefined) =>
+                      value !== undefined ? [`${value.toFixed(1)}%`, "Udział"] : ["—", "Udział"]
+                    }
                     contentStyle={{
                       backgroundColor: "#1e293b",
                       border: "1px solid #475569",
@@ -279,7 +281,7 @@ export default function RootCausePage() {
                     <LabelList
                       dataKey="contribution_pct"
                       position="right"
-                      formatter={(v: number) => `${v.toFixed(1)}%`}
+                      formatter={(v: unknown) => (typeof v === "number" ? `${v.toFixed(1)}%` : "")}
                       fill="#94a3b8"
                     />
                     {data.contributions.map((entry, index) => (
