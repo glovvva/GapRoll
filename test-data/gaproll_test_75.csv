@@ -1,0 +1,76 @@
+employee_id;gender;salary;position;evg_group;department;hire_year;contract_type;reporting_period
+GR-1000;K;5000;Developer Junior;Specjaliści IT;IT;2015;B2B;2024
+GR-1001;K;5000;Developer Junior;Specjaliści IT;IT;2019;UoP;2024
+GR-1002;M;6990;Developer Junior;Specjaliści IT;IT;2023;UoP;2024
+GR-1003;M;9463;Developer Senior;Specjaliści IT;IT;2023;UoP;2024
+GR-1004;M;8871;Developer Senior;Specjaliści IT;IT;2025;UoP;2024
+GR-1005;K;9267;Developer Senior;Specjaliści IT;IT;2023;B2B;2024
+GR-1006;K;10856;Developer Senior;Specjaliści IT;IT;2020;UZ;2024
+GR-1007;K;8047;Developer Senior;Specjaliści IT;IT;2023;B2B;2024
+GR-1008;K;15000;Developer Lead;Specjaliści IT;IT;2022;UoP;2024
+GR-1009;M;15159;Developer Lead;Specjaliści IT;IT;2016;UoP;2024
+GR-1010;K;16001;Developer Lead;Specjaliści IT;IT;2019;UoP;2024
+GR-1011;K;5000;Developer Junior;Specjaliści IT;IT;2024;UZ;2024
+GR-1012;K;8000;Developer Senior;Specjaliści IT;IT;2022;B2B;2024
+GR-1013;K;8000;Developer Senior;Specjaliści IT;IT;2023;UoP;2024
+GR-1014;K;8000;Developer Senior;Specjaliści IT;IT;2022;B2B;2024
+GR-1015;M;12503;Developer Senior;Specjaliści IT;IT;2017;UoP;2024
+GR-1016;M;10171;Developer Senior;Specjaliści IT;IT;2023;B2B;2024
+GR-1017;K;17050;Developer Lead;Specjaliści IT;IT;2018;B2B;2024
+GR-1018;K;10932;Developer Senior;Specjaliści IT;IT;2018;B2B;2024
+GR-1019;M;10553;Developer Senior;Specjaliści IT;IT;2021;UoP;2024
+GR-1020;K;9000;HR Specialist;Specjaliści HR i Admin;HR;2022;UoP;2024
+GR-1021;K;8891;HR Specialist;Specjaliści HR i Admin;HR;2018;UoP;2024
+GR-1022;M;6920;HR Specialist;Specjaliści HR i Admin;HR;2016;B2B;2024
+GR-1023;M;7384;HR Specialist;Specjaliści HR i Admin;HR;2015;UoP;2024
+GR-1024;K;17486;HR Manager;Specjaliści HR i Admin;HR;2024;B2B;2024
+GR-1025;K;13453;HR Manager;Specjaliści HR i Admin;HR;2025;UZ;2024
+GR-1026;M;6241;HR Specialist;Specjaliści HR i Admin;HR;2018;UZ;2024
+GR-1027;M;6276;HR Specialist;Specjaliści HR i Admin;HR;2015;B2B;2024
+GR-1028;M;13706;HR Manager;Specjaliści HR i Admin;HR;2016;UoP;2024
+GR-1029;K;8703;HR Specialist;Specjaliści HR i Admin;HR;2025;B2B;2024
+GR-1030;K;16045;HR Manager;Specjaliści HR i Admin;HR;2017;UoP;2024
+GR-1031;M;8962;HR Specialist;Specjaliści HR i Admin;HR;2024;UoP;2024
+GR-1032;K;7171;Accountant;Specjaliści Finansowi;Finance;2022;UoP;2024
+GR-1033;M;7667;Accountant;Specjaliści Finansowi;Finance;2018;UoP;2024
+GR-1034;K;6000;Accountant;Specjaliści Finansowi;Finance;2021;B2B;2024
+GR-1035;K;9309;Senior Accountant;Specjaliści Finansowi;Finance;2022;UoP;2024
+GR-1036;K;8000;Senior Accountant;Specjaliści Finansowi;Finance;2025;UoP;2024
+GR-1037;K;8000;Senior Accountant;Specjaliści Finansowi;Finance;2020;UoP;2024
+GR-1038;M;6447;Accountant;Specjaliści Finansowi;Finance;2018;UoP;2024
+GR-1039;M;9569;Senior Accountant;Specjaliści Finansowi;Finance;2018;B2B;2024
+GR-1040;M;8196;Accountant;Specjaliści Finansowi;Finance;2022;UoP;2024
+GR-1041;K;8000;Senior Accountant;Specjaliści Finansowi;Finance;2019;B2B;2024
+GR-1042;K;6630;Accountant;Specjaliści Finansowi;Finance;2016;UoP;2024
+GR-1043;M;7815;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2023;UoP;2024
+GR-1044;M;6401;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2015;B2B;2024
+GR-1045;K;14706;Sales Manager;Sprzedaż i Obsługa Klienta;Sales;2015;UoP;2024
+GR-1046;M;6382;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2018;UoP;2024
+GR-1047;K;6000;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2022;UZ;2024
+GR-1048;K;11337;Sales Manager;Sprzedaż i Obsługa Klienta;Sales;2015;UoP;2024
+GR-1049;M;6674;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2021;UZ;2024
+GR-1050;M;11017;Sales Manager;Sprzedaż i Obsługa Klienta;Sales;2021;B2B;2024
+GR-1051;K;6335;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2022;UoP;2024
+GR-1052;M;7168;Sales Representative;Sprzedaż i Obsługa Klienta;Sales;2021;UoP;2024
+GR-1053;M;16706;Sales Manager;Sprzedaż i Obsługa Klienta;Sales;2023;UoP;2024
+GR-1054;K;7643;Operations Specialist;Operacje i Logistyka;Operations;2017;UoP;2024
+GR-1055;M;6777;Operations Specialist;Operacje i Logistyka;Operations;2019;B2B;2024
+GR-1056;K;11472;Operations Manager;Operacje i Logistyka;Operations;2024;UoP;2024
+GR-1057;K;6780;Operations Specialist;Operacje i Logistyka;Operations;2020;UZ;2024
+GR-1058;M;6234;Operations Specialist;Operacje i Logistyka;Operations;2015;UoP;2024
+GR-1059;M;15785;Operations Manager;Operacje i Logistyka;Operations;2022;UoP;2024
+GR-1060;M;8059;Operations Specialist;Operacje i Logistyka;Operations;2023;UoP;2024
+GR-1061;M;12289;Operations Manager;Operacje i Logistyka;Operations;2015;UZ;2024
+GR-1062;K;6677;Operations Specialist;Operacje i Logistyka;Operations;2017;UZ;2024
+GR-1063;K;6000;Operations Specialist;Operacje i Logistyka;Operations;2025;UZ;2024
+GR-1064;K;11016;Operations Manager;Operacje i Logistyka;Operations;2024;UZ;2024
+GR-1065;M;39033;CEO;Kadra Zarządzająca;Management;2024;UoP;2024
+GR-1066;M;37740;CFO;Kadra Zarządzająca;Management;2015;B2B;2024
+GR-1067;K;29343;CTO;Kadra Zarządzająca;Management;2021;UoP;2024
+GR-1068;K;34562;COO;Kadra Zarządzająca;Management;2024;UoP;2024
+GR-1069;M;0;Intern;Stażyści;IT;2020;UoP;2024
+GR-1070;M;3767;Intern;Stażyści;HR;2018;UoP;2024
+GR-1071;K;3671;Intern;Stażyści;Finance;2018;UoP;2024
+GR-1072;K;3500;Intern;Stażyści;Sales;2025;UoP;2024
+GR-1073;K;3511;Intern;Stażyści;Operations;2020;UoP;2024
+GR-1074;K;3500;Intern;Stażyści;IT;2024;UoP;2024

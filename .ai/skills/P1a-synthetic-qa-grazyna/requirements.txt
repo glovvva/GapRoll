@@ -1,0 +1,4 @@
+# Dependencies for P1a Synthetic QA scripts (run from repo root or scripts dir)
+# pip install -r .ai/skills/P1a-synthetic-qa-grazyna/requirements.txt
+openpyxl>=3.1.0
+Faker>=22.0.0
