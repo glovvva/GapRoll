@@ -1,15 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { CheckCircle, CreditCard, Globe, Shield } from "lucide-react";
 import GapAnimation from "@/components/marketing/GapAnimation";
 
-function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-}
-
-export default function Hero() {
+export default function Hero({ onOpenWaitlist }: { onOpenWaitlist?: () => void }) {
   return (
     <section
       id="hero"
@@ -49,19 +44,19 @@ export default function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center rounded-xl bg-[#6B9FD4] px-8 py-3.5 font-medium text-white transition-all duration-150 ease-brand hover:bg-[#5A8FC4] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(107,159,212,0.35)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            >
-              Sprawdź dysproporcje płac →
-            </Link>
             <button
               type="button"
-              onClick={() => scrollToSection("jak-to-dziala")}
+              onClick={onOpenWaitlist}
+              className="inline-flex items-center justify-center rounded-xl bg-[#6B9FD4] px-8 py-3.5 font-medium text-white transition-all duration-150 ease-brand hover:bg-[#5A8FC4] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(107,159,212,0.35)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              Umów bezpłatne demo →
+            </button>
+            <a
+              href="#jak-dziala"
               className="inline-flex items-center justify-center rounded-xl border border-border px-8 py-3.5 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               Zobacz jak działa ↓
-            </button>
+            </a>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">

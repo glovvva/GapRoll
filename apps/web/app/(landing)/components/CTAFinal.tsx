@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 
-export default function CTAFinal() {
+export default function CTAFinal({ onOpenWaitlist }: { onOpenWaitlist?: () => void }) {
   return (
     <section
       aria-label="Final call to action"
@@ -49,15 +48,14 @@ export default function CTAFinal() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Link href="/register" className="inline-block">
-              <motion.button
-                type="button"
-                whileTap={{ scale: 0.98 }}
-                className="min-h-[48px] rounded-lg bg-[#6B9FD4] px-10 py-5 text-xl font-bold text-white transition-all duration-150 ease-brand hover:bg-[#5A8FC4] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(107,159,212,0.35)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              >
-                Zamknij lukę płacową już teraz →
-              </motion.button>
-            </Link>
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.98 }}
+              onClick={onOpenWaitlist}
+              className="min-h-[48px] rounded-lg bg-[#6B9FD4] px-10 py-5 text-xl font-bold text-white transition-all duration-150 ease-brand hover:bg-[#5A8FC4] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(107,159,212,0.35)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              Zarezerwuj miejsce →
+            </motion.button>
           </motion.div>
 
           <motion.p

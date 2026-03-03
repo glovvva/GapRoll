@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import Link from "next/link";
 
 const tiers = [
   {
@@ -19,8 +18,7 @@ const tiers = [
       "Edycja ręczna wszystkich danych",
       "Wsparcie email (48h response)",
     ],
-    cta: "Rozpocznij trial",
-    ctaLink: "/register",
+    cta: "Zarezerwuj miejsce",
   },
   {
     name: "Strategia",
@@ -38,12 +36,11 @@ const tiers = [
       "Priorytetowe wsparcie (4h response)",
       "Dedykowany onboarding call (30 min)",
     ],
-    cta: "Rozpocznij trial",
-    ctaLink: "/register",
+    cta: "Zarezerwuj miejsce",
   },
 ];
 
-export default function PricingSection() {
+export default function PricingSection({ onOpenWaitlist }: { onOpenWaitlist?: () => void }) {
   return (
     <section
       id="cennik"
@@ -65,7 +62,11 @@ export default function PricingSection() {
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2">
+      {/* Mobile scroll hint */}
+      <p className="md:hidden text-center text-xs mb-3 text-[#94A3B8]">← Przesuń, aby porównać plany →</p>
+
+      <div className="overflow-x-auto [scroll-snap-type:x_mandatory] pb-4">
+      <div className="flex md:grid md:grid-cols-2 gap-8 md:mx-auto md:max-w-5xl" style={{ minWidth: 'max-content' }}>
         {tiers.map((tier, index) => (
           <motion.article
             key={tier.name}
@@ -73,7 +74,7 @@ export default function PricingSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * index, duration: 0.5 }}
             whileHover={tier.highlight ? undefined : { y: -4 }}
-            className={`relative flex flex-col rounded-lg border bg-card p-8 ${
+            className={`relative flex flex-col rounded-lg border bg-card p-8 [scroll-snap-align:start] min-w-[300px] md:min-w-0 ${
               tier.highlight
                 ? "border-[#6B9FD4] shadow-glow-teal"
                 : "border-[#6B9FD4]/10 transition-all duration-300 hover:border-[#6B9FD4]/30"
@@ -114,31 +115,32 @@ export default function PricingSection() {
               ))}
             </ul>
 
-            <Link href={tier.ctaLink} className="block">
-              {tier.highlight ? (
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full rounded-lg bg-[#6B9FD4] py-4 text-lg font-semibold text-foreground transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B9FD4] min-h-[48px]"
-                >
-                  {tier.cta}
-                </motion.button>
-              ) : (
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full rounded-lg border border-[#6B9FD4]/30 py-4 text-lg font-semibold text-[#6B9FD4] transition-colors hover:bg-[#6B9FD4]/10 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B9FD4] min-h-[48px]"
-                >
-                  {tier.cta}
-                </motion.button>
-              )}
-            </Link>
+            {tier.highlight ? (
+              <motion.button
+                type="button"
+                onClick={onOpenWaitlist}
+                whileTap={{ scale: 0.98 }}
+                className="w-full rounded-lg bg-[#6B9FD4] py-4 text-lg font-semibold text-foreground transition-colors hover:bg-teal-hover outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B9FD4] min-h-[48px]"
+              >
+                {tier.cta}
+              </motion.button>
+            ) : (
+              <motion.button
+                type="button"
+                onClick={onOpenWaitlist}
+                whileTap={{ scale: 0.98 }}
+                className="w-full rounded-lg border border-[#6B9FD4]/30 py-4 text-lg font-semibold text-[#6B9FD4] transition-colors hover:bg-[#6B9FD4]/10 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B9FD4] min-h-[48px]"
+              >
+                {tier.cta}
+              </motion.button>
+            )}
 
             <p className="mt-4 text-center text-xs text-text-muted">
               14 dni za darmo · Bez karty kredytowej
             </p>
           </motion.article>
         ))}
+      </div>
       </div>
     </section>
   );

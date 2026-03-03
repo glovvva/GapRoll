@@ -491,6 +491,18 @@ npm run dev
 
 ---
 
+### Session 2026-03-02: Landing page deployed to production
+
+Landing page deployed to production at https://gaproll.eu on Hetzner CPX32 + Coolify.
+
+**Key fixes needed:** Coolify SSH access (added Coolify's pub key to authorized_keys), standalone output path (removed turbopack.root from next.config.ts, added nixpacks.toml, added postbuild script for static files), Traefik routing (added /data/coolify/proxy/dynamic/gaproll-eu.yaml manually).
+
+**Remaining issues:** Navbar missing in production, logo/dashboard image missing, card borders missing, Coolify config panel 500 error (custom_labels issue).
+
+**LESSON:** Always run pnpm build locally before push. Use Claude Code for all SSH/server tasks.
+
+---
+
 **END OF 00_CONTEXT_MEMORY.md**
 
 **Last Updated:** 2026-03-01  

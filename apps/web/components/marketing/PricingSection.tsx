@@ -73,7 +73,7 @@ function StrategiaPriceDisplay({ price }: { price: number }) {
   );
 }
 
-export default function PricingSection() {
+export default function PricingSection({ onOpenWaitlist }: { onOpenWaitlist?: () => void }) {
   const [activeSegment, setActiveSegment] = useState<"small" | "medium" | "large">("small");
 
   const compliancePrice = pricing[activeSegment].compliance;
@@ -129,12 +129,13 @@ export default function PricingSection() {
             <PriceDisplay price={compliancePrice} />
             <span className="text-lg text-muted-foreground">PLN/mies</span>
           </div>
-          <Link
-            href="/register"
+          <button
+            type="button"
+            onClick={onOpenWaitlist}
             className="mt-8 flex w-full items-center justify-center rounded-xl border border-border px-6 py-3.5 font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Rozpocznij trial
-          </Link>
+            Zarezerwuj miejsce
+          </button>
         </SpotlightCard>
 
         {/* Strategia card */}
@@ -158,12 +159,13 @@ export default function PricingSection() {
           <p className="mt-2 font-mono text-xs text-[#6B9FD4]">
             ROI 360% · oszczędzasz 8 600 PLN/rok
           </p>
-          <Link
-            href="/register"
+          <button
+            type="button"
+            onClick={onOpenWaitlist}
             className="mt-8 flex w-full items-center justify-center rounded-xl bg-[#6B9FD4] px-6 py-3.5 font-medium text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Rozpocznij trial
-          </Link>
+            Zarezerwuj miejsce
+          </button>
         </SpotlightCard>
       </div>
 

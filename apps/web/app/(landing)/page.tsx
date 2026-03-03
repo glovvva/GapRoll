@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import WaitlistDialog from '@/components/marketing/WaitlistDialog'
 import {
   Scale, FileText, Lock, ClipboardList,
   ArrowRight, ChevronDown, Server, Eye,
@@ -335,6 +336,7 @@ export default function LandingPage() {
   const [activePlan, setActivePlan] = useState<'strategia' | 'compliance'>('strategia')
   const [activeSize, setActiveSize] = useState<'small' | 'medium' | 'large'>('small')
   const [navScrolled, setNavScrolled] = useState(false)
+  const [waitlistOpen, setWaitlistOpen] = useState(false)
 
   const prices = {
     compliance: { small: 199, medium: 399, large: 799 },
@@ -386,7 +388,7 @@ export default function LandingPage() {
       {/* ══ HERO ══ */}
       <section style={{ position: 'relative', overflow: 'hidden', padding: '88px 32px 72px', background: C.navy }}>
         <div style={{ position: 'absolute', top: '-160px', left: '38%', width: '900px', height: '700px', background: `radial-gradient(ellipse, ${C.blueDim} 0%, transparent 65%)`, pointerEvents: 'none' }} />
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '72px', alignItems: 'center' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-[72px]" style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Left */}
           <div>
             <div className="reveal" style={{ marginBottom: '28px' }}>
@@ -423,27 +425,27 @@ export default function LandingPage() {
 
             {/* CTA buttons */}
             <div className="reveal delay-2" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="/signup" style={{
+              <button type="button" onClick={() => setWaitlistOpen(true)} style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                 background: 'linear-gradient(135deg, #FF4FA3, #2A7BFF)',
                 color: '#fff', fontWeight: 700, fontSize: '1rem',
                 padding: '0.875rem 2rem', borderRadius: '12px',
-                textDecoration: 'none', boxShadow: '0 8px 32px rgba(255,79,163,0.35)'
+                border: 'none', cursor: 'pointer', boxShadow: '0 8px 32px rgba(255,79,163,0.35)'
               }}>
-                Rozpocznij darmowy audyt →
-              </a>
-              <a href="/demo" style={{
+                Umów bezpłatne demo →
+              </button>
+              <button type="button" onClick={() => setWaitlistOpen(true)} style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                 background: 'transparent', color: '#fff', fontWeight: 600, fontSize: '1rem',
                 padding: '0.875rem 2rem', borderRadius: '12px',
-                textDecoration: 'none', border: '1.5px solid rgba(255,255,255,0.25)'
+                border: '1.5px solid rgba(255,255,255,0.25)', cursor: 'pointer'
               }}>
-                Umów bezpłatne demo
-              </a>
+                Zarezerwuj miejsce
+              </button>
             </div>
 
             {/* FIX #12: KPI numbers — pink/blue only, no green/amber */}
-            <div className="reveal delay-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '20px', marginTop: '36px', paddingTop: '28px', borderTop: `1px solid ${C.border}` }}>
+            <div className="reveal delay-2 grid grid-cols-2 lg:grid-cols-4 gap-5" style={{ marginTop: '36px', paddingTop: '28px', borderTop: `1px solid ${C.border}` }}>
               {[
                 { val: '7 cze 2026', label: 'Termin implementacji', color: C.pinkLight },
                 { val: '15 sek', label: 'wartościowanie stanowisk', color: C.pink },
@@ -467,7 +469,7 @@ export default function LandingPage() {
                 alt="GapRoll dashboard — analiza luki płacowej"
                 width={680}
                 height={480}
-                style={{ borderRadius: '16px', backgroundColor: '#f8fafc' }}
+                style={{ borderRadius: '16px', backgroundColor: '#f8fafc', width: '100%', height: 'auto' }}
                 priority
               />
             </div>
@@ -528,7 +530,7 @@ export default function LandingPage() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 900, letterSpacing: '-0.025em', color: C.t1 }}>Wszystko, czego wymaga Dyrektywa</h2>
             <p style={{ fontSize: '16px', color: C.t2, marginTop: '14px', maxWidth: '540px', margin: '14px auto 0', lineHeight: 1.65 }}>Każda funkcja zmapowana do konkretnego artykułu Dyrektywy 2023/970.</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '20px', marginBottom: '40px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
             {features.map((f, i) => (
               <div key={i} className={`reveal delay-${i % 3}`} style={cardBase}
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(42,123,255,0.4)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
@@ -550,7 +552,7 @@ export default function LandingPage() {
               <LayoutDashboard size={18} color={C.blue} />
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 700, color: C.t1, letterSpacing: '-0.01em' }}>Co widzisz na dashboardzie</h3>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '24px' }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { icon: <LayoutDashboard size={18} />, title: 'Pulpit zgodności', desc: 'Aktualny status Art. 16: luka%, kwartyle, termin kolejnego raportu. Jeden widok — wszystko dla zarządu.' },
                 { icon: <PieChart size={18} />, title: 'Linia Fair Pay', desc: 'Wykres regresji płac: każdy punkt to pracownik. Odchylenia od linii = kandydaci do korekty. Wizualny argument dla HR.' },
@@ -613,7 +615,7 @@ export default function LandingPage() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 900, letterSpacing: '-0.025em', color: C.t1 }}>Raport Art. 16 w trzech krokach</h2>
             <p style={{ fontSize: '16px', color: C.t2, marginTop: '14px', maxWidth: '520px', margin: '14px auto 0', lineHeight: 1.65 }}>Gotowy raport Art. 16 w kilku kliknięciach. Przejrzyście, precyzyjnie i zgodnie z wymogami prawa. Od pliku CSV do raportu gotowego dla Państwowej Inspekcji Pracy — w mniej niż kwadrans.</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '28px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
             {[
               { iconComp: <IconUpload />, color: C.blue, colorDim: C.blueDim,
                 num: '01', title: 'Wgraj dane CSV',
@@ -651,7 +653,7 @@ export default function LandingPage() {
       {/* ══ JAWNOŚĆ PŁAC — Art. 7 ══ */}
       <section style={{ padding: '96px 32px', background: C.surface }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '72px', alignItems: 'center' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-[72px]">
             <div>
               <div className="reveal" style={{ marginBottom: '14px' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '20px', border: `1px solid ${C.pinkDim}`, background: C.pinkDim, fontSize: '12px', fontWeight: 600, color: C.pink }}>
@@ -714,9 +716,9 @@ export default function LandingPage() {
       {/* ══ MAPOWANIE STANOWISK — NEW SECTION #14 ══ */}
       <section style={{ padding: '96px 32px', background: C.navy }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '72px', alignItems: 'center' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-[72px]">
             {/* Right (visual first) */}
-            <div className="reveal" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="reveal grid grid-cols-2 gap-4">
               {[
                 { label: 'Developer Senior', group: 'G4', score: 82, pinkBar: 55, blueBar: 80 },
                 { label: 'Analityk Danych', group: 'G3', score: 71, pinkBar: 68, blueBar: 71 },
@@ -778,7 +780,7 @@ export default function LandingPage() {
               Gwarantujemy pełną suwerenność danych. Lokalne przetwarzanie w chmurze UE, zgodność z RODO i standardami ISO 27001.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '20px', marginBottom: '40px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
             {securityItems.map((item, i) => (
               <div key={i} className={`reveal delay-${i % 3}`} style={cardBase}
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(42,123,255,0.4)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
@@ -793,7 +795,7 @@ export default function LandingPage() {
             ))}
           </div>
           {/* RODO compliance strip */}
-          <div className="reveal" style={{ padding: '28px 32px', borderRadius: '12px', background: C.blueDim, border: `1px solid rgba(42,123,255,0.2)`, borderLeft: `4px solid ${C.blue}`, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '24px' }}>
+          <div className="reveal grid grid-cols-2 lg:grid-cols-4 gap-6" style={{ padding: '28px 32px', borderRadius: '12px', background: C.blueDim, border: `1px solid rgba(42,123,255,0.2)`, borderLeft: `4px solid ${C.blue}` }}>
             {[
               { label: 'Podstawa prawna', val: 'Art. 6 ust. 1 lit. c RODO', sub: 'Obowiązek prawny' },
               { label: 'Lokalizacja danych', val: 'Wewnętrzne serwery w UE', sub: 'Dane na serwerach w UE' },
@@ -852,13 +854,13 @@ export default function LandingPage() {
           </div>
 
           {/* Card */}
-          <div className="reveal" style={{
-            padding: '44px 52px', borderRadius: '16px', background: C.surface,
+          <div className="reveal p-6 md:p-10 lg:p-[44px_52px]" style={{
+            borderRadius: '16px', background: C.surface,
             border: `1px solid ${activePlan === 'strategia' ? 'rgba(255,79,163,0.4)' : 'rgba(42,123,255,0.35)'}`,
             boxShadow: activePlan === 'strategia' ? '0 0 48px rgba(255,79,163,0.1)' : '0 0 48px rgba(42,123,255,0.08)',
             transition: 'border-color 200ms, box-shadow 200ms',
           }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '52px', alignItems: 'start' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[52px] items-start">
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 900, letterSpacing: '-0.02em', color: C.t1 }}>{plan.name}</h3>
@@ -874,10 +876,10 @@ export default function LandingPage() {
                   <p style={{ fontSize: '12px', color: C.tm, marginTop: '4px' }}>netto + VAT · bez zobowiązań</p>
                 </div>
                 {/* FIX #7: different style for Strategia CTA */}
-                <a href="#" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', padding: '14px 0', borderRadius: '8px', ...plan.ctaStyle, color: '#fff', fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 150ms' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-2px)' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(0)' }}
-                >{plan.cta} <ArrowRight size={15} /></a>
+                <button type="button" onClick={() => setWaitlistOpen(true)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', padding: '14px 0', borderRadius: '8px', ...plan.ctaStyle, color: '#fff', fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 150ms', width: '100%', border: 'none', cursor: 'pointer' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)' }}
+                >{plan.cta} <ArrowRight size={15} /></button>
                 <p style={{ fontSize: '11px', color: C.tm, textAlign: 'center', marginTop: '10px' }}>14 dni bezpłatnego trialu · bez karty kredytowej</p>
               </div>
               <div>
@@ -896,6 +898,8 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          <p className="md:hidden text-center text-xs mt-3" style={{ color: C.tm }}>← Przewiń, aby porównać opcje →</p>
+
           <div className="reveal" style={{ marginTop: '24px', textAlign: 'center' }}>
             <p style={{ fontSize: '13px', color: C.tm }}>Konkurencja: PayAnalytics ~€1 100/mies · Korn Ferry ~€800/mies · Mercer ~€1 250/mies</p>
             {/* FIX #13: pink instead of green */}
@@ -921,13 +925,15 @@ export default function LandingPage() {
           <div style={{ width: '48px', height: '3px', borderRadius: '2px', background: 'linear-gradient(90deg,#FF4FA3,#2A7BFF)', margin: '0 auto 24px' }} />
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px,3vw,36px)', fontWeight: 900, letterSpacing: '-0.025em', color: C.t1, marginBottom: '16px' }}>Transparentność standardem jutra.</h2>
           <p style={{ fontSize: '16px', color: C.t2, lineHeight: 1.7, marginBottom: '36px' }}>7 czerwca 2026 — termin implementacji Dyrektywy UE 2023/970. 14 dni bezpłatnego trialu. Bez karty kredytowej.</p>
-          <a href="#cennik" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '15px 36px', borderRadius: '8px', background: 'linear-gradient(135deg,#2A7BFF,#9B7FEA)', color: '#fff', fontSize: '16px', fontWeight: 700, fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px rgba(42,123,255,0.32)', transition: 'all 150ms' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 8px 32px rgba(42,123,255,0.44)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 4px 20px rgba(42,123,255,0.32)' }}
-          >Zapewnij zgodność już dziś <ArrowRight size={16} /></a>
+          <button type="button" onClick={() => setWaitlistOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '15px 36px', borderRadius: '8px', background: 'linear-gradient(135deg,#2A7BFF,#9B7FEA)', color: '#fff', fontSize: '16px', fontWeight: 700, fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px rgba(42,123,255,0.32)', transition: 'all 150ms', border: 'none', cursor: 'pointer' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 32px rgba(42,123,255,0.44)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 20px rgba(42,123,255,0.32)' }}
+          >Zarezerwuj miejsce →</button>
           <p style={{ fontSize: '12px', color: C.tm, marginTop: '14px' }}>Art. 9 Dyrektywy Parlamentu Europejskiego i Rady (UE) 2023/970 z dnia 10 maja 2023 r.</p>
         </div>
       </section>
+
+      <WaitlistDialog open={waitlistOpen} onOpenChange={setWaitlistOpen} />
     </>
   )
 }

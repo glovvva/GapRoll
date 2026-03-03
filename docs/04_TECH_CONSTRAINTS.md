@@ -613,6 +613,12 @@ ALL errors return `APIError` with: `error` (machine code like `gap.insufficient_
 
 ---
 
+## LESSONS
+
+- **Next.js 15 + Coolify monorepo:** `turbopack.root` must NOT be set in next.config.ts for Docker builds. Always add postbuild to copy static assets to standalone output.
+
+---
+
 **END OF 04_TECH_CONSTRAINTS.md**
 
 **Next Review:** After Milestone 1 (Mar 15, 2026)

@@ -141,6 +141,14 @@ Rollback if health check fails
 - Google Search Console → dodaj gaproll.eu → zweryfikuj → "Request indexing"
 - sitemap.xml (Next.js generuje automatycznie pod /sitemap.xml)
 
+**PRODUCTION NOTES:**
+- SSH key: WSL key added to /root/.ssh/authorized_keys
+- Coolify SSH fix: Coolify container pub keys added to host authorized_keys
+- Traefik routing: manual /data/coolify/proxy/dynamic/gaproll-eu.yaml (survives redeploys)
+- standalone path: server.js at /app/.next/standalone/server.js (NOT apps/web/)
+- Static files: postbuild script in package.json copies public/ and .next/static/ to standalone
+- Start command: HOSTNAME=0.0.0.0 node .next/standalone/server.js
+
 ---
 
 **Monitoring Alerts (Slack integration):**
