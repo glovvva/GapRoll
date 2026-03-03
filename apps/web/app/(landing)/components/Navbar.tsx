@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import WaitlistDialog from "@/components/marketing/WaitlistDialog";
 
 const NAV_LINKS = [
@@ -88,7 +89,7 @@ export default function Navbar() {
           }}
         >
           {/* Logo */}
-          <a href="/" style={{ textDecoration: "none" }}>
+          <Link href="/" style={{ textDecoration: "none" }}>
             <Image
               src="/logo.png"
               alt="GapRoll"
@@ -96,7 +97,7 @@ export default function Navbar() {
               height={36}
               style={{ objectFit: "contain", mixBlendMode: "screen" }}
             />
-          </a>
+          </Link>
 
           {/* Desktop: center links */}
           <div
