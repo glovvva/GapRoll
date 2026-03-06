@@ -136,11 +136,26 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 ❌ **Agent Analyst** (DSPy self-improvement May 10)  
 ❌ **Article 16 Report PDF Export** (Milestone 1 — needs completion)  
 ❌ **White-label / custom branding** (Phase 3, Partner Portal enhancement)  
-❌ **SSO / SAML / Azure AD** (Phase 3-4, Enterprise tier)
+❌ **Kinde Auth Migration** (Feature #43, P0, Week 7 Mar 16-22 — replaces Supabase Auth entirely)
+❌ **Enterprise Auth (Kinde Scale SSO/SAML)** (Feature #36, P1 — triggered by first enterprise client)
 
 ---
 
 ## 5. Hard-Won Rules (Distilled from Lessons)
+
+### INFRA-001: Coolify + Traefik — Static File Router Bug (2026-03-03)
+**Problem:** After every Coolify redeploy, gaproll.eu returned 502 Bad Gateway.
+**Root cause:** `/data/coolify/proxy/dynamic/gaproll-eu.yaml` contained a hardcoded container suffix (e.g. `-134538693077`). Each redeploy generates a new suffix, so Traefik's file router pointed to a dead container, overriding the correct Docker label routers (which had lower priority).
+**Fix applied (temporary):** Updated the URL in gaproll-eu.yaml to the new container name via sed.
+**Permanent fix:** Delete `/data/coolify/proxy/dynamic/gaproll-eu.yaml` entirely and rely solely on Coolify's Docker label-based routers. The www→non-www redirect should be handled via Cloudflare Page Rules, not Traefik file config.
+**After every redeploy checklist until permanent fix applied:**
+```bash
+NEW=$(docker ps --filter "name=s4sg0k0ckkgok08w0kwgk48o" --format "{{.Names}}" | head -1)
+sed -i "s|s4sg0k0ckkgok08w0kwgk48o-[0-9]*:3000|${NEW}:3000|" /data/coolify/proxy/dynamic/gaproll-eu.yaml
+```
+**Status:** Temporary fix active. Permanent fix (delete yaml) pending — do before next redeploy.
+
+---
 
 ### 🔴 CRITICAL (violating these costs hours/days)
 
@@ -158,6 +173,8 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 | 10 | Pydantic undefined fields → 422 (często jako 400) | Sprawdź czy frontend wysyła WSZYSTKIE wymagane pola (nie undefined). |
 
 ### ⚠️ AUTH RULES (Next.js + Supabase SSR)
+
+> ⚠️ **MIGRATION PENDING:** Rules #3, #4, #11-15, #38 below will become OBSOLETE after Kinde Auth Migration (Feature #43, Week 7). They describe Supabase Auth workarounds. After migration: Kinde handles sessions, middleware, cookies. Keep rules until migration confirmed complete.
 
 | # | Rule |
 |---|------|
@@ -216,6 +233,10 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 | 33 | **Realistic targets > ambitious** (Jun 8 = 10-20 customers, not 50) | Feb 14 |
 | 34 | **Proaktywne debugowanie** — jeden Cursor prompt = pełna diagnoza, nie wymiana 1 komenda na raz | Feb 21 |
 | 35 | **Kolumna `module`** na każdej nowej tabeli — koszt: 1 linia teraz vs. tygodnie migracji przy launchu Controller | Feb 21 |
+| 46 | **Kinde (nie WorkOS) dla CAŁEGO auth.** $250/mies flat vs $125/connection. Jeden provider zamiast dual-system. | Mar 3 |
+| 47 | **Enterprise tier = custom pricing, min 2,999 PLN/mies. Nigdy publiczna cena.** Uzasadnienie: czas obsługi, nie COGS auth. | Mar 3 |
+| 48 | **Migruj auth TERAZ (0 klientów), nie później (100 klientów).** "Supabase Auth już stoi" = sunk cost fallacy. | Mar 3 |
+| 49 | **Po migracji: FastAPI = jedyny gateway do danych.** Frontend → Kinde JWT → FastAPI → Supabase (service_role_key). | Mar 3 |
 
 ### 📐 UX / INTEGRATION RULES (Session I — Feb 25)
 
@@ -782,4 +803,53 @@ Critical Updates This Version (Feb 25, 2026):
 #### Next Session Goals
 - [ ] Apply all file updates (Cursor Composer batch)
 - [ ] Claude Code setup on current machine (pre-MacBook migration)
+- [ ] Continue Milestone 1 deliverables (invoice automation, sales materials)
+
+---
+
+### Session: 2026-03-03 — Enterprise Auth Strategy + Kinde Migration Decision
+
+**Duration:** ~3h
+**Sprint:** Week 5/16 — Strategic Architecture
+**Phase:** Milestone 1 — Platform Baseline (target: Mar 15, 2026)
+
+#### Context
+Bartek znalazł WorkOS jako "autostradę do enterprise". Przeprowadzono deep research z Gemini (raport .docx), analizę z Claude, i podjęto serię decyzji zmieniających architekturę auth.
+
+#### Decision Chain (3 pivot points w jednej sesji)
+
+**Pivot 1: WorkOS → Kinde**
+WorkOS kosztuje $125/connection. Przy 10 klientach = $2,500/mies. Kinde Scale = $250/mies flat (unlimited). Różnica roczna = $27,000. SCIM u Kinde w beta, ale nasi enterprise klienci mają 5-10 userów → SCIM nie jest deal-breaker.
+
+**Pivot 2: Dual auth (Supabase + Kinde) → Kinde only**
+Bartek słusznie wskazał: "łatwiej zmieniać auth bez klientów niż czekać i robić chaos". Argument "Supabase Auth już stoi" = sunk cost fallacy. Jeden system auth = prostszy codebase, mniej bugów, mniej dokumentacji.
+
+**Pivot 3: Enterprise COGS justification → service time justification**
+Przy Kinde flat fee, COGS auth per klient ≈ 0. Enterprise pricing (min 2,999 PLN) uzasadniony jest czasem obsługi (security questionnaire 8h, custom onboarding 4h, SLA, DPA), nie kosztem auth.
+
+#### Decisions Made
+- [x] Kinde = sole auth provider for ALL tiers (replaces Supabase Auth entirely)
+- [x] WorkOS BANNED (unscalable per-connection pricing)
+- [x] Enterprise tier = "Wycena indywidualna", min 2,999 PLN/mies
+- [x] Feature #43: Kinde Auth Migration (P0, 16h, Week 7 Mar 16-22)
+- [x] Feature #36: Enterprise Auth = Kinde Scale upgrade (P1, triggered by first enterprise client)
+- [x] Post-migration architecture: Frontend → Kinde JWT → FastAPI → Supabase (database only)
+- [x] Auth Rules #3, #4, #11-15, #38 → obsolete after migration
+
+#### Lessons Learned
+- LESSON 46: Kinde (nie WorkOS) dla CAŁEGO auth. $250/mies flat vs $125/connection. 10 klientów = $27k/rok różnicy.
+- LESSON 47: Enterprise tier = custom pricing. Uzasadnienie: service time, nie COGS auth.
+- LESSON 48: Migruj auth TERAZ (0 klientów). "Już stoi" = sunk cost fallacy.
+- LESSON 49: Po migracji: FastAPI = jedyny gateway. Frontend → Kinde JWT → FastAPI → Supabase (service_role).
+
+#### Files Updated (by this Composer prompt)
+- 01_STRATEGY.md (Enterprise tier, feature matrix, pricing, 4 new lessons)
+- 04_TECH_CONSTRAINTS.md (Kinde in approved stack, Section 2.2.1, WorkOS banned)
+- 09_FEATURE_BACKLOG.md (Feature #43 Kinde Migration P0, Feature #36 upgrade)
+- 10_INFRASTRUCTURE_SETUP.md (Kinde in cost projections)
+- 00_CONTEXT_MEMORY.md (this session log, rules #46-49, auth rules obsolescence note)
+
+#### Next Session Goals
+- [ ] Feature #43: Kinde Auth Migration (Claude Code — 2-3 days)
+- [ ] Kinde dev account created, quickstart validated
 - [ ] Continue Milestone 1 deliverables (invoice automation, sales materials)

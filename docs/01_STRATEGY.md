@@ -1,8 +1,8 @@
 # GapRoll — Strategic Bible
 ## Vision, Roadmap & Product Requirements (Single Source of Truth)
 
-**Last Updated:** 2026-02-28  
-**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-1599 PLN, Invoice Automation, Realistic Targets, API-First Architecture, MCP Server Readiness  
+**Last Updated:** 2026-03-03  
+**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-2999+ PLN, Invoice Automation, Realistic Targets, API-First Architecture, MCP Server Readiness, Enterprise Tier (Custom Pricing), Kinde Auth (replaces Supabase Auth)  
 **Previous Name:** PayCompass (sunset Feb 14, 2026)  
 **Rule:** EVERY feature proposal must be checked against this file first.
 
@@ -458,6 +458,7 @@ ROI: 45k annually / 180k = 25% yearly return"
 | **Benchmark Engine** | ❌ | ✅ (v1: Mar 22) | ✅ | ✅ | ✅ |
 | **Partner Channel** | ✅ | ✅ | ❌ | ❌ | ❌ |
 | **API / MCP Access** | ❌ | ✅ (agent-ready) | ❌ | ❌ | ❌ |
+| **Enterprise SSO (SAML)** | Enterprise only | Enterprise only | ✅ (€1000+/mies) | ✅ (€800+/mies) | ❌ |
 | **Price (Small firm)** | **99 PLN/mies** (~€22) | **199 PLN/mies** (~€44) | ~€1,100/mies | ~€800/mies | ~€1,250/mies |
 | **Annual Cost** | 1,188 PLN (~€265) | 2,388 PLN (~€530) | ~€13,000 | ~€10,000 | ~€15,000 |
 | **Savings vs Competitors** | **98% cheaper** | **96% cheaper** | - | - | - |
@@ -490,11 +491,26 @@ ROI: 45k annually / 180k = 25% yearly return"
 |------|--------------|------------------|--------------|
 | **Compliance** | **99 PLN/mies** | **299 PLN/mies** | **799 PLN/mies** |
 | **Strategia** | **199 PLN/mies** | **599 PLN/mies** | **1,599 PLN/mies** |
+| **Enterprise** | — | — | **Wycena indywidualna** (min 2,999 PLN/mies) |
 
 **Pricing Philosophy:**
 - **Entry (99 PLN):** Penetration pricing (viral adoption, data moat building)
 - **2x jump (Compliance→Strategia):** Justified by time savings (3 weeks/year = 6000 PLN value, costs 2388 PLN/year = **ROI 251%**)
 - **Progressive scaling:** Small→Large (3x, 6x, 16x multipliers based on complexity, headcount, audit risk)
+
+**Enterprise Tier (Custom Pricing) — NEW Mar 2026:**
+- **Target:** Firmy 250+ pracowników wymagające SSO/SAML, Directory Sync (SCIM), Audit Logs, SLA
+- **Minimum:** 2,999 PLN/mies. Nigdy publiczna cena. Przycisk "Skontaktuj się" na landing page.
+- **Typowe:** 4,999-9,999 PLN/mies (zależnie od headcount, modułów, SLA)
+- **Auth:** Kinde Scale plan ($250/mies flat = unlimited SSO connections)
+- **Uzasadnienie ceny (NIE COGS auth — Kinde flat fee):**
+  - Security questionnaire: 4-8h pracy (~1,200 PLN jednorazowo)
+  - Custom onboarding z IT klienta: 2-4h
+  - DPA / umowa powierzenia danych: konsultacja prawna
+  - SLA monitoring + dedykowany opiekun: ongoing
+  - Audit logs export do SIEM: feature do zbudowania
+- **Marża:** 85%+ (COGS auth = ~0 PLN per klient przy flat fee Kinde)
+- **Sales flow:** Klient pyta o SSO → "Tak, wspieramy. Wycena indywidualna." → kontrakt → Kinde Scale upgrade (2-3 dni)
 
 ### 8.2 Feature Matrix
 
@@ -522,6 +538,11 @@ ROI: 45k annually / 180k = 25% yearly return"
 | Priority support (4h) | ❌ | ✅ |
 | API Access (REST + MCP ready) | ❌ | ✅ (scoped keys, rate-limited) |
 | WebSocket real-time | ❌ | ✅ |
+| **Enterprise Security** | | |
+| SSO / SAML 2.0 (Entra ID, Okta, Google) | ❌ | Enterprise tier only |
+| Directory Sync (SCIM) | ❌ | Enterprise tier only |
+| Audit Logs (SIEM export) | ❌ | Enterprise tier only |
+| Dedicated support + SLA 99.9% | ❌ | Enterprise tier only |
 
 **Data Requirements:**
 
@@ -567,9 +588,9 @@ contract_type,employment_type,performance_rating,job_level
 
 #### Tier 3: White-Label Enterprise (for office networks)
 
-- **4,999 PLN/mies** — full white-label + API access + MCP Server + dedicated support
+- **4,999 PLN/mies** — full white-label + API access + MCP Server + SSO/SAML (Kinde) + dedicated support
 - **Target:** Sieci biur (KPBR members, franchises with 100+ combined clients) + enterprise z własnymi agentami AI
-- **Features:** Custom branding, REST API with scoped keys, MCP Server integration (agent-to-GapRoll), SLA guarantees
+- **Features:** Custom branding, REST API with scoped keys, MCP Server integration (agent-to-GapRoll), SSO/SAML + SCIM via Kinde, SLA guarantees
 - **API-First details:** See 12_API_FIRST_ARCHITECTURE.md
 
 **Why Hybrid Works:**
@@ -722,6 +743,10 @@ contract_type,employment_type,performance_rating,job_level
 13. **API-First = Zero Extra Cost, Massive Exit Value:** Designing endpoints as tools (not pages) costs nothing extra during development, but delivers 2-5x valuation multiplier. Every new endpoint uses APIResponse envelope with ComplianceContext. (Source: API-First Architecture Session, Feb 2026)
 14. **Intent-Based Tool Grouping for MCP:** External agents should see 5-7 tools grouped by intent (analyze_pay_gap, score_positions, generate_report, simulate_budget, query_benchmark, ask_human, get_company_context), NOT 15+ raw endpoints. Based on Anthropic's Claude Code learnings. (Source: "Lessons from Building Claude Code" article analysis, Feb 2026)
 15. **Progressive Disclosure in API Responses:** Return summary + available_drilldowns. Let the agent decide what to explore deeper. Don't dump everything in one response. (Source: Claude Code article, Feb 2026)
+16. **Kinde zastępuje Supabase Auth CAŁKOWICIE.** Nie dual-provider. Jeden system = Kinde Free (MŚP, $0) + Kinde Scale (Enterprise, $250/mies flat). Przy 10 klientach enterprise: Kinde $250/mies vs WorkOS $2,500/mies. Supabase zostaje TYLKO jako database. (Source: WorkOS vs Kinde analysis, Mar 2026)
+17. **Enterprise tier = custom pricing, min 2,999 PLN/mies.** Uzasadnienie: czas obsługi (security questionnaire 8h, custom onboarding 4h, SLA, DPA), NIE COGS auth. Publiczna cena zabija negocjacje. (Source: Enterprise Auth session, Mar 2026)
+18. **Migruj auth TERAZ (0 klientów), nie PÓŹNIEJ (100 klientów).** Dual-system = permanentny overhead. "Supabase Auth już stoi" = sunk cost fallacy. Łatwiej zmienić bez klientów. (Source: Enterprise Auth session, Mar 2026)
+19. **FastAPI = jedyny gateway do danych po migracji Kinde.** Frontend → Kinde session → API call → FastAPI (Kinde JWT validation) → Supabase (service_role_key). Eliminuje klasę bugów (session desync, cookie conflicts). Spójne z API-First. (Source: Enterprise Auth session, Mar 2026)
 
 ---
 

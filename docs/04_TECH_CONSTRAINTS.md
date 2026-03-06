@@ -1,7 +1,7 @@
 # GapRoll — Tech Constraints
 ## Lean Stack Enforcement & Architecture Rules
 
-**Last Updated:** 2026-02-28  
+**Last Updated:** 2026-03-03  
 **Previous Name:** PayCompass (sunset Feb 14, 2026)  
 **Rule:** Reject ANY suggestion that violates this stack. No exceptions.
 
@@ -57,7 +57,7 @@
 | **Database** | PostgreSQL | 16 | ACID, RLS, JSONB, full-text search |
 | **ORM** | SQLAlchemy | 2.x | Mature, async support, type-safe |
 | **Migrations** | Alembic | 1.x | Industry standard for SQLAlchemy |
-| **Auth** | Supabase Auth | N/A | JWT, RLS integration, email/OAuth |
+| **Auth** | Kinde | Free / Scale | SSO/SAML, email/password, OAuth, RBAC. Replaces Supabase Auth (Mar 2026). See Section 2.2.1 |
 | **Validation** | Pydantic | 2.x | Type-safe, FastAPI native |
 | **Task Queue** | Celery (Phase 3+) | 5.x | Async tasks, not needed until scale |
 | **HTTP Client** | httpx | 0.27+ | Async, modern (vs requests) |
@@ -67,6 +67,48 @@
 - ❌ Flask (async support weak, FastAPI superior)
 - ❌ MongoDB, Firebase (schema flexibility = chaos for compliance)
 - ❌ Prisma (Node.js ORM, we're Python backend)
+- ❌ Supabase Auth (replaced by Kinde, Mar 2026. Supabase stays as database only.)
+
+### 2.2.1 Auth Strategy: Kinde (replaces Supabase Auth)
+
+**Decision (Mar 2026):** Kinde replaces Supabase Auth as SOLE auth provider for ALL tiers.
+
+| Tier | Kinde Plan | Features | Cost |
+|------|-----------|----------|------|
+| **Compliance / Strategia** | Free | Email/password, Google OAuth, Magic Links | $0 (10,500 MAU) |
+| **Enterprise** | Scale ($250/mies) | + SSO/SAML, SCIM, RBAC, Audit Logs | $250/mies flat (unlimited connections) |
+
+**Why Kinde (not WorkOS, not Supabase Auth):**
+- ✅ Kinde Scale: $250/mies flat = unlimited SSO connections. WorkOS: $125/connection = $2,500/mies at 10 clients (10x more expensive)
+- ✅ Kinde: Org-first architecture (native multi-tenant B2B), RBAC built-in, Next.js SDK
+- ✅ One auth system = no dual-provider overhead, simpler codebase, easier debugging
+- ✅ Migrating now (0 clients) is 100x easier than migrating later (100 clients on Supabase Auth)
+- ⚠️ Kinde SCIM: beta (production ~Q2-Q3 2026). Acceptable — our enterprise clients = 5-10 users per org, not 200
+
+**BANNED auth providers:**
+- ❌ WorkOS ($125/connection = unscalable per-connection pricing for multi-tenant B2B)
+- ❌ Auth0 (expensive post-Okta acquisition, complex pricing)
+- ❌ Clerk (B2C-optimized, SSO pricing traps, no SCIM)
+- ❌ Keycloak / Authentik self-hosted (DevOps burden kills solo founder)
+- ❌ Supabase Auth (replaced — Supabase stays as PostgreSQL database only)
+
+**Architecture after migration:**
+```
+Frontend (Next.js)
+  → Kinde hosted login (email/password OR SSO/SAML)
+  → Kinde session (JWT in cookie)
+  → API call to FastAPI (Authorization: Bearer <kinde_jwt>)
+    → FastAPI validates Kinde JWT
+    → FastAPI queries Supabase with service_role_key (bypasses RLS)
+    → Response with ComplianceContext
+```
+
+- **Supabase = database ONLY.** No more auth.uid() in RLS for application queries.
+- **FastAPI enforces authorization.** Validates Kinde JWT, checks org membership, enforces tenant isolation.
+- **service_role_key pattern = already established** (Hard-Won Rule #1, #21).
+- **Kinde webhook → Supabase profiles sync.** On user.created/updated/deleted, Kinde sends webhook, FastAPI upserts/deletes in Supabase profiles table.
+
+**Migration:** Feature #43 (Kinde Auth Migration), 14-16h, Week 7 (Mar 16-22). See 09_FEATURE_BACKLOG.md.
 
 ---
 

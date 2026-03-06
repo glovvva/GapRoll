@@ -149,7 +149,7 @@ Rollback if health check fails
 - Static files: postbuild script in package.json copies public/ and .next/static/ to standalone
 - Start command: HOSTNAME=0.0.0.0 node .next/standalone/server.js
 
----
+⚠️ **BEFORE next redeploy:** SSH → delete `/data/coolify/proxy/dynamic/gaproll-eu.yaml` permanently (see INFRA-001 in 00_CONTEXT_MEMORY.md).
 
 **Monitoring Alerts (Slack integration):**
 - API response time >2s for 5 min → alert
@@ -157,6 +157,19 @@ Rollback if health check fails
 - Database CPU >80% for 10 min → alert
 - Disk space <10% free → alert
 - Invoice generation failed → immediate alert
+
+---
+
+## 4. Known Issues & Fixes
+
+### Traefik 502 After Redeploy
+- **Cause:** Static file router in `/data/coolify/proxy/dynamic/gaproll-eu.yaml` overrides Docker label routers with hardcoded container name suffix.
+- **Permanent fix:** SSH into server → `rm /data/coolify/proxy/dynamic/gaproll-eu.yaml` → www redirect via Cloudflare Page Rules instead.
+- **Temporary workaround:** Update container suffix in yaml after each redeploy (see INFRA-001 in 00_CONTEXT_MEMORY.md).
+- **Diagnosis commands:**
+  - `docker ps --format "table {{.Names}}\t{{.Networks}}" | grep gaproll` — verify container network
+  - `docker logs coolify-proxy --tail 50` — check Traefik routing errors
+  - `curl -sI https://gaproll.eu` — verify live status
 
 ---
 
@@ -380,9 +393,9 @@ Zespół GapRoll
 
 ---
 
-## 4. Email Infrastructure
+## 5. Email Infrastructure
 
-### 4.1 Stack Decision
+### 5.1 Stack Decision
 
 | Use Case | Service | Cost | Rationale |
 |----------|---------|------|-----------|
@@ -397,7 +410,7 @@ Zespół GapRoll
 
 ---
 
-### 4.2 Domain Authentication (MANDATORY before ANY email)
+### 5.2 Domain Authentication (MANDATORY before ANY email)
 
 **Setup (Feb 22, immediately after domain purchase):**
 
@@ -425,7 +438,7 @@ TXT record: v=DMARC1; p=none; rua=mailto:bartek@gaproll.eu
 
 ---
 
-### 4.3 Domain Warming Protocol (6 WEEKS MINIMUM)
+### 5.3 Domain Warming Protocol (6 WEEKS MINIMUM)
 
 **CRITICAL:** Cannot skip this. Skipping = blacklisted domain = business death.
 
@@ -459,7 +472,7 @@ TXT record: v=DMARC1; p=none; rua=mailto:bartek@gaproll.eu
 
 ---
 
-### 4.4 Hunter Agent Email Limits (After Warming)
+### 5.4 Hunter Agent Email Limits (After Warming)
 
 | Period | Daily Limit | Rationale |
 |--------|-------------|-----------|
@@ -475,7 +488,7 @@ TXT record: v=DMARC1; p=none; rua=mailto:bartek@gaproll.eu
 
 ---
 
-### 4.5 Domain Warming Tool
+### 5.5 Domain Warming Tool
 
 **Narzędzie:** Instantly.ai ($37/mc)  
 **Start:** 1 marca 2026  
@@ -503,9 +516,9 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-## 5. Stealth Mode — Operational Security
+## 6. Stealth Mode — Operational Security
 
-### 5.1 Context (Why Stealth?)
+### 6.1 Context (Why Stealth?)
 
 **From user memory:**
 > "Bartek is employed under non-compete agreement, requiring low-profile approach with institutional rather than personal branding."
@@ -518,7 +531,7 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-### 5.2 Red Lines (DO NOT CROSS)
+### 6.2 Red Lines (DO NOT CROSS)
 
 **Forbidden Actions (Until Non-Compete Expires):**
 
@@ -534,7 +547,7 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-### 5.3 Safe Practices
+### 6.3 Safe Practices
 
 **Communication Channels (Safe):**
 
@@ -565,7 +578,7 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-### 5.4 When Can Stealth End?
+### 6.4 When Can Stealth End?
 
 **Conditions (ANY of these):**
 1. ✅ Employment terminated (voluntary resignation or mutual agreement)
@@ -576,9 +589,9 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-## 6. Cost Projections
+## 7. Cost Projections
 
-### 6.1 Monthly Infrastructure Cost
+### 7.1 Monthly Infrastructure Cost
 
 | Month | Services Active | Total Cost (EUR) | Total Cost (PLN) | MRR | % of Revenue |
 |-------|----------------|------------------|------------------|-----|--------------|
@@ -596,12 +609,13 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-### 6.2 Cost Breakdown at Scale (Dec 2026, 1000 users)
+### 7.2 Cost Breakdown at Scale (Dec 2026, 1000 users)
 
 | Service | Cost/Month (EUR) | Notes |
 |---------|------------------|-------|
 | Hetzner VPS (CPX31) | €12.90 | May need upgrade to CPX41 (€26) |
 | Supabase Pro | €25 | 8GB DB, 250GB bandwidth |
+| Kinde Scale (Enterprise auth) | €230 (~$250) | Flat fee, unlimited SSO. Only if Enterprise clients exist. $0 if none. |
 | Mailchimp | €50 | 2,500 contacts |
 | Customer.io | €150 | 5,000 users |
 | Postmark | €50 | ~10k transactional emails/month |
@@ -611,15 +625,20 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 | Sentry | €26 | 50k events/month (paid plan) |
 | OpenAI API | €200 | GPT-4o-mini, ~2M tokens/month |
 | Hetzner Storage Box | €3.81 | 1TB backups |
-| **Total** | **~€650** | **~2,925 PLN** |
+| **Total (with Kinde)** | **~€880** | **~3,960 PLN** |
+| **Total (without Kinde)** | **~€650** | **~2,925 PLN** |
 
 **Note:** At 1000 users with 50k MRR, €650 = **1.3% of revenue** (excellent margin)
 
+**Note on Kinde:** $250/mies flat regardless of enterprise client count. Activated only when first Enterprise deal closes. MŚP clients use Kinde Free tier ($0). If zero enterprise clients, Kinde cost = $0.
+
 ---
 
-## 7. Security & Compliance
+## 8. Security & Compliance
 
-### 7.1 RODO / GDPR Compliance
+**Auth Migration (Mar 2026):** Supabase Auth replaced by Kinde. Supabase remains as database only. All auth flows (login, session, JWT) managed by Kinde. See 04_TECH_CONSTRAINTS.md Section 2.2.1.
+
+### 8.1 RODO / GDPR Compliance
 
 **Data Residency:**
 - ✅ Hetzner: Germany/Finland datacenters (EU)
@@ -640,7 +659,7 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-### 7.2 EU AI Act Compliance
+### 8.2 EU AI Act Compliance
 
 **High-Risk AI System:** EVG Engine (job evaluation affects employment decisions)
 
@@ -663,9 +682,9 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-## 8. Monitoring & Alerts
+## 9. Monitoring & Alerts
 
-### 8.1 Critical Alerts (Slack notifications)
+### 9.1 Critical Alerts (Slack notifications)
 
 **Infrastructure:**
 - VPS CPU >80% for 10 min
@@ -687,7 +706,7 @@ v=spf1 include:_spf.google.com include:spf.instantlyai.com ~all
 
 ---
 
-### 8.2 Dashboards
+### 9.2 Dashboards
 
 **Grafana (optional, Phase 3+):**
 - Infrastructure metrics (CPU, RAM, disk, network)

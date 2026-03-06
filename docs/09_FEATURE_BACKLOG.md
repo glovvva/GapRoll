@@ -85,13 +85,14 @@ Priority Tiers:
 | 33 | Smart Job Scorer | 3 | P2 (22) | 7 | 6 |
 | 34 | Justification Agent (Art. 7) | 3 | P2 (23) | 8 | 6 |
 | 35 | Partner Portal v2 (White-label) | 3 | P2 (24) | 8 | 7 |
-| 36 | SSO / SAML / Azure AD | 3 | P2 (21) | 7 | 8 |
+| 36 | **Enterprise Auth — Kinde Scale upgrade** (SSO/SAML, SCIM when ready) | 2 | **P1 (28)** | 9 | 3 |
 | 37 | **API-First Platform + MCP Server** | 2-3 | **P1 (29)** | 9 | 6 |
 | 38 | **ERP Integration Layer** | 5+ | P3 (17) | 9 | 10 |
 | 39 | **PESEL Normalization Utils** | 4 | P3 (19) | 6 | 2 |
 | 40 | **NormalizedEmployee Schema** | 3 | P2 (22) | 7 | 3 |
 | 41 | **Agent-Ready Endpoint Migration** (existing endpoints → APIResponse envelope) | 2 | P1 (27) | 8 | 5 |
 | 42 | **MCP Server v1** (5-7 intent-based tools, thin wrapper over REST API) | 3 | P2 (25) | 9 | 6 |
+| 43 | **Kinde Auth Migration** (replace Supabase Auth for ALL users) | 1-2 | **P0 (31)** | 9 | 5 |
 ---
 
 ## 3. Detailed Feature Specs
@@ -719,6 +720,97 @@ Agents (Mar-May)
 - Revisit in Jul-Aug 2026 when Hunter + Guardian + Analyst all working
 
 **Reference:** Will Washburn (@willwashburn) "Introducing Agent Relay" (Feb 9, 2026)
+
+---
+
+### Feature #43: Kinde Auth Migration — NEW P0 (replaces Supabase Auth entirely)
+
+**Why P0:**
+- **No clients yet = zero migration risk.** Migrating with 100 clients = nightmare.
+- **Eliminates dual-auth overhead** before it starts. One system, one set of bugs.
+- **Enterprise-ready from day 1.** SSO is a Kinde Scale toggle, not a 3-day project.
+- **Cleaner architecture:** Frontend → Kinde → FastAPI → Supabase (database only). Aligns with API-First.
+
+**What changes:**
+1. Auth provider: Supabase Auth → Kinde (Free tier for all, Scale when enterprise deal closes)
+2. Login/signup: Supabase hosted UI → Kinde hosted login (`@kinde-oss/kinde-auth-nextjs`)
+3. Session management: Supabase cookies → Kinde JWT cookies
+4. Middleware: `@supabase/ssr` session check → Kinde `authMiddleware()`
+5. Data access: Frontend direct Supabase calls → ALL through FastAPI (service_role_key)
+6. User sync: Kinde webhook → FastAPI → Supabase profiles table (upsert on user events)
+
+**What does NOT change:**
+- Supabase PostgreSQL stays (all data, RLS for defense-in-depth)
+- FastAPI stays (already uses service_role_key — Rule #1, #21)
+- UI components stay (Shadcn, dashboard, all features)
+- All business logic stays
+
+**Implementation breakdown:**
+
+| Task | Hours | Tool |
+|------|-------|------|
+| Kinde account setup, env vars, Next.js SDK install | 2h | Claude Code |
+| middleware.ts migration (Supabase session → Kinde authMiddleware) | 2h | Claude Code |
+| Login/signup pages → Kinde hosted login (remove custom forms) | 1h | Claude Code |
+| Kinde webhook receiver (`app/api/webhooks/kinde/route.ts`) → Supabase profiles sync | 3h | Claude Code |
+| Frontend: replace direct Supabase auth calls → Kinde getSession/getUser | 3h | Cursor Composer |
+| Frontend: replace remaining direct Supabase data calls → FastAPI endpoints | 3h | Cursor Composer |
+| Test all flows (login, logout, session refresh, dashboard, EVG, reports) | 2h | Manual |
+| **Total** | **16h** | **2-3 working days** |
+
+**Hard-Won Rules that become OBSOLETE after migration:**
+- Rule #3 (`@supabase/ssr` cookies) → replaced by Kinde cookies
+- Rule #4 (middleware excludes /api/*) → Kinde middleware has own matcher
+- Rule #11-15 (Auth rules for Supabase SSR) → replaced by Kinde patterns
+- Rule #38 (user_id=zeroes sentinel) → Kinde JWT always has sub claim
+
+**New patterns after migration:**
+- `getKindeServerSession()` in Server Components
+- `authMiddleware()` in middleware.ts
+- Kinde JWT `sub` claim = user ID in Supabase profiles
+- `Authorization: Bearer <kinde_access_token>` in all FastAPI calls
+
+**Dependencies:** None (standalone migration)
+**Effort:** 16h (2-3 working days)
+**Timeline:** Week 7 (Mar 16-22, immediately after Milestone 1) or during Milestone 1 if time allows
+**Tool:** Claude Code (server-side migration) + Cursor Composer (frontend refactoring)
+
+---
+
+### Feature #36: Enterprise Auth — Kinde Scale Upgrade (was SSO/SAML/Azure AD)
+
+**Why P1 (upgraded from P2):**
+- **Revenue:** Single enterprise client (min 2,999 PLN/mies) = 30x a Compliance customer
+- **Sales blocker:** Kancelarie prawne 200+ osób require SSO in security questionnaire
+- **Near-zero effort:** After Feature #43, SSO = toggle Kinde Free → Scale + client self-serve config
+
+**CRITICAL: NOT built proactively. TRIGGERED by first enterprise deal.**
+
+**Trigger:** Client 200+ employees asks for SSO in security questionnaire.
+
+**Prerequisites:**
+- [x] Feature #43 (Kinde Auth Migration) completed
+- [ ] Kinde Scale plan activated ($250/mies)
+- [ ] Enterprise pricing contract signed (min 2,999 PLN/mies)
+
+**What happens when triggered:**
+
+| Step | Time | Action |
+|------|------|--------|
+| 1 | 30 min | Upgrade Kinde Free → Scale in dashboard |
+| 2 | 1h | Enable SAML SSO for client's organization in Kinde |
+| 3 | 5 min | Send Admin Portal link to client's IT (self-serve SAML config) |
+| 4 | 15 min | Client IT configures their Entra ID / Okta / Google Workspace |
+| 5 | 30 min | Test login flow with client |
+| **Total** | **~2.5h** | **Same day delivery** |
+
+**Cost per enterprise client (after Kinde Scale activated):**
+- First client: COGS = $250/mies (full Kinde Scale cost) + service time. Revenue = min 2,999 PLN (~$750). Margin ~67%.
+- Tenth client: COGS = $25/client/mies ($250 ÷ 10). Revenue = min $750/client. Margin ~97%.
+
+**Dependencies:** Feature #43 (Kinde Auth Migration)
+**Effort:** 2.5h per client (when triggered, mostly client-side config)
+**Timeline:** Phase 2+ (when first enterprise client appears, Apr-May 2026)
 
 ---
 
