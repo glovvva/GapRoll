@@ -12,7 +12,7 @@
 |-----------|--------|
 | **Current Phase** | Phase 1 — Platform Development (Feb 21 - Mar 15) |
 | **Sprint Focus** | Milestone 1: Platform Baseline (Mar 15, 2026) |
-| **Blocking Risk** | Must-have features DONE. Wiszą: kosmetyka, invoice automation, onboarding n8n |
+| **Blocking Risk** | Must-have features DONE. Wiszą: kosmetyka, invoice automation, onboarding n8n. **paygapnews.pl NOT YET LIVE** (SEO clock not started — critical to fix before departure). |
 | **Next Milestone** | Milestone 1: Platform Baseline (Mar 15, 2026) — Product-Ready for paying customers |
 | **Critical Path** | ✅ Spółka (Feb 15) → ✅ Bank (Feb 16) → ✅ Domains (Feb 18) → Invoice setup (Mar 2-8) → Sales materials (Mar 8) → ✅ Partner Portal (Mar 15) |
 
@@ -123,6 +123,11 @@ Kolumna `module` na wszystkich nowych tabelach: 'pay_transparency' | 'controller
 ### ✅ SOLIO SOLVER v1 (done Feb 2026)
 - Greedy budget optimization, 6 constraints, interactive modeling
 
+### ✅ ERI-01 Skrzynka Wniosków Pracowniczych (Art. 7)
+| ID | Feature | Status | Notes |
+|----|---------|--------|-------|
+| ERI-01 | Skrzynka Wniosków Pracowniczych (Art. 7) | ✅ PROD | Track A (magic link) + Track B (ręczny), obliczenia EVG, PDF, HITL, audit log |
+
 ---
 
 ## 4. What Is NOT Built Yet
@@ -217,6 +222,16 @@ sed -i "s|s4sg0k0ckkgok08w0kwgk48o-[0-9]*:3000|${NEW}:3000|" /data/coolify/proxy
 | 27 | RLS policies używają `profiles`, NIE `users` — `SELECT company_id FROM profiles WHERE id = auth.uid()` | 42P01 przy tworzeniu policy. |
 | 28 | Enum fields w inline edit = Shadcn Select, NIE free-text Input — free-text korumpuje dane downstream (pay gap, EVG) | Data integrity. |
 
+### 🔧 ERI / Infra (Mar 2026)
+
+| # | Rule | When |
+|---|------|------|
+| 45 | Supabase Storage bucket wymaga explicit RLS policy dla service_role — bez niej upload failuje nawet z service role key | Mar 2026 |
+| 46 | FastAPI redirect_slashes=True + Next.js rewrite = 307 cross-origin → Authorization header stripped. Fix: @router.get("") zamiast @router.get("/") | Mar 2026 |
+| 47 | uvicorn --reload nie przeładowuje plików edytowanych przez zewnętrzne narzędzia (Cursor/CC) — zawsze restart ręczny po zmianach CC | Mar 2026 |
+| 48 | Shadcn/UI wymaga zdefiniowania --popover i --accent HSL tokenów w globals.css — bez nich dropdown tła są przezroczyste | Mar 2026 |
+| 49 | RLS na tabeli profiles z subquery do tej samej tabeli = infinite recursion (42P17). Zawsze używaj tylko id = auth.uid() bez JOIN/subquery | Mar 2026 |
+
 ---
 
 ## 6. Strategic Rules
@@ -288,6 +303,35 @@ sed -i "s|s4sg0k0ckkgok08w0kwgk48o-[0-9]*:3000|${NEW}:3000|" /data/coolify/proxy
 ---
 
 ## 8. Recent Updates (Session Changelog)
+
+### Session Log — GTM Strategy Session (Mar 7, 2026)
+
+**Focus:** paygapnews.pl blueprint + GTM strategy to June 7, 2026
+
+**Key Decisions:**
+- paygapnews.pl is #1 pre-departure priority (SEO needs 6–8 weeks before June deadline)
+- Zero-touch onboarding (Fakturownia/Przelewy24) DEFERRED — no customers yet, manual is fine
+- VSL Machine: 3 videos × 3 personas (VSL-A biura rachunkowe FIRST, VSL-C HR second, VSL-B kancelarie third)
+- Synthetic LinkedIn personas REJECTED — compliance brand cannot use bot network
+- PhantomBuster FB groups REJECTED — same reputation risk
+
+**Content Production Rule (PERMANENT):**
+- Bartek = approver only, NEVER content writer
+- Agent (P2-seo-content-machine) generates all articles
+- n8n automates pipeline from Week 7 onward
+
+**Deliverables Created:**
+- PAYGAPNEWS_BLUEPRINT.md v2.0 — complete Gemini handoff document
+- Cursor Composer batch prompt for 6 first articles
+- n8n workflow spec (draft pipeline + lead capture)
+- System prompt for Gemini
+
+**Next Session Priorities:**
+1. Ghost CMS deploy on Hetzner via Coolify (Sesja 1 z Gemini)
+2. Run P2-seo-content-machine batch prompt → generate 6 articles
+3. n8n lead capture workflow
+
+---
 
 ### Sessions A–G (Feb 13-14, 2026)
 *[Zachowane bez zmian — patrz poprzednia wersja pliku]*
@@ -422,6 +466,9 @@ sed -i "s|s4sg0k0ckkgok08w0kwgk48o-[0-9]*:3000|${NEW}:3000|" /data/coolify/proxy
 | Article 16 PDF Export | HIGH | Mar 15 | ❌ TODO |
 | Domain warming (cold email blocked) | IN PROGRESS | Apr 5 | 🔄 IN PROGRESS |
 | Unit tests RODO masking | LOW | Mar 29 | ❌ TODO |
+| n8n ERI workflow | HIGH | Apr 5 | ❌ TODO — N8N_WEBHOOK_ERI_SEND nie skonfigurowany, email do pracownika nie działa |
+| profiles.full_name | MEDIUM | Mar 29 | ❌ TODO — tabela profiles nie ma full_name, podpis w PDF generuje "—" |
+
 Root Cause — hardcoded company_id w frontendzie. To jest tymczasowy fix tylko na potrzeby testów. Przed launchem trzeba to właściwie podpiąć pod profil użytkownika.
 
 ---

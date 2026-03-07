@@ -151,6 +151,17 @@ Rollback if health check fails
 
 ⚠️ **BEFORE next redeploy:** SSH → delete `/data/coolify/proxy/dynamic/gaproll-eu.yaml` permanently (see INFRA-001 in 00_CONTEXT_MEMORY.md).
 
+### 1.6 Environment Variables (Backend / n8n)
+
+Dodatkowe zmienne dla API (FastAPI) i workflowów n8n:
+
+```
+N8N_WEBHOOK_ERI_SEND=https://n8n.gaproll.eu/webhook/eri-send
+N8N_WEBHOOK_ERI_REMINDER=https://n8n.gaproll.eu/webhook/eri-reminder
+```
+
+**Supabase Storage bucket "employee-requests":** private, limit 5MB, MIME `application/pdf`. RLS policy wymagana dla service_role — bez niej upload failuje nawet z service role key. Przykład: `CREATE POLICY "Service role full access" ON storage.objects FOR ALL TO service_role USING (bucket_id = 'employee-requests') WITH CHECK (bucket_id = 'employee-requests').`
+
 **Monitoring Alerts (Slack integration):**
 - API response time >2s for 5 min → alert
 - Error rate >5% → alert

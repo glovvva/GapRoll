@@ -39,6 +39,8 @@ class Settings:
             os.getenv("ENVIRONMENT", "development").strip() or "development"
         )
         self._openai_api_key = os.getenv("OPENAI_API_KEY", "").strip() or ""
+        self._n8n_webhook_eri_send = os.getenv("N8N_WEBHOOK_ERI_SEND", "").strip() or None
+        self._n8n_webhook_eri_reminder = os.getenv("N8N_WEBHOOK_ERI_REMINDER", "").strip() or None
 
     @property
     def SUPABASE_URL(self) -> str | None:
@@ -73,6 +75,16 @@ class Settings:
     def is_supabase_configured(self) -> bool:
         """Czy Supabase jest skonfigurowane (URL i KEY ustawione)."""
         return bool(self._supabase_url and self._supabase_key)
+
+    @property
+    def N8N_WEBHOOK_ERI_SEND(self) -> str | None:
+        """URL webhooka n8n do wysyłki odpowiedzi na wniosek (email z PDF)."""
+        return self._n8n_webhook_eri_send
+
+    @property
+    def N8N_WEBHOOK_ERI_REMINDER(self) -> str | None:
+        """URL webhooka n8n do przypomnień o zbliżającym się terminie (cron)."""
+        return self._n8n_webhook_eri_reminder
 
 
 @lru_cache(maxsize=1)

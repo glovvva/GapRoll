@@ -29,12 +29,13 @@ const config: Config = {
         "status-action": "#C4934A",
         "status-review": "#7B6FAF",
         "status-alert": "#C45A5A",
-        // ── CSS VARIABLE TOKENS (switch with dark/light) ─────────────
+        // ── CSS VARIABLE TOKENS ──────────────────────────────────────
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        surface: "hsl(var(--surface))",
-        elevated: "hsl(var(--elevated))",
-        border: "hsl(var(--border))",
+        // surface/elevated/border use hex CSS vars directly (not HSL-wrapped)
+        surface: "#1E293B",
+        elevated: "#334155",
+        border: "#334155",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         muted: {
@@ -48,6 +49,14 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
       },
       fontFamily: {

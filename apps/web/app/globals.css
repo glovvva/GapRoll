@@ -17,6 +17,22 @@
   --border:        #334155;
   --border-subtle: rgba(255,255,255,0.06);
 
+  /* ── Shadcn/Tailwind HSL tokens (format: H S% L%, used as hsl(var(--x))) ── */
+  --background:         222 47% 11%;   /* #0F172A navy */
+  --foreground:         210 40% 96%;   /* #F1F5F9 */
+  --card:               217 33% 17%;   /* #1E293B surface */
+  --card-foreground:    210 40% 96%;
+  --popover:            215 25% 27%;   /* #334155 elevated — above surface */
+  --popover-foreground: 210 40% 96%;
+  --muted:              217 33% 17%;
+  --muted-foreground:   215 20% 65%;   /* #94A3B8 */
+  --primary:            218 100% 58%;  /* #2A7BFF */
+  --primary-foreground: 210 40% 96%;
+  --accent:             215 25% 32%;   /* hover — between surface and elevated */
+  --accent-foreground:  210 40% 96%;
+  --input:              215 25% 27%;
+  --ring:               218 100% 58%;
+
   /* ── Text ── */
   --text-primary:   #F1F5F9;
   --text-secondary: #CBD5E1;

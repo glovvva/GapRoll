@@ -8,6 +8,7 @@ import {
   Calculator,
   FileText,
   Home,
+  Inbox,
   Scale,
   Table2,
   TrendingUp,
@@ -35,6 +36,7 @@ const navItems: {
   },
   { href: "/dashboard/solio", label: "Optymalizator Budżetowy", icon: Calculator },
   { href: "/dashboard/report", label: "Art. 16 Report", icon: FileText },
+  { href: "/dashboard/wnioski", label: "Skrzynka wniosków", icon: Inbox },
 ];
 
 function isLinkActive(pathname: string, href: string): boolean {

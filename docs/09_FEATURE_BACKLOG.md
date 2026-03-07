@@ -50,6 +50,7 @@ Priority Tiers:
 | 18c | Data Table View (/dashboard/dane, inline editing, audit log) | ✅ PROD | done Feb 2026 |
 | 20 | Root Cause Analysis (why-gap-exists breakdown) | ✅ PROD | done Feb 2026 |
 | 23 | Solio Solver v1 (budget optimization, greedy algorithm) | ✅ PROD | done Feb 2026 |
+| ERI-01 | Skrzynka Wniosków Pracowniczych | ✅ PROD | Track A + B, magic link, obliczenia Art. 7, PDF ReportLab, HITL modal, audit log, deadline countdown |
 
 ### 2.2 IN PROGRESS (Milestone 1 — Mar 15)
 
@@ -60,6 +61,7 @@ Priority Tiers:
 | 16 | Sales Materials | Mar 8 | 1 | P1 (27) | 8 | 4 |
 | 18b | **PESEL→Gender Auto-Detection** | Mar 1 | 1 | P1 (26) | 6 | 1 |
 | 18d | **Claude Cowork setup** (4 pluginy: Productivity/Marketing/Legal/Sales) | Mar 1-3 | 1 | P1 (27) | 6 | 1 |
+| ERI-02 | n8n ERI email workflow | Apr 5 | 2 | P0 (31) | 9 | 3 |
 
 ### 2.3 QUEUED (Agents & Strategia Features — Mar-Jun)
 
