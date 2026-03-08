@@ -172,7 +172,6 @@ export default function Navbar() {
           aria-controls="mobile-menu"
           id="mobile-menu-button"
           style={{
-            display: "flex",
             alignItems: "center",
             justifyContent: "center",
             width: "40px",
