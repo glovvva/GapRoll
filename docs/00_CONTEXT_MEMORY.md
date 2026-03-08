@@ -232,6 +232,16 @@ sed -i "s|s4sg0k0ckkgok08w0kwgk48o-[0-9]*:3000|${NEW}:3000|" /data/coolify/proxy
 | 48 | Shadcn/UI wymaga zdefiniowania --popover i --accent HSL tokenów w globals.css — bez nich dropdown tła są przezroczyste | Mar 2026 |
 | 49 | RLS na tabeli profiles z subquery do tej samej tabeli = infinite recursion (42P17). Zawsze używaj tylko id = auth.uid() bez JOIN/subquery | Mar 2026 |
 
+### 🚀 DEPLOYMENT / COOLIFY (Mar 2026)
+
+| # | Rule | Cost |
+|---|------|------|
+| 42 | DEPLOYMENT PRE-FLIGHT: Przed każdym deployem na Coolify sprawdź: (a) branch name w repo vs Coolify Git Source, (b) wszystkie NEXT_PUBLIC_* env vars dodane z Available at Buildtime=true, (c) middleware.ts matcher wyklucza _next/static, _next/image, api/, pliki statyczne, (d) chronione strony mają export const dynamic = 'force-dynamic', (e) brak statycznego pliku w /data/coolify/proxy/dynamic/ który overriduje routing | Cost: 1 dzień down |
+| 43 | NIGDY nie diagnozuj przez ping-pong. Przed pierwszą odpowiedzią zbierz WSZYSTKIE dane: branch, logi buildu, docker ps, curl localhost, network tab w przeglądarce. Jeden Cursor Composer / CC prompt = pełna diagnoza + wszystkie fixy naraz | Cost: 4h reactive debugging |
+| 44 | Next.js middleware.ts matcher MUSI wykluczać: _next/static, _next/image, favicon.ico, api/, *.png, *.jpg, *.svg, *.ico, *.webp — inaczej pliki z public/ są przekierowywane do /login | Cost: 1h debugging obrazka |
+| 45 | Chronione strony Next.js używające Supabase w layout.tsx MUSZĄ mieć export const dynamic = 'force-dynamic' — inaczej next build crashuje przy SSG prerenderowaniu z błędem "Supabase URL and API key are required" | Cost: 3 nieudane deploye |
+| 46 | Coolify domena musi być ustawiona jako https://gaproll.eu (nie www.gaproll.eu, nie http://) — puste www. powoduje Host(``) w Traefik labels = brak routingu mimo działającego kontenera | Cost: 1h debugging |
+
 ---
 
 ## 6. Strategic Rules
