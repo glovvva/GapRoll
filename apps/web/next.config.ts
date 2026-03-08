@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
     ]
   },
   images: {
+    domains: ['gaproll.eu', 'www.gaproll.eu'],
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

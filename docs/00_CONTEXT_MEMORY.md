@@ -304,6 +304,36 @@ sed -i "s|s4sg0k0ckkgok08w0kwgk48o-[0-9]*:3000|${NEW}:3000|" /data/coolify/proxy
 
 ## 8. Recent Updates (Session Changelog)
 
+### Session 2026-03-08 — GTM + paygapnews.pl Content Strategy
+
+**Focus:** Finalizacja strategii contentowej paygapnews.pl (SEO+GEO), plan 15 artykułów, prompt wsadowy Cursor.
+
+**Decisions Made:**
+1. SEO i GEO nie wykluczają się — wszystkie artykuły dostają GEO-format (Answer Nugget, tabela, tradeoffs)
+2. 15 artykułów (było 10) — proporcja 60% SEO-fundament / 40% Twarde Naboje
+3. Lokalny geotargeting (Wrocław) odrzucony — produkt ogólnopolski
+4. Koszty wdrożenia dyrektywy: DWA osobne artykuły (artykuł 14: audyt zewnętrzny; artykuł 15: consulting vs oprogramowanie)
+5. FAQ/Baza wiedzy na gaproll.eu: Tajlandia, po uruchomieniu paygapnews.pl
+6. "Not make it obvious" — portal wygląda jak niezależne medium, GapRoll tylko w CTA
+7. Szablon artykułu v3 zaktualizowany: Answer Nugget jako blockquote, sekcja tradeoffs obowiązkowa
+8. Cursor prompt wsadowy dla 6 artykułów gotowy (z GEO-formatem) — zapisany w PAYGAPNEWS_BLUEPRINT.md
+
+**Files Updated:**
+- `PAYGAPNEWS_BLUEPRINT.md` → v3.0 (15 artykułów, nowy szablon, nowy prompt wsadowy)
+- `01_STRATEGY.md` → sekcja 7b GTM Strategy dodana
+- `00_CONTEXT_MEMORY.md` → ten wpis
+
+**Pending (Tajlandia):**
+- Decision Pages na gaproll.eu (3 strony per persona, GEO format)
+- FAQ/Baza wiedzy
+- VSL-A, VSL-B, VSL-C produkcja
+- Ghost CMS setup → zlecone Gemini z briefem
+
+**Next Session:**
+- Verify Ghost live na paygapnews.pl
+- Approve 6 artykułów wygenerowanych przez P2-seo-content-machine
+- n8n lead capture workflow test end-to-end
+
 ### Session Log — GTM Strategy Session (Mar 7, 2026)
 
 **Focus:** paygapnews.pl blueprint + GTM strategy to June 7, 2026

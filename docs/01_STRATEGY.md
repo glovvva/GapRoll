@@ -1,8 +1,8 @@
 # GapRoll — Strategic Bible
 ## Vision, Roadmap & Product Requirements (Single Source of Truth)
 
-**Last Updated:** 2026-03-03  
-**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-2999+ PLN, Invoice Automation, Realistic Targets, API-First Architecture, MCP Server Readiness, Enterprise Tier (Custom Pricing), Kinde Auth (replaces Supabase Auth)  
+**Last Updated:** 2026-03-08  
+**CRITICAL UPDATES:** Rebrand, EVG→Compliance, Pricing 99-1599 PLN, Invoice Automation, Realistic Targets, API-First Architecture, MCP Server Readiness, GTM Strategy + paygapnews.pl Blueprint v3.0  
 **Previous Name:** PayCompass (sunset Feb 14, 2026)  
 **Rule:** EVERY feature proposal must be checked against this file first.
 
@@ -436,7 +436,11 @@ ROI: 45k annually / 180k = 25% yearly return"
 
 - **Feb 15:** Company formed
 - **Mar 15:** Milestone 1 (Product-Ready, Invoice automation live)
-- **May 1:** Manual sales START (warm network, partnerships)
+- **Mar 16:** Bartek departs for Thailand (~9 weeks remote)
+- **Mar 16:** paygapnews.pl — Ghost CMS live + 6 artykułów opublikowanych (SEO zegar startuje)
+- **Apr 5:** Domain warming complete (week 7) — cold outreach Hunter odblokowany
+- **May 1:** Manual sales START (warm network, 5 partner accounting firms)
+- **May 1:** paygapnews.pl — 12+ artykułów live (SEO authority peak)
 - **Jun 7:** EU Directive 2023/970 compliance deadline (market panic trigger)
 - **Jun 8:** V1.0 Launch (Hunter automation, scale cold email)
 - **Sep 2026:** SUCCESS MILESTONE (see Section 9)
@@ -499,6 +503,90 @@ ROI: 45k annually / 180k = 25% yearly return"
 4. **Invoice Automation:** Built-in from day 1 (Fakturownia.pl integration)
 5. **Data Moat:** Benchmark Engine (will have largest Polish wage dataset by Q4 2026)
 6. **API-First + MCP Ready:** Enterprise agents (Claude, Copilot, custom AI) can query GapRoll programmatically. No competitor offers agent-to-platform integration in RegTech compliance.
+
+---
+
+## 7b. GTM Strategy — paygapnews.pl Content Engine
+
+**Status:** Zatwierdzona strategia (2026-03-08). Wdrożenie: przed wylotem (Mar 16).
+
+### Architektura lejka
+
+```
+paygapnews.pl (SEO+GEO ToFu)
+  → Lead Magnet (PDF checklist per persona)
+  → n8n: email z VSL GapRoll
+  → Trial gaproll.eu
+  → Paying customer
+```
+
+### Dwa filary SEO+GEO
+
+Portal publikuje dwa typy treści — oba z GEO-formatem (Answer Nugget 40-60 słów, tabela Markdown, sekcja tradeoffs):
+
+| Typ | Udział | Rola |
+|-----|--------|------|
+| SEO-fundament | 60% | Autorytet domeny, ruch organiczny, wiarygodność jako niezależne medium |
+| Twardy Nabój | 40% | Dominacja LLM na zapytaniach decyzyjnych, trudne do skopiowania |
+
+**Zasada "not make it obvious":** portal wygląda jak niezależne medium, nie mikrosajt. GapRoll pojawia się wyłącznie w bloku CTA na końcu artykułu.
+
+### Plan 15 artykułów (tygodnie 1-8)
+
+| Nr | Slug | Typ | Tydz. |
+|----|------|-----|-------|
+| 1 | dyrektywa-eu-2023-970-polska-firma-co-zrobic | SEO-fundament | 1 |
+| 2 | art-16-raport-luka-placowa-kto-kiedy | SEO-fundament | 1 |
+| 3 | kary-brak-raportu-luki-placowej | SEO+GEO | 2 |
+| 4 | wartościowanie-stanowisk-evg-4-kryteria | SEO+GEO | 2 |
+| 5 | odwrócony-ciężar-dowodu-pozew-pracowniczy | SEO+GEO | 3 |
+| 6 | biuro-rachunkowe-nowa-usluga-luka-placowa | SEO+GEO | 3 |
+| 7 | uc127-projekt-ustawy-co-zmienia | SEO-fundament | 4 |
+| 8 | prawo-pracownika-informacja-wynagrodzenie-wzor | SEO+GEO | 4 |
+| 9 | jak-wyliczyc-luke-placowa-excel-bledy-kwartyle | **Twardy Nabój** | 5 |
+| 10 | wspolna-ocena-wynagrodzen-kiedy-grozi | SEO+GEO | 5 |
+| 11 | firmy-150-pracownikow-kiedy-raportowac | SEO+GEO | 6 |
+| 12 | matryca-ryzyka-kar-pip-kto-placi | **Twardy Nabój** | 6 |
+| 13 | comarch-optima-symfonia-luka-placowa | **Twardy Nabój** | 7 |
+| 14 | audyt-luki-placowej-koszt-zakres | SEO+GEO | 8 |
+| 15 | consulting-hr-vs-oprogramowanie-3-opcje | **Twardy Nabój** | 8 |
+
+### Techniczne GEO — obowiązkowe Day 1
+
+- `llms.txt` na gaproll.eu i paygapnews.pl (AI-readable sitemap)
+- JSON-LD `@type: Article` + `@type: FAQPage` w Ghost Code Injection
+- `robots.txt`: odblokować `OAI-SearchBot` i `GPTBot`
+
+### Decision Pages na gaproll.eu — Tajlandia
+
+3 strony Gemini dla persona (/dla-hr, /dla-biur, /dla-kancelarii) — pisane pod GEO z tradeoffs. Realizacja: tydzień 5-6 Tajlandii.
+
+### FAQ/Baza wiedzy na gaproll.eu — po paygapnews.pl
+
+Realizacja: Tajlandia, po uruchomieniu paygapnews.pl i pierwszych leadach.
+
+### VSL Machine — 3 wideo (Tajlandia)
+
+| VSL | Persona | URL | CTA |
+|-----|---------|-----|-----|
+| VSL-A | Manager Biura Rachunkowego | /partner | Demo 10 min (Calendly) |
+| VSL-B | Partner Kancelarii Prawnej | /kancelaria | Whitepaper Zero-Knowledge |
+| VSL-C | HR Director SME | /hr | Darmowy Raport Ryzyka |
+
+Kolejność produkcji: VSL-A → VSL-C → VSL-B.
+
+### Pre-departure checklist (do Mar 16)
+
+- [ ] Ghost CMS live na Hetzner/Coolify
+- [ ] DNS paygapnews.pl w Cloudflare
+- [ ] llms.txt na obu domenach
+- [ ] JSON-LD w Ghost Code Injection
+- [ ] 6 artykułów (1-6) — Cursor Tryb A, Bartek approve
+- [ ] Supabase: tabela `leads` + RLS
+- [ ] n8n: lead capture workflow aktywny
+- [ ] Google Search Console + sitemap submitted
+- [ ] PDF checklist HR (Canva, 1 strona)
+- [ ] Test end-to-end: formularz → email z PDF
 
 ---
 
