@@ -18,7 +18,7 @@ const lato = Lato({
 });
 
 export const metadata: Metadata = {
-  title: "GapRoll — Zgodność z Dyrektywą UE 2023/970",
+  title: "Gaproll — Zgodność z Dyrektywą UE 2023/970",
   description: "Automatyczna analiza luki płacowej. Raport Art. 16 w 15 minut.",
   keywords: ["luka płacowa", "dyrektywa EU 2023/970", "transparentność wynagrodzeń"],
 };

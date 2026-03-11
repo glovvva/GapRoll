@@ -47,7 +47,7 @@ const faqs = [
   {
     question: "Czy oferujecie wsparcie przy wdrożeniu?",
     answer:
-      "Plan Compliance: wsparcie email (48h response). Plan Strategia: priorytetowe wsparcie (4h response) + dedykowany onboarding call (30 min) na Zoom, gdzie przeprowadzimy Cię przez pierwszą analizę krok po kroku.",
+      "Plan Standard: wsparcie email (48h response). Plan Pro: priorytetowe wsparcie (4h response) + dedykowany onboarding call (30 min) na Zoom, gdzie przeprowadzimy Cię przez pierwszą analizę krok po kroku.",
   },
 ];
 

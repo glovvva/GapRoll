@@ -194,13 +194,13 @@ function FeatureIcon({ src, alt, size = 56 }: { src: string; alt: string; size?:
 // FIX #8: Strategia jako "najpopularniejszy" (domyślnie aktywny)
 const plans = {
   strategia: {
-    name: 'Strategia',
+    name: 'Pro',
     tagline: 'Oszczędza 3 tygodnie rocznie · ROI 360%',
-    prices: { small: 199, medium: 499, large: 999 },
+    prices: { small: 299, midI: 499, midII: 699, large: 1199, largePlus: 1999, enterprise: 0 },
     badge: 'Najpopularniejszy',
     badgeColor: '#FF4FA3',
     features: [
-      { text: 'Wszystko z planu Compliance, plus:', cite: '' },
+      { text: 'Wszystko z planu Standard, plus:', cite: '' },
       { text: 'Analiza Przyczyn Luki — dlaczego gap wynosi X%', cite: 'Art. 10' },
       { text: 'Przegląd Wynagrodzeń — workflow 5 menedżerów', cite: 'Art. 10 ust. 3' },
       { text: 'Kalkulator ROI retencji pracowników', cite: '' },
@@ -208,16 +208,16 @@ const plans = {
       { text: 'Benchmark rynkowy stanowisk', cite: '' },
     ],
     // FIX #7: Wyróżniony przycisk dla Strategia — gradient pink
-    cta: 'Zacznij z Strategia',
+    cta: 'Zacznij z Pro',
     ctaStyle: {
       background: 'linear-gradient(135deg, #FF4FA3 0%, #9B7FEA 100%)',
       boxShadow: '0 4px 20px rgba(255,79,163,0.35)',
     },
   },
   compliance: {
-    name: 'Compliance',
+    name: 'Standard',
     tagline: 'Spełnia wszystkie wymogi prawne Art. 9 i 16',
-    prices: { small: 99, medium: 299, large: 599 },
+    prices: { small: 149, midI: 249, midII: 349, large: 599, largePlus: 999, enterprise: 0 },
     badge: 'Obowiązkowy',
     badgeColor: '#2A7BFF',
     features: [
@@ -238,9 +238,12 @@ const plans = {
 } as const
 
 const sizes = [
-  { key: 'small', label: 'Małe (50–149 os.)' },
-  { key: 'medium', label: 'Średnie (150–499 os.)' },
-  { key: 'large', label: 'Duże (500+ os.)' },
+  { key: 'small',      label: 'Small (do 99 os.)'      },
+  { key: 'midI',       label: 'Mid I (100–149 os.)'     },
+  { key: 'midII',      label: 'Mid II (150–249 os.)'    },
+  { key: 'large',      label: 'Large (250–499 os.)'     },
+  { key: 'largePlus',  label: 'Large+ (500–999 os.)'    },
+  { key: 'enterprise', label: 'Enterprise (1000+ os.)'  },
 ]
 
 const features = [
@@ -270,7 +273,7 @@ const features = [
   {
     iconComp: <IconPerson />,
     title: 'Raporty dla Pracowników',
-    desc: 'Art. 7: każdy pracownik ma prawo zapytać o swoją pozycję płacową. Termin odpowiedzi: 2 miesiące. GapRoll generuje raport porównawczy automatycznie — bez godzin w Excelu.',
+    desc: 'Art. 7: każdy pracownik ma prawo zapytać o swoją pozycję płacową. Termin odpowiedzi: 2 miesiące. Gaproll generuje raport porównawczy automatycznie — bez godzin w Excelu.',
     cite: 'Art. 7 ust. 4',
   },
   {
@@ -333,14 +336,15 @@ const C = {
 export default function LandingPage() {
   useReveal()
   // FIX #8: Strategia as default selected plan
+  type SizeKey = 'small' | 'midI' | 'midII' | 'large' | 'largePlus' | 'enterprise'
   const [activePlan, setActivePlan] = useState<'strategia' | 'compliance'>('strategia')
-  const [activeSize, setActiveSize] = useState<'small' | 'medium' | 'large'>('small')
+  const [activeSize, setActiveSize] = useState<SizeKey>('small')
   const [navScrolled, setNavScrolled] = useState(false)
   const [waitlistOpen, setWaitlistOpen] = useState(false)
 
   const prices = {
-    compliance: { small: 199, medium: 399, large: 799 },
-    strategia:  { small: 399, medium: 799, large: 1599 },
+    compliance: { small: 149, midI: 249, midII: 349, large: 599, largePlus: 999,  enterprise: 0 },
+    strategia:  { small: 299, midI: 499, midII: 699, large: 1199, largePlus: 1999, enterprise: 0 },
   }
 
   const [displayPrice, setDisplayPrice] = useState(prices[activePlan][activeSize])
@@ -369,6 +373,7 @@ export default function LandingPage() {
   }, [activePlan, activeSize])
 
   const plan = plans[activePlan]
+  const isEnterprise = activeSize === 'enterprise'
 
   // FIX #5: CTA "Umów bezpłatne demo" in navbar
   // FIX #12: KPI stats in pink/blue only
@@ -397,9 +402,15 @@ export default function LandingPage() {
               </span>
             </div>
             {/* H1 */}
-            <h1 className="reveal" style={{ fontSize: 'clamp(1.75rem, 3vw, 2.75rem)', fontWeight: 800, lineHeight: 1.2, color: '#ffffff', marginBottom: '1.25rem', maxWidth: '520px' }}>
-              Pierwsza platforma zgodności płacowej{' '}
-              <span style={{ color: '#FF4FA3' }}>dedykowana na polski rynek.</span>
+            <h1 className="reveal text-white" style={{ fontSize: 'clamp(1.75rem, 3vw, 2.75rem)', fontWeight: 800, lineHeight: 1.2, color: '#ffffff', marginBottom: '1.25rem', maxWidth: '520px' }}>
+              Zamknij lukę płacową.{" "}
+              <span className="relative inline-block">
+                <span className="relative z-10">Automatycznie.</span>
+                <span
+                  className="absolute bottom-0 left-0 w-full h-[3px] rounded-full"
+                  style={{ background: "linear-gradient(to right, #FF4FA3, #2A7BFF)" }}
+                />
+              </span>
             </h1>
 
             {/* Subheadline */}
@@ -412,7 +423,7 @@ export default function LandingPage() {
             <ul className="reveal delay-1" style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
                 { color: '#FF4FA3', text: 'Zgodność w 15 minut. Nie trzy miesiące projektu.' },
-                { color: '#2A7BFF', text: 'Od 99 zł miesięcznie. Bez dodatkowych kosztów.' },
+                { color: '#2A7BFF', text: 'Od 149 zł miesięcznie. Bez dodatkowych kosztów.' },
                 { color: '#9B7FEA', text: 'Start bez angażowania IT i konsultantów.' },
                 { color: '#10B981', text: 'RODO pod Twoją kontrolą. Dane przetwarzane wyłącznie w UE.' },
               ].map((item, i) => (
@@ -440,7 +451,7 @@ export default function LandingPage() {
                 padding: '0.875rem 2rem', borderRadius: '12px',
                 border: '1.5px solid rgba(255,255,255,0.25)', cursor: 'pointer'
               }}>
-                Zarezerwuj miejsce
+                Rozpocznij z Gaproll
               </button>
             </div>
 
@@ -449,7 +460,7 @@ export default function LandingPage() {
               {[
                 { val: '7 cze 2026', label: 'Termin implementacji', color: C.pinkLight },
                 { val: '15 sek', label: 'wartościowanie stanowisk', color: C.pink },
-                { val: '15 min', label: 'Raport Art. 16 w GapRoll', color: C.blueLight },
+                { val: '15 min', label: 'Raport Art. 16 w Gaproll', color: C.blueLight },
                 { val: '1 min', label: 'odpowiedź na wniosek pracownika', color: C.blue },
               ].map(({ val, label, color }) => (
                 <div key={val}>
@@ -466,7 +477,7 @@ export default function LandingPage() {
             <div style={{ position: 'relative', background: '#f8fafc', padding: '0', display: 'block', boxShadow: '0 32px 64px rgba(0,0,0,0.4)' }}>
               <Image
                 src="/dashboardlanding.png"
-                alt="GapRoll dashboard — analiza luki płacowej"
+                alt="Gaproll dashboard — analiza luki płacowej"
                 width={680}
                 height={480}
                 style={{ borderRadius: '16px', backgroundColor: '#f8fafc', width: '100%', height: 'auto' }}
@@ -588,7 +599,7 @@ export default function LandingPage() {
             Więcej niż ustawa: Inteligencja finansowa<br />dla Twojej firmy
           </h2>
           <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '1.05rem', maxWidth: '640px', margin: '0 auto 3.5rem', lineHeight: 1.7 }}>
-            Raportowanie to dopiero początek. Pakiet rozszerzony GapRoll dostarcza twardych danych, dzięki którym zlikwidujesz lukę płacową najniższym możliwym kosztem, nie tracąc przy tym kluczowych pracowników.
+            Raportowanie to dopiero początek. Pakiet rozszerzony Gaproll dostarcza twardych danych, dzięki którym zlikwidujesz lukę płacową najniższym możliwym kosztem, nie tracąc przy tym kluczowych pracowników.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
             {[
@@ -672,7 +683,7 @@ export default function LandingPage() {
                   { icon: <Users size={16} />, text: 'Każdy pracownik może złożyć wniosek o raport porównawczy' },
                   { icon: <Clock size={16} />, text: '2 miesiące na odpowiedź — Art. 7 ust. 4 Dyrektywy 2023/970' },
                   { icon: <Lock size={16} />, text: 'Zakaz klauzul poufności wynagrodzenia — Art. 7 ust. 5' },
-                  { icon: <FileCheck size={16} />, text: 'GapRoll generuje raport Art. 7 automatycznie — jedno kliknięcie' },
+                  { icon: <FileCheck size={16} />, text: 'Gaproll generuje raport Art. 7 automatycznie — jedno kliknięcie' },
                 ].map((item, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                     <span style={{ flexShrink: 0, width: '30px', height: '30px', background: C.pinkDim, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.pink, marginTop: '1px' }}>{item.icon}</span>
@@ -705,7 +716,7 @@ export default function LandingPage() {
                 <CheckCircle2 size={20} color={C.blue} />
                 <div>
                   <div style={{ fontSize: '13px', fontWeight: 600, color: C.t1 }}>Raport Art. 7 — wygenerowany automatycznie</div>
-                  <div style={{ fontSize: '12px', color: C.tm }}>GapRoll · 45 sekund · Senior Developer (IT) · 2025</div>
+                  <div style={{ fontSize: '12px', color: C.tm }}>Gaproll · 45 sekund · Senior Developer (IT) · 2025</div>
                 </div>
               </div>
             </div>
@@ -834,7 +845,7 @@ export default function LandingPage() {
                 border: activePlan === p ? 'none' : `1px solid ${C.border}`,
                 transition: 'all 150ms',
               }}>
-                {p === 'strategia' ? 'Strategia ★' : 'Compliance'}
+                {p === 'strategia' ? 'Pro ★' : 'Standard'}
               </button>
             ))}
           </div>
@@ -842,7 +853,7 @@ export default function LandingPage() {
           {/* Size selector */}
           <div className="reveal" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '40px' }}>
             {sizes.map(s => (
-              <button key={s.key} onClick={() => setActiveSize(s.key as 'small' | 'medium' | 'large')} style={{
+              <button key={s.key} onClick={() => setActiveSize(s.key as SizeKey)} style={{
                 padding: '6px 18px', borderRadius: '20px', cursor: 'pointer',
                 fontSize: '13px', fontWeight: 500, fontFamily: 'var(--font-body)',
                 background: activeSize === s.key ? C.blueDim : 'transparent',
@@ -867,20 +878,33 @@ export default function LandingPage() {
                   <span style={{ padding: '2px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, background: activePlan === 'strategia' ? C.pinkDim : C.blueDim, color: plan.badgeColor }}>{plan.badge}</span>
                 </div>
                 <p style={{ fontSize: '14px', color: C.tm, marginBottom: '28px' }}>{plan.tagline}</p>
-                <div style={{ marginBottom: '28px' }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', transition: 'all 0.3s ease' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '52px', fontWeight: 900, letterSpacing: '-0.04em', color: C.t1, transition: 'all 0.3s ease' }}>{displayPrice}</span>
-                    <span style={{ fontSize: '18px', color: C.tm, fontWeight: 600 }}>PLN</span>
-                    <span style={{ fontSize: '14px', color: C.tm }}>/mies</span>
-                  </div>
-                  <p style={{ fontSize: '12px', color: C.tm, marginTop: '4px' }}>netto + VAT · bez zobowiązań</p>
-                </div>
-                {/* FIX #7: different style for Strategia CTA */}
-                <button type="button" onClick={() => setWaitlistOpen(true)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', padding: '14px 0', borderRadius: '8px', ...plan.ctaStyle, color: '#fff', fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 150ms', width: '100%', border: 'none', cursor: 'pointer' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)' }}
-                >{plan.cta} <ArrowRight size={15} /></button>
-                <p style={{ fontSize: '11px', color: C.tm, textAlign: 'center', marginTop: '10px' }}>14 dni bezpłatnego trialu · bez karty kredytowej</p>
+                {isEnterprise ? (
+                  <>
+                    <p style={{ fontSize: '14px', color: C.t2, lineHeight: 1.6, marginBottom: '28px' }}>
+                      Dedykowane wdrożenie dla organizacji 1000+ pracowników. SSO/SAML, SCIM, SLA 99.9%, dedykowany opiekun klienta.
+                    </p>
+                    <a href="mailto:bartek@gaproll.eu" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', padding: '14px 0', borderRadius: '8px', background: activePlan === 'strategia' ? 'linear-gradient(135deg,#FF4FA3,#9B7FEA)' : C.blue, color: '#fff', fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 150ms', width: '100%', textDecoration: 'none', cursor: 'pointer' }}>
+                      Skontaktuj się <ArrowRight size={15} />
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ marginBottom: '28px' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', transition: 'all 0.3s ease' }}>
+                        <span style={{ fontFamily: 'var(--font-display)', fontSize: '52px', fontWeight: 900, letterSpacing: '-0.04em', color: C.t1, transition: 'all 0.3s ease' }}>{displayPrice}</span>
+                        <span style={{ fontSize: '18px', color: C.tm, fontWeight: 600 }}>PLN</span>
+                        <span style={{ fontSize: '14px', color: C.tm }}>/mies</span>
+                      </div>
+                      <p style={{ fontSize: '12px', color: C.tm, marginTop: '4px' }}>netto + VAT · bez zobowiązań</p>
+                    </div>
+                    {/* FIX #7: different style for Strategia CTA */}
+                    <button type="button" onClick={() => setWaitlistOpen(true)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', padding: '14px 0', borderRadius: '8px', ...plan.ctaStyle, color: '#fff', fontSize: '15px', fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 150ms', width: '100%', border: 'none', cursor: 'pointer' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)' }}
+                    >{plan.cta} <ArrowRight size={15} /></button>
+                    <p style={{ fontSize: '11px', color: C.tm, textAlign: 'center', marginTop: '10px' }}>14 dni bezpłatnego trialu · bez karty kredytowej</p>
+                  </>
+                )}
               </div>
               <div>
                 <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.tm, marginBottom: '18px' }}>Zawiera</p>
@@ -903,7 +927,7 @@ export default function LandingPage() {
           <div className="reveal" style={{ marginTop: '24px', textAlign: 'center' }}>
             <p style={{ fontSize: '13px', color: C.tm }}>Konkurencja: PayAnalytics ~€1 100/mies · Korn Ferry ~€800/mies · Mercer ~€1 250/mies</p>
             {/* FIX #13: pink instead of green */}
-            <p style={{ fontSize: '14px', color: C.pinkLight, fontWeight: 600, marginTop: '4px' }}>GapRoll jest 98% tańszy — przy pełnej zgodności z Dyrektywą UE 2023/970.</p>
+            <p style={{ fontSize: '14px', color: C.pinkLight, fontWeight: 600, marginTop: '4px' }}>Gaproll jest 98% tańszy — przy pełnej zgodności z Dyrektywą UE 2023/970.</p>
           </div>
         </div>
       </section>
@@ -928,7 +952,7 @@ export default function LandingPage() {
           <button type="button" onClick={() => setWaitlistOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '15px 36px', borderRadius: '8px', background: 'linear-gradient(135deg,#2A7BFF,#9B7FEA)', color: '#fff', fontSize: '16px', fontWeight: 700, fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px rgba(42,123,255,0.32)', transition: 'all 150ms', border: 'none', cursor: 'pointer' }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 32px rgba(42,123,255,0.44)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 20px rgba(42,123,255,0.32)' }}
-          >Zarezerwuj miejsce →</button>
+          >Rozpocznij z Gaproll →</button>
           <p style={{ fontSize: '12px', color: C.tm, marginTop: '14px' }}>Art. 9 Dyrektywy Parlamentu Europejskiego i Rady (UE) 2023/970 z dnia 10 maja 2023 r.</p>
         </div>
       </section>

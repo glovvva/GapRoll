@@ -376,7 +376,7 @@ export function DataTableView({
       return (
         <div className="relative flex items-center justify-center bg-slate-700/50 opacity-60 cursor-not-allowed min-h-[40px]">
           <Lock className="h-3 w-3 text-slate-500 mr-1" />
-          <span className="text-slate-500 text-xs">Strategia</span>
+          <span className="text-slate-500 text-xs">Pro</span>
         </div>
       );
     }
@@ -628,7 +628,7 @@ export function DataTableView({
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs">
-                            Dostępne w planie Strategia (od 199 PLN/mies.) —
+                            Dostępne w planie Pro (od 199 PLN/mies.) —
                             odblokuj Root Cause Analysis i więcej
                           </TooltipContent>
                         </Tooltip>

@@ -171,7 +171,7 @@ export function OnboardClientForm({ onSuccess }: OnboardClientFormProps) {
                   onChange={() => setTier("compliance")}
                   className="rounded-full border-input"
                 />
-                <span className="text-sm">Compliance (99 PLN)</span>
+                <span className="text-sm">Standard (99 PLN)</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -182,7 +182,7 @@ export function OnboardClientForm({ onSuccess }: OnboardClientFormProps) {
                   onChange={() => setTier("strategia")}
                   className="rounded-full border-input"
                 />
-                <span className="text-sm">Strategia (199 PLN)</span>
+                <span className="text-sm">Pro (199 PLN)</span>
               </label>
             </div>
           </div>

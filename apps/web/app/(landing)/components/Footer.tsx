@@ -26,13 +26,13 @@ export default function Footer() {
 
           {/* Col 1 — Brand */}
           <div style={{ gridColumn: 'span 1' }}>
-            <Image src="/logo.png" alt="GapRoll" width={120} height={36}
+            <Image src="/logo.png" alt="Gaproll" width={120} height={36}
               style={{ objectFit: 'contain', marginBottom: '1rem', mixBlendMode: 'screen' }} />
             <p style={{ lineHeight: 1.7, fontSize: '0.825rem', color: '#64748B', maxWidth: '200px' }}>
               Pierwsza platforma zgodności płacowej dedykowana na polski rynek.
             </p>
             <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#475569' }}>
-              © {new Date().getFullYear()} GapRoll. Wszelkie prawa zastrzeżone.
+              © {new Date().getFullYear()} Gaproll. Wszelkie prawa zastrzeżone.
             </p>
           </div>
 
@@ -104,8 +104,8 @@ export default function Footer() {
               LinkedIn
             </a>
             <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#475569', lineHeight: 1.6 }}>
-              GapRoll sp. z o.o.<br />
-              NIP: [uzupełnić po rejestracji]<br />
+              Headframe sp. z o.o.<br />
+              NIP: 8971969073 | KRS: 0001227801<br />
               ul. Leszczyńskiego 4/77<br />
               50-078 Wrocław
             </p>
@@ -127,7 +127,7 @@ export default function Footer() {
         }}>
           <div>
             <p style={{ color: '#E2E8F0', fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem' }}>
-              Newsletter GapRoll
+              Newsletter Gaproll
             </p>
             <p style={{ color: '#64748B', fontSize: '0.85rem' }}>
               Aktualności o dyrektywie, kody rabatowe i praktyczne wskazówki HR. Bez spamu.

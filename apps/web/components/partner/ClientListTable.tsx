@@ -53,8 +53,8 @@ const statusLabels: Record<ClientStatus, string> = {
 };
 
 const tierLabels: Record<ClientTier, string> = {
-  compliance: "Compliance",
-  strategia: "Strategia",
+  compliance: "Standard",
+  strategia: "Pro",
 };
 
 function formatDate(iso: string): string {

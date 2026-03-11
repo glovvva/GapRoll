@@ -97,13 +97,12 @@ export default function WaitlistDialog({ open, onOpenChange }: WaitlistDialogPro
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="max-w-lg border-[#334155] p-0 overflow-hidden"
-        style={{ background: "#1E293B" }}
+        className="max-w-lg border-[#334155] p-0 overflow-hidden bg-[#1E293B]"
       >
         <div className="p-6 md:p-8 max-h-[90vh] overflow-y-auto">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-2xl font-bold text-[#F1F5F9]">
-              Zarezerwuj miejsce
+              Rozpocznij z Gaproll
             </DialogTitle>
             <DialogDescription className="text-[#94A3B8] mt-1">
               Odezwiemy się w ciągu 24 godzin roboczych.
@@ -238,14 +237,14 @@ export default function WaitlistDialog({ open, onOpenChange }: WaitlistDialogPro
                     style={{ accentColor: "#2A7BFF" }}
                   />
                   <span className="text-xs text-[#94A3B8] leading-relaxed">
-                    Wyrażam zgodę na otrzymywanie od GapRoll Sp. z o.o. informacji handlowych i marketingowych drogą elektroniczną (e-mail) na podany adres. Zgoda jest dobrowolna i może być odwołana w każdej chwili bez wpływu na zgodność z prawem przetwarzania dokonanego przed jej wycofaniem.
+                    Wyrażam zgodę na otrzymywanie od Headframe sp. z o.o. informacji handlowych i marketingowych drogą elektroniczną (e-mail) na podany adres. Zgoda jest dobrowolna i może być odwołana w każdej chwili bez wpływu na zgodność z prawem przetwarzania dokonanego przed jej wycofaniem.
                   </span>
                 </label>
               </div>
 
               {/* Privacy note */}
               <p className="text-xs text-[#64748B] leading-relaxed">
-                Administratorem Pani/Pana danych osobowych jest GapRoll Sp. z o.o. Pełna treść klauzuli informacyjnej dostępna jest w{" "}
+                Administratorem Pani/Pana danych osobowych jest Headframe sp. z o.o. Pełna treść klauzuli informacyjnej dostępna jest w{" "}
                 <a
                   href="/polityka-prywatnosci"
                   className="underline hover:text-[#94A3B8] transition-colors"
@@ -272,7 +271,7 @@ export default function WaitlistDialog({ open, onOpenChange }: WaitlistDialogPro
                   boxShadow: "0 4px 20px rgba(255,79,163,0.3)",
                 }}
               >
-                {submitting ? "Wysyłanie…" : "Zarezerwuj miejsce →"}
+                {submitting ? "Wysyłanie…" : "Rozpocznij z Gaproll →"}
               </button>
 
               <p className="text-center text-xs text-[#94A3B8]">

@@ -92,7 +92,7 @@ export default function Navbar() {
           <Link href="/" style={{ textDecoration: "none" }}>
             <Image
               src="/logo.png"
-              alt="GapRoll"
+              alt="Gaproll"
               width={120}
               height={36}
               style={{ objectFit: "contain", mixBlendMode: "screen" }}
@@ -180,7 +180,7 @@ export default function Navbar() {
                 cursor: "pointer",
               }}
             >
-              Zarezerwuj miejsce
+              Rozpocznij z Gaproll
             </button>
           </div>
 
@@ -289,7 +289,7 @@ export default function Navbar() {
                     e.currentTarget.style.opacity = "1";
                   }}
                 >
-                  Zarezerwuj miejsce
+                  Rozpocznij z Gaproll
                 </button>
               </div>
             </motion.div>

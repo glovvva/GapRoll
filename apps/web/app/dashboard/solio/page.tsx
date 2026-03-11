@@ -385,10 +385,10 @@ export default function SolioSolverPage() {
           <h1 className="text-3xl font-semibold text-primary">
             Optymalizator Budżetowy — Wyrównanie Luk Płacowych
           </h1>
-          <Badge variant="outline">Strategia</Badge>
+          <Badge variant="outline">Pro</Badge>
         </div>
         <p className="text-text-secondary">
-          Narzędzie Strategia | Art. 9 Dyrektywy 2023/970
+          Narzędzie Pro | Art. 9 Dyrektywy 2023/970
         </p>
       </div>
 

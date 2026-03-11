@@ -417,20 +417,18 @@ export default function WniosekDetailPage() {
         <DialogContent className="sm:max-w-md" showCloseButton={true}>
           <DialogHeader>
             <DialogTitle>Czy na pewno chcesz wysłać tę odpowiedź?</DialogTitle>
-            <DialogDescription asChild>
-              <div className="space-y-2 text-sm">
-                <p>
-                  Odpowiedź zostanie wysłana na:{" "}
-                  <strong>{request.employee_email || "— (wniosek ręczny bez emaila)"}</strong>
-                </p>
-                <p>
-                  Kopia zostanie wysłana na: <strong>{grazynaEmail || "Twój adres (zalogowany użytkownik)"}</strong>
-                </p>
-                <p className="text-amber-600 dark:text-amber-400">
-                  Po wysłaniu operacja jest nieodwracalna i zostanie zapisana w logu audytowym.
-                </p>
-              </div>
+            <DialogDescription>
+              Odpowiedź zostanie wysłana na:{" "}
+              <strong>{request.employee_email || "— (wniosek ręczny bez emaila)"}</strong>
             </DialogDescription>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>
+                Kopia zostanie wysłana na: <strong>{grazynaEmail || "Twój adres (zalogowany użytkownik)"}</strong>
+              </p>
+              <p className="text-amber-600 dark:text-amber-400">
+                Po wysłaniu operacja jest nieodwracalna i zostanie zapisana w logu audytowym.
+              </p>
+            </div>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSendModalOpen(false)} disabled={sending}>

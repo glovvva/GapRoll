@@ -32,7 +32,7 @@ const navItems: {
     href: "/dashboard/root-cause",
     label: "Analiza przyczyn",
     icon: BarChart2,
-    badge: "Strategia",
+    badge: "Pro",
   },
   { href: "/dashboard/solio", label: "Optymalizator Budżetowy", icon: Calculator },
   { href: "/dashboard/report", label: "Art. 16 Report", icon: FileText },
